@@ -432,11 +432,11 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 
 **Goal:** a working skeleton and a clear understanding of the data.
 
-- [ ] Read a sample 10-K end to end (Items 1A, 7, 8) and inspect the matching `companyfacts` JSON.
-- [ ] Choose the company list and sectors; write `configs/companies.yaml`.
-- [ ] Create the repo, `pyproject.toml`, `.env.example`, and linting and test setup.
-- [ ] Write `docker-compose.yml` with MySQL and Qdrant.
-- [ ] Build `edgar_client.py` with `User-Agent`, rate limiting, retries, and disk caching.
+- [x] Read a sample 10-K end to end (Items 1A, 7, 8) and inspect the matching `companyfacts` JSON.
+- [x] Choose the company list and sectors; write `configs/companies.yaml`.
+- [x] Create the repo, `pyproject.toml`, `.env.example`, and linting and test setup.
+- [x] Write `docker-compose.yml` with MySQL and Qdrant.
+- [x] Build `edgar_client.py` with `User-Agent`, rate limiting, retries, and disk caching.
 
 **Exit criterion:** `docker compose up` starts both databases, and the client can fetch and cache a company's filing index.
 
@@ -444,9 +444,9 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 
 **Goal:** a queryable financial database.
 
-- [ ] Design and apply `schema.sql`.
-- [ ] Implement `company_resolver.py` (ticker to CIK) and load `companies` and `filings`.
-- [ ] Implement `xbrl_loader.py` to load `financial_facts`.
+- [x] Design and apply `schema.sql`.
+- [x] Implement `company_resolver.py` (ticker to CIK) and load `companies` and `filings`.
+- [x] Implement `xbrl_loader.py` to load `financial_facts`.
 - [ ] Build `metric_map.csv` for core metrics (revenue, gross profit, operating income, net income, EPS, total assets, total liabilities, equity, operating cash flow, capex, R&D).
 - [ ] Create the `financial_metrics` view and handle duplicate and restated facts.
 - [ ] Validate against a few companies by hand (compare to the filing's printed statements).
