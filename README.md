@@ -636,6 +636,14 @@ docker compose up api ui
 
 ---
 
-## 13. Disclaimer
+## 13. Known Challenges
+- Tickers are not stable identities. After Exxon Mobil's July 2026 reorganization, SEC's
+  ticker map points `XOM` to a new holding-company CIK with no 10-K history, while all
+  prior filings sit under the legacy CIK. The starter set uses MPC instead; a full fix
+  maps one ticker to multiple CIKs over time.
+
+---
+
+## 14. Disclaimer
 
 This project is for educational and portfolio purposes. It is not financial, investment, or legal advice. Filing data is sourced from the U.S. SEC's public EDGAR system; users are responsible for following the SEC's fair access guidelines.
