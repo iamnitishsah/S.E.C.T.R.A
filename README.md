@@ -354,7 +354,7 @@ S.E.C.T.R.A/
 │   ├── metric_map.csv            # XBRL tag to canonical metric mapping
 │   └── roles.sql                 # read-only DB user for the SQL agent
 │
-├── src/S.E.C.T.R.A/
+├── src/sectra/
 │   ├── config.py
 │   ├── ingestion/
 │   │   ├── edgar_client.py       # rate-limited, cached SEC client
