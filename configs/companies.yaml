@@ -6,5 +6,5 @@ sectors:
   technology:     [AAPL, MSFT, GOOGL, AMZN, META]
   semiconductors: [NVDA, AMD, INTC, QCOM, AVGO]
   healthcare:     [JNJ, PFE, MRK, ABBV, LLY]
-  energy:         [XOM, CVX, COP, SLB, EOG]
-  banks:          [JPM, BAC, WFC, C, GS]
+  energy:         [MPC, CVX, COP, SLB, EOG]
+#  banks:          [JPM, BAC, WFC, C, GS]
