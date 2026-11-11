@@ -1,24 +1,40 @@
 -- Derived views over financial_facts. Re-runnable: CREATE OR REPLACE.
 
--- One row per company fiscal year: when it ends and what the company calls it.
--- A 10-K's own fiscal year is filing_fy, and its year-end is the latest end
--- date of its ~1-year us-gaap facts. (Cover-page dei facts are excluded because
--- their dates fall after year-end.)
-CREATE OR REPLACE VIEW fiscal_years AS
-SELECT cik, fy_end, MAX(fiscal_year) AS fiscal_year, COUNT(*) AS n_filings
+-- One row per 10-K: its year-end and SEC's fy label (used only as a hint).
+CREATE OR REPLACE VIEW fiscal_year_ends AS
+SELECT cik, accession_no,
+       MAX(filing_fy)  AS sec_fy,
+       MAX(period_end) AS fy_end
+FROM financial_facts
+WHERE form = '10-K'
+  AND filing_fp = 'FY'
+  AND taxonomy = 'us-gaap'
+  AND period_start IS NOT NULL
+  AND DATEDIFF(period_end, period_start) BETWEEN 350 AND 380
+GROUP BY cik, accession_no;
+
+-- Each company's labelling convention: the most common (SEC fy - calendar year).
+-- Taking the most common value means a few wrong fy labels are outvoted.
+CREATE OR REPLACE VIEW fiscal_year_offsets AS
+SELECT cik, offset_years
 FROM (
-         SELECT cik, accession_no,
-                MAX(filing_fy)  AS fiscal_year,
-                MAX(period_end) AS fy_end
-         FROM financial_facts
-         WHERE form = '10-K'
-           AND filing_fp = 'FY'
-           AND taxonomy = 'us-gaap'
-           AND period_start IS NOT NULL
-           AND DATEDIFF(period_end, period_start) BETWEEN 350 AND 380
-         GROUP BY cik, accession_no
-     ) per_filing
-GROUP BY cik, fy_end;
+         SELECT cik, CAST(sec_fy AS SIGNED) - CAST(YEAR(DATE_SUB(fy_end, INTERVAL 7 DAY)) AS SIGNED) AS offset_years,
+     ROW_NUMBER() OVER (PARTITION BY cik ORDER BY COUNT(*) DESC) AS rn
+FROM fiscal_year_ends
+GROUP BY cik, offset_years
+    ) t
+WHERE rn = 1;
+
+-- One row per company fiscal year, label derived from the year-end date.
+-- 7-day shift: 52/53-week years ending Jan 1-3 belong to the previous fiscal year.
+CREATE OR REPLACE VIEW fiscal_years AS
+SELECT e.cik, e.fy_end,
+    CAST(YEAR(DATE_SUB(e.fy_end, INTERVAL 7 DAY)) AS SIGNED) + o.offset_years AS fiscal_year,
+    MAX(e.sec_fy) AS sec_fy,    -- kept for auditing disagreements
+    COUNT(*)      AS n_filings
+FROM fiscal_year_ends e
+    JOIN fiscal_year_offsets o USING (cik)
+GROUP BY e.cik, e.fy_end, o.offset_years;
 
 -- One value per company, concept, unit and fiscal year.
 -- Annual durations (income/cash-flow items) and year-end instants (balance sheet).
