@@ -59,3 +59,30 @@ SELECT r.cik, y.fiscal_year, r.taxonomy, r.tag, r.unit, r.value,
 FROM ranked r
          JOIN fiscal_years y ON y.cik = r.cik AND y.fy_end = r.period_end
 WHERE r.rn = 1;
+
+
+-- One value per company, fiscal year and canonical metric.
+-- Company-specific mappings beat general ones; then lowest priority number wins.
+-- source_tag + source_accession make every number traceable.
+CREATE OR REPLACE VIEW financial_metrics_v AS
+WITH candidates AS (
+    SELECT a.cik, a.fiscal_year, m.canonical_metric, a.value, a.unit,
+           a.tag AS source_tag, a.period_end, a.source_accession,
+           ROW_NUMBER() OVER (
+               PARTITION BY a.cik, a.fiscal_year, m.canonical_metric
+               ORDER BY (m.cik = a.cik) DESC, m.priority
+           ) AS rn
+    FROM annual_facts a
+    JOIN metric_map m
+      ON  m.taxonomy    = a.taxonomy
+      AND m.tag         = a.tag
+      AND m.unit        = a.unit
+      AND m.period_type = a.period_type
+      AND (m.cik = '' OR m.cik = a.cik)
+)
+SELECT c.cik, c.ticker, c.sector, x.fiscal_year, 'FY' AS fiscal_period,
+       x.canonical_metric, x.value, x.unit,
+       x.source_tag, x.period_end, x.source_accession
+FROM candidates x
+         JOIN companies c ON c.cik = x.cik
+WHERE x.rn = 1;

@@ -51,3 +51,15 @@ CREATE TABLE IF NOT EXISTS financial_facts (
     KEY ix_facts_frame (cik, tag, frame),
     CONSTRAINT fk_facts_company FOREIGN KEY (cik) REFERENCES companies (cik)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE IF NOT EXISTS metric_map (
+    canonical_metric VARCHAR(50)  NOT NULL,              -- the name the agent uses: revenue, net_income...
+    taxonomy         VARCHAR(20)  NOT NULL DEFAULT 'us-gaap',
+    tag              VARCHAR(255) NOT NULL,
+    unit             VARCHAR(50)  NOT NULL,
+    period_type      ENUM('duration', 'instant') NOT NULL,
+    priority         TINYINT UNSIGNED NOT NULL,          -- 1 = try first
+    cik              CHAR(10)     NOT NULL DEFAULT '',   -- '' = all companies; set = override for one company
+    PRIMARY KEY (canonical_metric, cik, priority)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
