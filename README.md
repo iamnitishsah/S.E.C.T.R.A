@@ -530,13 +530,13 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 
 **Goal:** clean, section-level text for every filing in scope. This is the hardest parsing phase.
 
-- [ ] Implement `filing_downloader.py` for 10-K main documents.
-- [ ] Clean HTML (remove boilerplate, handle tables, normalize whitespace).
-- [ ] Implement `section_parser.py` to split into Items 1, 1A, 7, and 8, handling table-of-contents false matches and format variations across companies.
-- [ ] Store sections on disk and register them in `filing_sections`.
-- [ ] Write parser tests on a varied sample of filings and log parse failures for review.
+- [x] Implement `filing_downloader.py` for 10-K main documents.
+- [x] Clean HTML (remove boilerplate, handle tables, normalize whitespace).
+- [x] Implement `section_parser.py` to split into Items 1, 1A, 7, and 8, handling table-of-contents false matches and format variations across companies.
+- [x] Store sections on disk and register them in `filing_sections`.
+- [x] Write parser tests on a varied sample of filings and log parse failures for review.
 
-**Exit criterion:** Items 1A and 7 are extracted correctly for at least 90% of filings in scope, and failures are listed and understood.
+**Exit criterion:** Items 1A and 7 are extracted correctly for at least 95% of filings in scope, and failures are listed and understood.
 
 ### Phase 3: RAG baseline
 
@@ -645,9 +645,19 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 - Validated against printed statements; one semantic mapping error found and fixed
   (Chevron's `Revenues` tag includes other income). See [`docs/validation.md`](docs/validation.md).
 
+### ✅ Phase 2: Filing text → sections
+- HTML → clean text: block-aware extraction (no split words), running headers and page
+  numbers removed, tables kept as rows (segment data lives only in tables).
+- Item splitter: table-of-contents links verified against the heading they land on;
+  text fallback for filings without links; pointer stubs skipped (Chevron's Item 7 is
+  one sentence pointing to its Financial Section).
+- **76/80 filings (95.0%)** with Items 1A and 7 extracted; 1,784 sections stored in
+  `filing_sections`, each with method and quality flag.
+
 ```bash
 make download   # fetch SEC data (cached) + dataset report
 make db         # schema → load → derive; safe to re-run
+make sections   # split all 10-Ks -> data/processed/sections + filing_sections table
 ```
 
 ---
