@@ -1,6 +1,10 @@
+.DEFAULT_GOAL := all
+
 MYSQL = docker compose exec -T mysql sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"'
 
-.PHONY: download db db-schema db-load db-derive
+.PHONY: all download db db-schema db-load db-derive sections test
+
+all: download db sections test
 
 download:
 	python -m sectra.ingestion.download
