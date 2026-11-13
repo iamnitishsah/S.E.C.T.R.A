@@ -181,8 +181,14 @@ def _remove_boilerplate(lines: list[str], min_repeats: int = 8, max_len: int = 6
 
 
 def extract(path: str | Path) -> Document:
-    parser = etree.HTMLParser(huge_tree=True, recover=True)
-    root = etree.parse(str(path), parser).getroot()
+    raw = Path(path).read_bytes()
+    try:                                         # most filings are UTF-8 or plain ASCII;
+        raw.decode("utf-8")                      # older ones may be Windows-1252
+        encoding = "utf-8"
+    except UnicodeDecodeError:
+        encoding = "cp1252"
+    parser = etree.HTMLParser(huge_tree=True, recover=True, encoding=encoding)
+    root = etree.fromstring(raw, parser)
 
     links = []
     for a in root.iter("a"):
