@@ -108,17 +108,90 @@ The SEC's bulk "Financial Statement Data Sets" are an optional alternative to th
 
 ### Relational schema (MySQL)
 
-```text
-companies          cik (PK), ticker, name, sic, sic_description, exchange, fiscal_year_end
-filings            accession_no (PK), cik (FK), form_type, filing_date, period_of_report,
-                   fiscal_year, fiscal_period, primary_doc_url, local_path
-filing_sections    section_id (PK), accession_no (FK), item_code, item_title,
-                   char_start, char_end, text_path
-financial_facts    fact_id (PK), cik (FK), taxonomy, tag, unit, value, period_start,
-                   period_end, fiscal_year, fiscal_period, form, accession_no, filed_date
-metric_map         tag, canonical_metric, priority      -- maps many XBRL tags to one metric
-financial_metrics  (VIEW) cik, fiscal_year, fiscal_period, canonical_metric, value
+```mermaid
+erDiagram
+    companies ||--o{ filings : "files"
+    companies ||--o{ financial_facts : "reports"
+    companies ||--o{ financial_metrics : "has"
+    filings ||..o{ financial_metrics : "cited as source"
+    metric_map }o..o{ financial_facts : "maps tags"
+
+    companies {
+        char cik PK "zero-padded SEC id"
+        varchar ticker UK
+        varchar name
+        varchar sector "from companies.yaml"
+        char sic
+        varchar sic_description
+        varchar exchange
+        char fiscal_year_end "MMDD"
+    }
+    filings {
+        char accession_no PK
+        char cik FK
+        varchar form_type
+        date filing_date
+        date period_of_report
+        smallint fiscal_year "derived from XBRL"
+        varchar primary_doc_url
+        varchar local_path
+        char sha256
+    }
+    financial_facts {
+        bigint fact_id PK
+        char cik FK
+        varchar taxonomy
+        varchar tag
+        varchar unit
+        decimal value
+        date period_start "NULL for instants"
+        date period_end
+        smallint filing_fy "year of the filing, not the fact"
+        varchar filing_fp
+        varchar form
+        char accession_no "no FK"
+        date filed_date
+        varchar frame
+    }
+    metric_map {
+        varchar canonical_metric PK
+        char cik PK "empty = all companies"
+        tinyint priority PK
+        varchar tag
+        varchar unit
+        enum period_type
+    }
+    financial_metrics {
+        char cik PK
+        smallint fiscal_year PK
+        varchar canonical_metric PK
+        varchar ticker
+        varchar sector
+        decimal value
+        varchar unit
+        varchar source_tag
+        char source_accession
+    }
 ```
+
+**How derived data is built** (`sql/views.sql`, `sql/post_load.sql`):
+
+```mermaid
+flowchart LR
+    J["companyfacts JSON"] --> FF[("financial_facts<br/>534K raw facts")]
+    FF --> FYE{{"fiscal_year_ends"}}
+    FYE --> FYO{{"fiscal_year_offsets"}}
+    FYE --> FY{{"fiscal_years"}}
+    FYO --> FY
+    FF --> AF{{"annual_facts<br/>latest filing wins"}}
+    FY --> AF
+    MM[("metric_map")] --> FMV{{"financial_metrics_v"}}
+    AF --> FMV
+    FMV -- "materialized,<br/>atomic swap" --> FM[("financial_metrics<br/>1 value per company,<br/>year, metric")]
+    FY -- "UPDATE" --> FI[("filings.fiscal_year")]
+```
+
+Cylinders are tables, hexagons are views. Raw facts are never modified; all rules live in views.
 
 **Why `metric_map` exists:** different companies report the same concept under different XBRL tags (for example revenue appears as `Revenues`, `RevenueFromContractWithCustomerExcludingAssessedTax`, or `SalesRevenueNet`). A normalization layer lets the SQL agent query a stable set of canonical metrics instead of raw tags.
 
@@ -447,9 +520,9 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 - [x] Design and apply `schema.sql`.
 - [x] Implement `company_resolver.py` (ticker to CIK) and load `companies` and `filings`.
 - [x] Implement `xbrl_loader.py` to load `financial_facts`.
-- [ ] Build `metric_map.csv` for core metrics (revenue, gross profit, operating income, net income, EPS, total assets, total liabilities, equity, operating cash flow, capex, R&D).
-- [ ] Create the `financial_metrics` view and handle duplicate and restated facts.
-- [ ] Validate against a few companies by hand (compare to the filing's printed statements).
+- [x] Build `metric_map.csv` for core metrics (revenue, gross profit, operating income, net income, EPS, total assets, total liabilities, equity, operating cash flow, capex, R&D).
+- [x] Create the `financial_metrics` view and handle duplicate and restated facts.
+- [x] Validate against a few companies by hand (compare to the filing's printed statements).
 
 **Exit criterion:** simple SQL queries (for example five-year revenue for ten companies) return values that match the filings.
 
@@ -554,6 +627,29 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 
 **Exit criterion:** someone unfamiliar with the project can clone it, run it, and understand its results.
 
+## Progress
+
+### ✅ Phase 0: Foundations
+- Rate-limited, cached SEC EDGAR client (8 req/s, retry with backoff, atomic writes)
+- Starter dataset: **20 companies, 4 sectors, 80 10-K filings (FY2022–FY2026)**, 313 MB of HTML,
+  **534,026 XBRL facts** (221,215 after SEC frame dedup). See [`docs/dataset.md`](docs/dataset.md).
+- Download manifests with SHA-256 per file; full rebuild from scratch in ~70 s.
+
+### ✅ Phase 1: Structured data (XBRL → MySQL)
+- `financial_facts`: all raw facts, reloaded atomically per company.
+- `fiscal_years`: fiscal year derived from period dates + per-company convention
+  (SEC's own `fy` field was wrong for NVIDIA FY2011–2014).
+- `annual_facts`: one value per concept and fiscal year; latest filing wins, so restatements apply.
+- `financial_metrics`: **15 canonical metrics** across all companies via a priority-based tag map
+  with per-company overrides; every value carries its source tag and filing.
+- Validated against printed statements; one semantic mapping error found and fixed
+  (Chevron's `Revenues` tag includes other income). See [`docs/validation.md`](docs/validation.md).
+
+```bash
+make download   # fetch SEC data (cached) + dataset report
+make db         # schema → load → derive; safe to re-run
+```
+
 ---
 
 ## 9. Evaluation Plan
@@ -591,7 +687,7 @@ All numbers below are to be filled in as phases complete.
 
 ```bash
 # 1. Clone and configure
-git clone https://github.com/<your-username>/S.E.C.T.R.A.git
+git clone https://github.com/iamnitishsah/S.E.C.T.R.A.git
 cd S.E.C.T.R.A
 cp .env.example .env
 # Set SEC_USER_AGENT="Your Name your.email@example.com", LLM_BACKEND, and credentials
@@ -633,17 +729,13 @@ docker compose up api ui
 - Filing HTML varies widely across companies, so section parsing needs ongoing handling of edge cases.
 - XBRL tag usage differs by company and over time, so metric normalization will be imperfect for rarely used tags.
 - Tables inside filings are hard to chunk meaningfully; structured numbers are taken from XBRL instead of table text.
-
----
-
-## 13. Known Challenges
 - Tickers are not stable identities. After Exxon Mobil's July 2026 reorganization, SEC's
-  ticker map points `XOM` to a new holding-company CIK with no 10-K history, while all
-  prior filings sit under the legacy CIK. The starter set uses MPC instead; a full fix
-  maps one ticker to multiple CIKs over time.
+    ticker map points `XOM` to a new holding-company CIK with no 10-K history, while all
+    prior filings sit under the legacy CIK. The starter set uses MPC instead; a full fix
+    maps one ticker to multiple CIKs over time.
 
 ---
 
-## 14. Disclaimer
+## 13. Disclaimer
 
 This project is for educational and portfolio purposes. It is not financial, investment, or legal advice. Filing data is sourced from the U.S. SEC's public EDGAR system; users are responsible for following the SEC's fair access guidelines.
