@@ -545,9 +545,9 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 - [x] Implement `chunker.py` (section-aware, heading context preserved, overlap).
 - [x] Embed chunks and index them in Qdrant with metadata.
 - [x] Implement dense retrieval with metadata filters (ticker, year, item).
-- [ ] Implement the common `llm/base.py` interface with an API backend and a local backend.
-- [ ] Build the answer prompt requiring citations and a "not found" path.
-- [ ] Add a command-line interface to ask questions.
+- [x] Implement the common `llm/base.py` interface with an API backend and a local backend.
+- [x] Build the answer prompt requiring citations and a "not found" path.
+- [x] Add a command-line interface to ask questions.
 
 **Exit criterion:** the baseline answers textual questions with citations pointing to real chunks.
 
@@ -654,10 +654,19 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 - **76/80 filings (95.0%)** with Items 1A and 7 extracted; 1,784 sections stored in
   `filing_sections`, each with method and quality flag.
 
+### ✅ Phase 3: RAG baseline
+- 11,540 section-aware chunks (~320 tokens; tables kept whole, header row repeated when split).
+- `bge-base-en-v1.5` embeddings on Apple Silicon (cached by content hash); Qdrant with
+  payload indexes; filtered search by company, fiscal year and Item.
+- Answers cite numbered passages; code rejects weak evidence before calling the LLM,
+  validates every citation and flags uncited claims. Provider-agnostic LLM layer
+  (Groq `gpt-oss-120b`, Gemini) behind one OpenAI-compatible interface.
+
 ```bash
 make download   # fetch SEC data (cached) + dataset report
 make db         # schema → load → derive; safe to re-run
 make sections   # split all 10-Ks -> data/processed/sections + filing_sections table
+make chunks embed index
 ```
 
 ---

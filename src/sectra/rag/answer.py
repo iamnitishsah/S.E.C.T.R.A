@@ -45,6 +45,7 @@ class Answer:
     invalid_citations: list[int] = field(default_factory=list)
     uncited_sentences: list[str] = field(default_factory=list)
     not_found: bool = False
+    truncated: bool = False
     reason: str = ""                           # why not_found, if it is
     model: str = ""
     input_tokens: int = 0
@@ -92,7 +93,7 @@ def answer(question: str, retriever, llm, ticker=None, fiscal_year=None, item_co
     resp = llm.complete(SYSTEM_PROMPT, build_user_prompt(question, hits), temperature, max_tokens)
     text = normalize_citations(resp.text)
     base = dict(model=resp.model, input_tokens=resp.input_tokens,
-                output_tokens=resp.output_tokens, latency_s=resp.latency_s)
+                output_tokens=resp.output_tokens, latency_s=resp.latency_s, truncated=resp.finish_reason == "length")
     if text.upper().startswith("NOT_FOUND"):
         return Answer(question, "Not found in the indexed filings.", hits, not_found=True,
                       reason=text.split(":", 1)[-1].strip(), **base)

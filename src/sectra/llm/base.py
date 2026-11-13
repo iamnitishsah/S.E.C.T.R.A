@@ -24,6 +24,7 @@ class LLMResponse:
     input_tokens: int
     output_tokens: int
     latency_s: float
+    finish_reason: str = "stop"
 
 
 class OpenAICompatibleLLM:
@@ -55,6 +56,7 @@ class OpenAICompatibleLLM:
             input_tokens=getattr(usage, "prompt_tokens", 0) or 0,
             output_tokens=getattr(usage, "completion_tokens", 0) or 0,
             latency_s=time.monotonic() - t0,
+            finish_reason=resp.choices[0].finish_reason or "stop",
         )
 
     def list_models(self) -> list[str]:

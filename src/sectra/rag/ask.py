@@ -53,6 +53,8 @@ def print_answer(ans, show_passages: bool) -> None:
             print(f"       {p['chunk_id']}  {p['source_url']}")
     if ans.invalid_citations:
         print(f"\n!! cites passages that were not provided: {ans.invalid_citations}")
+    if ans.truncated:
+        print("\n!! answer was cut off at max_tokens; raise generation.max_tokens in configs/llm.yaml")
     if ans.uncited_sentences:
         print(f"\n!! {len(ans.uncited_sentences)} sentence(s) without a citation:")
         for s in ans.uncited_sentences[:3]:

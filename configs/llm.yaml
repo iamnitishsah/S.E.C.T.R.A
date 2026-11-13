@@ -15,4 +15,4 @@ backends:
 
 generation:
   temperature: 0.0                         # deterministic: same question, same answer
-  max_tokens: 800
+  max_tokens: 2000

@@ -85,3 +85,12 @@ def test_other_citation_styles_are_normalized():
     ans = answer("q", FakeRetriever([hit(1), hit(2), hit(3)]), llm)
     assert ans.cited == [1, 2, 3] and ans.uncited_sentences == [] and ans.invalid_citations == []
     assert "\u3010" not in ans.text and "[1][3]" in ans.text
+
+
+def test_truncated_answer_is_flagged():
+    class CutOffLLM(FakeLLM):
+        def complete(self, system, user, temperature=0.0, max_tokens=800):
+            return LLMResponse("AMD relies on TSMC [1]. Damage to manufacturer facilities, power", "m", 100, 800, 0.1,
+                               finish_reason="length")
+    ans = answer("q", FakeRetriever([hit(1)]), CutOffLLM(""))
+    assert ans.truncated and not ans.not_found
