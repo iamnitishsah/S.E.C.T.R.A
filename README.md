@@ -743,6 +743,10 @@ docker compose up api ui
     ticker map points `XOM` to a new holding-company CIK with no 10-K history, while all
     prior filings sit under the legacy CIK. The starter set uses MPC instead; a full fix
     maps one ticker to multiple CIKs over time.
+- Intel's 10-K uses a cross-reference index (Items mapped to page ranges) instead of Item
+    headings, so its sections are not extracted (4/80 filings). Fix: per-company heading overrides.
+- Qualcomm opens with a "Risk Factors Summary"; standalone title headings must match the
+  full title, not just start with it.
 
 ---
 
