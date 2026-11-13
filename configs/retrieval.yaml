@@ -9,3 +9,7 @@ embedding:
   model: BAAI/bge-base-en-v1.5
   query_instruction: "Represent this sentence for searching relevant passages: "
   batch_size: 32
+
+vector_store:
+  collection: sec_chunks
+  top_k: 5
