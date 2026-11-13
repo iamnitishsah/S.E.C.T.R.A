@@ -542,9 +542,9 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 
 **Goal:** an end-to-end retrieve-and-generate pipeline with citations.
 
-- [ ] Implement `chunker.py` (section-aware, heading context preserved, overlap).
-- [ ] Embed chunks and index them in Qdrant with metadata.
-- [ ] Implement dense retrieval with metadata filters (ticker, year, item).
+- [x] Implement `chunker.py` (section-aware, heading context preserved, overlap).
+- [x] Embed chunks and index them in Qdrant with metadata.
+- [x] Implement dense retrieval with metadata filters (ticker, year, item).
 - [ ] Implement the common `llm/base.py` interface with an API backend and a local backend.
 - [ ] Build the answer prompt requiring citations and a "not found" path.
 - [ ] Add a command-line interface to ask questions.
