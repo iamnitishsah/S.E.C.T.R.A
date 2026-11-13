@@ -63,3 +63,18 @@ CREATE TABLE IF NOT EXISTS metric_map (
     cik              CHAR(10)     NOT NULL DEFAULT '',   -- '' = all companies; set = override for one company
     PRIMARY KEY (canonical_metric, cik, priority)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE IF NOT EXISTS filing_sections (
+    accession_no  CHAR(20)      NOT NULL,
+    item_code     VARCHAR(3)    NOT NULL,              -- 1, 1A, 7, 7A ...
+    heading       VARCHAR(255)  NOT NULL,              -- heading line as found, for review
+    char_start    INT UNSIGNED  NOT NULL,              -- offsets into the full-text file
+    char_end      INT UNSIGNED  NOT NULL,
+    n_chars       INT UNSIGNED  NOT NULL,
+    method        ENUM('toc_link', 'heading') NOT NULL,
+    quality       ENUM('ok', 'suspect')       NOT NULL,  -- length outside plausible range -> suspect
+    text_path     VARCHAR(500)  NOT NULL,
+    PRIMARY KEY (accession_no, item_code),             -- natural key: stable across rebuilds
+    CONSTRAINT fk_sections_filing FOREIGN KEY (accession_no) REFERENCES filings (accession_no)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

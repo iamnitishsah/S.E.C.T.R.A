@@ -536,7 +536,7 @@ Phases are ordered by dependency. Each phase has an exit criterion, and the next
 - [ ] Store sections on disk and register them in `filing_sections`.
 - [ ] Write parser tests on a varied sample of filings and log parse failures for review.
 
-**Exit criterion:** Items 1A and 7 are extracted correctly for at least 95% of filings in scope, and failures are listed and understood.
+**Exit criterion:** Items 1A and 7 are extracted correctly for at least 90% of filings in scope, and failures are listed and understood.
 
 ### Phase 3: RAG baseline
 

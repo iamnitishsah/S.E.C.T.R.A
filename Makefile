@@ -19,3 +19,6 @@ db-derive:
 	$(MYSQL) < sql/post_load.sql
 
 db: db-schema db-load db-derive
+
+sections:
+	python -m sectra.parsing.build_sections
