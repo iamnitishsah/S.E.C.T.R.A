@@ -3,7 +3,7 @@
 MYSQL = docker compose exec -T mysql sh -c 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql -u"$$MYSQL_USER" "$$MYSQL_DATABASE"'
 EVAL  = python -m sectra.evaluation.retrieval_eval
 
-.PHONY: help up down all download db db-schema db-load db-derive sections chunks embed index test eval threshold
+.PHONY: help up down all download db db-schema db-load db-derive sections chunks embed index test eval threshold db-role
 
 help:
 	@echo "make up         start MySQL and Qdrant"
@@ -37,7 +37,10 @@ db-derive:
 	$(MYSQL) < sql/views.sql
 	$(MYSQL) < sql/post_load.sql
 
-db: db-schema db-load db-derive
+db-role:
+	python -m sectra.storage.setup_reader
+
+db: db-schema db-load db-derive db-role
 
 sections:
 	python -m sectra.parsing.build_sections

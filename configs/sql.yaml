@@ -1,0 +1,8 @@
+allowed_tables:            # the only tables a generated query may read
+  - financial_metrics      # one value per company, fiscal year and canonical metric
+  - companies              # ticker, name, sector, fiscal year end
+  - filings                # downloaded 10-Ks: accession number, dates, SEC URL
+max_rows: 200              # LIMIT added to every query (or lowered to this)
+timeout_ms: 5000           # a query running longer than this is cancelled by MySQL
+reader_user_env: MYSQL_READER_USER
+reader_password_env: MYSQL_READER_PASSWORD
