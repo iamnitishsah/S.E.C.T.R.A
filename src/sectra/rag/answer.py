@@ -28,6 +28,18 @@ CITATION_RE = re.compile(r"\[(\d+)\]")
 SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
 FULLWIDTH_CITE_RE = re.compile(r"\u3010(\d+)(?:\u2020[^\u3011]*)?\u3011")   # gpt-oss style: 【1】 or 【1†L1-L3】
 GROUPED_CITE_RE = re.compile(r"\[(\d+(?:\s*,\s*\d+)+)\]")                    # [1, 2] -> [1][2]
+ABBREV_RE = re.compile(r"\b(?:U\.S|U\.K|e\.g|i\.e|Inc|Corp|Co|Ltd|No|vs|approx|Mr|Ms|Dr)\.$")
+
+
+def split_sentences(text: str) -> list[str]:
+    """Split on sentence ends, but not after abbreviations such as 'U.S.' or 'Inc.'."""
+    out: list[str] = []
+    for part in SENTENCE_RE.split(text):
+        if out and ABBREV_RE.search(out[-1]):
+            out[-1] += " " + part
+        else:
+            out.append(part)
+    return out
 
 
 def normalize_citations(text: str) -> str:
@@ -74,7 +86,7 @@ def check_citations(text: str, n_passages: int) -> tuple[list[int], list[int], l
         s = line.strip()
         if s.startswith("#") or (s.startswith("**") and s.endswith("**")) or s.endswith(":"):
             continue
-        for sent in SENTENCE_RE.split(line.strip().lstrip("-*\u2022 ").strip()):
+        for sent in split_sentences(line.strip().lstrip("-*\u2022 ").strip()):
             if len(sent.split()) >= 6 and not CITATION_RE.search(sent):
                 uncited.append(sent)
     return valid, invalid, uncited

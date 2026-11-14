@@ -1,5 +1,5 @@
-default_backend: nvidia
-#default_backend: groq
+#default_backend: nvidia
+default_backend: groq
 #default_backend: gemini
 
 backends:

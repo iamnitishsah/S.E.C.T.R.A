@@ -19,7 +19,12 @@ embedding:
 vector_store:
   collection: sec_chunks
   top_k: 5
-  min_score: 0.5
+
+answering:
+  retriever: rerank        # which retrieval variant `ask` uses
+  min_score:               # refuse before calling the LLM if the top-1 score is below this
+    rerank: 0.042          # fill in from: python -m sectra.evaluation.threshold --variant rerank
+    dense: 0.40            # fill in from: python -m sectra.evaluation.threshold --variant dense
 
 bm25:
   k1: 1.2                # term-frequency saturation

@@ -20,14 +20,14 @@ import yaml
 ROOT = Path(__file__).resolve().parents[3]
 
 
-def log_run(ans, args, backend: str) -> None:
+def log_run(ans, args, backend: str, retriever: str) -> None:
     path = ROOT / "data" / "logs" / "ask.jsonl"
     path.parent.mkdir(parents=True, exist_ok=True)
     record = {
         "at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "question": ans.question,
         "filters": {"ticker": args.ticker, "fiscal_year": args.year, "item_code": args.item},
-        "backend": backend, "model": ans.model,
+        "backend": backend, "model": ans.model, "retriever": retriever,
         "chunk_ids": [p["chunk_id"] for p in ans.passages],
         "scores": [round(p["score"], 4) for p in ans.passages],
         "answer": ans.text, "not_found": ans.not_found, "reason": ans.reason,
@@ -71,7 +71,7 @@ def main() -> None:  # pragma: no cover - needs Qdrant + an API key
 
     from sectra.llm.base import get_llm, load_config
     from sectra.rag.answer import answer
-    from sectra.retrieval.dense import DenseRetriever
+    from sectra.retrieval.factory import get_retriever
 
     p = argparse.ArgumentParser(description="Ask the indexed 10-K filings a question.")
     p.add_argument("question")
@@ -80,19 +80,22 @@ def main() -> None:  # pragma: no cover - needs Qdrant + an API key
     p.add_argument("--item", help="Item code: 1, 1A, 1C, 3, 7, 7A")
     p.add_argument("--k", type=int, help="passages to retrieve (default from config)")
     p.add_argument("--backend", help="LLM backend from configs/llm.yaml (default: LLM_BACKEND or config)")
+    p.add_argument("--retriever", help="retrieval variant (default: answering.retriever in the config)")
     p.add_argument("--show-passages", action="store_true")
     args = p.parse_args()
 
     load_dotenv(ROOT / ".env")
-    rcfg = yaml.safe_load(open(ROOT / "configs" / "retrieval.yaml"))["vector_store"]
+    cfg = yaml.safe_load(open(ROOT / "configs" / "retrieval.yaml"))
+    variant = args.retriever or cfg["answering"]["retriever"]
+    min_score = cfg["answering"]["min_score"].get(variant, 0.0)
     gen = load_config().get("generation", {})
     llm = get_llm(args.backend)
-    print(f"[backend: {llm.name} / {llm.model}  (chosen by {llm.source})]")
-    ans = answer(args.question, DenseRetriever(), llm, ticker=args.ticker, fiscal_year=args.year,
-                 item_code=args.item, k=args.k or rcfg.get("top_k", 5), min_score=rcfg.get("min_score", 0.5),
+    print(f"[backend: {llm.name} / {llm.model}  (chosen by {llm.source}) | retriever: {variant}, min_score {min_score}]")
+    ans = answer(args.question, get_retriever(variant), llm, ticker=args.ticker, fiscal_year=args.year,
+                 item_code=args.item, k=args.k or cfg["vector_store"].get("top_k", 5), min_score=min_score,
                  temperature=gen.get("temperature", 0.0), max_tokens=gen.get("max_tokens", 800))
     print_answer(ans, args.show_passages)
-    log_run(ans, args, llm.name)
+    log_run(ans, args, llm.name, variant)
 
 
 if __name__ == "__main__":

@@ -94,3 +94,8 @@ def test_truncated_answer_is_flagged():
                                finish_reason="length")
     ans = answer("q", FakeRetriever([hit(1)]), CutOffLLM(""))
     assert ans.truncated and not ans.not_found
+
+
+def test_abbreviations_do_not_split_sentences():
+    text = "In its FY2025 10-K NVIDIA explains that U.S. export rules require licenses for shipments to China [1]."
+    assert check_citations(text, 1) == ([1], [], [])
