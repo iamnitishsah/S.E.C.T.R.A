@@ -1,7 +1,5 @@
 # Evaluation
 
-[← README](../README.md) · [Data acquisition](01-data-acquisition.md) · [Financial database](02-financial-database.md) · [Filing text](03-filing-text.md) · [Retrieval and answers](04-retrieval-and-answers.md) · [Evaluation](05-evaluation.md) · [Findings](findings.md) · [Roadmap](roadmap.md)
-
 How retrieval quality was measured, what was tried, and what the numbers do and do not show.
 
 **Status:** retrieval and the refusal threshold are measured. Answer faithfulness and the generator comparison are not done yet (see [Roadmap](roadmap.md)).

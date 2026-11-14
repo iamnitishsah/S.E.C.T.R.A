@@ -1,7 +1,5 @@
 # Data acquisition
 
-[← README](../README.md) · [Data acquisition](01-data-acquisition.md) · [Financial database](02-financial-database.md) · [Filing text](03-filing-text.md) · [Retrieval and answers](04-retrieval-and-answers.md) · [Evaluation](05-evaluation.md) · [Findings](findings.md) · [Roadmap](roadmap.md)
-
 What the SEC publishes, which part of it this project uses, and how it is downloaded.
 
 ## Background: SEC, EDGAR, XBRL

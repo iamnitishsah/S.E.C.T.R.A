@@ -1,7 +1,7 @@
 # **S.E.C.T.R.A**
 ###### *Securities & Exchange Commission Tracking, Retrieval & Analysis*
 
-**A research system over SEC EDGAR 10-K filings. Numeric questions are answered from a validated financial database, textual questions with cited retrieval-augmented generation (RAG), and (in progress) hybrid questions with both. Every claim traces to a source.**
+**A research system over SEC EDGAR 10-K filings. Numeric questions are answered from a validated financial database, textual questions with cited retrieval-augmented generation (RAG), and hybrid questions with both. Every claim traces to a source.**
 
 | | |
 |---|---|
@@ -306,8 +306,6 @@ The Qdrant dashboard is at http://localhost:6333/dashboard.
 | 8 | Injection filter, red-team set, FastAPI, Streamlit | Planned |
 | 9 | Failure analysis, demo, release | Planned |
 
-The full checklist is in [docs/roadmap.md](docs/roadmap.md).
-
 ---
 
 ## 7. Repository structure
@@ -391,7 +389,7 @@ S.E.C.T.R.A/
 | Evaluation | Custom scripts: Recall@k, MRR, exact sign test, threshold sweep | ✅ |
 | Tests | pytest | ✅ |
 | Packaging | Docker Compose, `pyproject.toml`, Makefile | ✅ |
-| Faithfulness judge | Claim-level LLM judge | Phase 4 |
+| Faithfulness judge | Claim-level LLM judge | Planned |
 | SQL safety | `sqlglot` validator, read-only role | Phase 5 |
 | Agents | LangGraph | Phase 6 |
 | API / UI | FastAPI, Streamlit | Phase 8 |

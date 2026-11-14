@@ -1,7 +1,5 @@
 # Retrieval and answers
 
-[← README](../README.md) · [Data acquisition](01-data-acquisition.md) · [Financial database](02-financial-database.md) · [Filing text](03-filing-text.md) · [Retrieval and answers](04-retrieval-and-answers.md) · [Evaluation](05-evaluation.md) · [Findings](findings.md) · [Roadmap](roadmap.md)
-
 How a question becomes five passages, and how five passages become a cited answer or a refusal.
 
 Every model in this path is reached through a hosted API. No model name appears in `src/`: URLs, model IDs and the names of the API-key variables all come from `configs/`.

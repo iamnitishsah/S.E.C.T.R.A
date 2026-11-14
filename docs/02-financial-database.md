@@ -1,7 +1,5 @@
 # Financial database: XBRL → MySQL
 
-[← README](../README.md) · [Data acquisition](01-data-acquisition.md) · [Financial database](02-financial-database.md) · [Filing text](03-filing-text.md) · [Retrieval and answers](04-retrieval-and-answers.md) · [Evaluation](05-evaluation.md) · [Findings](findings.md) · [Roadmap](roadmap.md)
-
 How 534,026 raw XBRL facts become one validated value per company, fiscal year and metric.
 
 ## Why the raw JSON cannot be queried directly

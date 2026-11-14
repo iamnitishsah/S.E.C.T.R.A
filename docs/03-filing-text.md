@@ -1,7 +1,5 @@
 # Filing text: HTML → sections → chunks
 
-[← README](../README.md) · [Data acquisition](01-data-acquisition.md) · [Financial database](02-financial-database.md) · [Filing text](03-filing-text.md) · [Retrieval and answers](04-retrieval-and-answers.md) · [Evaluation](05-evaluation.md) · [Findings](findings.md) · [Roadmap](roadmap.md)
-
 How a 10-K HTML document becomes clean text, then Items, then retrievable chunks.
 
 ## Why this is hard

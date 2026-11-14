@@ -1,7 +1,5 @@
 # Findings and decisions
 
-[← README](../README.md) · [Data acquisition](01-data-acquisition.md) · [Financial database](02-financial-database.md) · [Filing text](03-filing-text.md) · [Retrieval and answers](04-retrieval-and-answers.md) · [Evaluation](05-evaluation.md) · [Findings](findings.md) · [Roadmap](roadmap.md)
-
 Problems found while building, each with its evidence and how it is handled, followed by the places where the plan changed.
 
 ## Data and the financial database
