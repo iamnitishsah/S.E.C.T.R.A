@@ -1,5 +1,5 @@
 """
-Dense retrieval: question -> bge query vector -> filtered Qdrant search.
+Dense retrieval: question -> query vector -> filtered Qdrant search.
 
     from sectra.retrieval.dense import DenseRetriever
     r = DenseRetriever()
@@ -24,7 +24,6 @@ class DenseRetriever:
         self.collection = cfg["vector_store"]["collection"]
         self.default_k = cfg["vector_store"].get("top_k", 5)
         self.client = client or vector_store.get_client()
-        e = cfg["embedding"]
         self.embedder = embedder or Embedder(cfg["embedding"])
 
     def search_filings(self, query: str, ticker=None, fiscal_year=None, item_code=None,

@@ -68,8 +68,8 @@ def test_compare_and_sign_test(tmp_path, capsys):
             json.dumps({"summary": {s: ev.summarize(rows) for s in both}, "results": both}))
 
     save("dense", [1, None, 7, 3])
-    save("hybrid", [1, 2, 4, None])
-    ev.compare(tmp_path, ["dense", "hybrid"])
+    save("rerank", [1, 2, 4, None])
+    ev.compare(tmp_path, ["dense", "rerank"])
     assert "gained 2 questions, lost 1" in capsys.readouterr().out
     assert ev.sign_test(0, 0) == 1.0 and ev.sign_test(5, 5) == 1.0
     assert abs(ev.sign_test(10, 0) - 2 / 2 ** 10) < 1e-12

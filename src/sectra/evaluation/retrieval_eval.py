@@ -2,8 +2,8 @@
 
     python -m sectra.evaluation.retrieval_eval --variant dense          # run one variant, save its results
     python -m sectra.evaluation.retrieval_eval --variant rerank --set paraphrased
-    python -m sectra.evaluation.retrieval_eval --compare dense bm25 hybrid rerank
-    python -m sectra.evaluation.retrieval_eval --compare dense bm25 hybrid rerank --set paraphrased
+    python -m sectra.evaluation.retrieval_eval --compare dense rerank
+    python -m sectra.evaluation.retrieval_eval --compare dense rerank --set paraphrased
 
 Each variant is run in two settings:
   open    no filters: search every chunk (the question itself names company and year)

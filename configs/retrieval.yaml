@@ -1,10 +1,10 @@
 index_items: ["1", "1A", "1C", "3", "7", "7A"]
 
 chunking:
-  tokenizer: BAAI/bge-base-en-v1.5
-  target_tokens: 350
-  overlap_tokens: 50
-  max_tokens: 480
+  tokenizer: BAAI/bge-base-en-v1.5   # only counts tokens; changing it changes chunk boundaries
+  target_tokens: 350                 # body size
+  overlap_tokens: 50                 # whole lines carried into the next chunk
+  max_tokens: 480                    # alarm threshold incl. header
 
 embedding:
   url: https://integrate.api.nvidia.com/v1/embeddings
@@ -12,29 +12,22 @@ embedding:
   api_key_env: NVIDIA_API_KEY
   dimensions: 1024
   batch_size: 32
+  workers: 2                         # parallel requests while embedding the corpus
   doc_input_type: passage
   query_input_type: query
-  workers: 2
 
 vector_store:
   collection: sec_chunks
-  top_k: 5
-
-answering:
-  retriever: rerank        # which retrieval variant `ask` uses
-  min_score:               # refuse before calling the LLM if the top-1 score is below this
-    rerank: 0.042          # fill in from: python -m sectra.evaluation.threshold --variant rerank
-    dense: 0.40            # fill in from: python -m sectra.evaluation.threshold --variant dense
-
-bm25:
-  k1: 1.2                # term-frequency saturation
-  b: 0.75                # length normalisation
-
-hybrid:
-  candidates: 30         # taken from dense and from BM25 before fusion
-  rrf_k: 60              # RRF constant: larger = flatter weighting of ranks
+  top_k: 5                           # passages given to the LLM
 
 rerank:
   url: https://ai.api.nvidia.com/v1/retrieval/nvidia/nemotron-3.5-rerank-8b/reranking
   model: nvidia/nemotron-3.5-rerank-8b
   api_key_env: NVIDIA_API_KEY
+  candidates: 30                     # top chunks from dense search that the reranker re-sorts
+
+answering:
+  retriever: rerank                  # dense | rerank
+  min_score:                         # refuse before calling the LLM if the top-1 score is below this
+    rerank: 0.042                    # from: python -m sectra.evaluation.threshold --variant rerank
+    dense: 0.40                      # from: python -m sectra.evaluation.threshold --variant dense

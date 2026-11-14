@@ -2,7 +2,7 @@
 
 The embedding model reads question and passage separately and compares two vectors.
 A cross-encoder reads them together and outputs one relevance score, which is more
-accurate but far slower, so it only re-sorts the candidates that dense + BM25 found.
+accurate but far slower, so it only re-sorts the top candidates from dense search.
 Scores are passed through a sigmoid: 0 = irrelevant, 1 = clearly answers the question.
 
 The URL, model name and API-key variable all come from configs/retrieval.yaml.
@@ -75,15 +75,16 @@ class Reranker:
 
 
 class RerankRetriever:
-    """Hybrid candidates (top N from dense + top N from BM25), re-sorted by the cross-encoder."""
+    """The top `candidates` chunks from dense search, re-sorted by the cross-encoder."""
 
-    def __init__(self, hybrid, reranker, default_k: int = 5):
-        self.hybrid, self.reranker, self.default_k = hybrid, reranker, default_k
+    def __init__(self, dense, reranker, candidates: int, default_k: int = 5):
+        self.dense, self.reranker, self.candidates, self.default_k = dense, reranker, candidates, default_k
         self.last_pool: list[str] = []                    # candidate chunk ids of the last search (for the eval)
 
     def search_filings(self, query: str, ticker=None, fiscal_year=None, item_code=None, k: int | None = None) -> list[dict]:
-        pool = self.hybrid.candidate_pool(query, ticker=ticker, fiscal_year=fiscal_year, item_code=item_code)
+        pool = self.dense.search_filings(query, ticker=ticker, fiscal_year=fiscal_year, item_code=item_code,
+                                         k=self.candidates)
         self.last_pool = [h["chunk_id"] for h in pool]
         scores = self.reranker.score(query, pool)
         ranked = sorted(zip(scores, pool), key=lambda pair: -pair[0])
-        return [{**h, "rrf_score": h["score"], "score": s} for s, h in ranked[: k or self.default_k]]
+        return [{**h, "dense_score": h["score"], "score": s} for s, h in ranked[: k or self.default_k]]
