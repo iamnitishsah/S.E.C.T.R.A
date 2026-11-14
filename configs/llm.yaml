@@ -8,7 +8,7 @@ backends:
     api_key_env: GROQ_API_KEY
     model: openai/gpt-oss-120b             # confirm with: python -m sectra.llm.base groq
   gemini:
-    # OpenAI-compatible Groq API
+    # OpenAI-compatible Gemini API
     base_url: https://generativelanguage.googleapis.com/v1beta/openai/
     api_key_env: GEMINI_API_KEY
     model: gemini-3.8-flash               # confirm with: python -m sectra.llm.base gemini

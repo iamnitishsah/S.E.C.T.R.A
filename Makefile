@@ -2,9 +2,9 @@
 
 MYSQL = docker compose exec -T mysql sh -c 'mysql -u"$$MYSQL_USER" -p"$$MYSQL_PASSWORD" "$$MYSQL_DATABASE"'
 
-.PHONY: all download db db-schema db-load db-derive sections test chunks embed index
+.PHONY: all download db db-schema db-load db-derive sections chunks embed index test
 
-all: download db sections test chunks embed index
+all: download db sections chunks embed index test
 
 download:
 	python -m sectra.ingestion.download
