@@ -215,7 +215,6 @@ flowchart LR
 | [docs/04-retrieval-and-answers.md](docs/04-retrieval-and-answers.md) | Embeddings, vector store, reranking, LLM layer, citation checks, the two refusal layers |
 | [docs/05-evaluation.md](docs/05-evaluation.md) | How the question sets were built; every retrieval variant measured; threshold calibration; what the numbers do not show |
 | [docs/findings.md](docs/findings.md) | Problems found in the data and the pipeline, with evidence and fixes; changes to the original plan |
-| [docs/roadmap.md](docs/roadmap.md) | Checklist for the rest of Phase 4 and Phases 5–9 |
 | [docs/dataset.md](docs/dataset.md) | Generated per-company dataset report |
 | [docs/validation.md](docs/validation.md) | Hand checks of database values against printed financial statements |
 | [eval/results/experiments.md](eval/results/experiments.md) | Archived numbers for every retrieval experiment, including removed variants |
