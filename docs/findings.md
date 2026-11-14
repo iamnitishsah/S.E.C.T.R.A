@@ -28,6 +28,18 @@ Problems found while building, each with its evidence and how it is handled, fol
 | Hosted APIs reject a whole batch for one passage | `422 input rejected by content safety screening` at question 15 of 97 | Split the batch until the passage is isolated; score it 0 (reranker) or embed its header only (embedder); count it |
 | The citation checker split sentences at "U.S." | A fully cited NVIDIA answer was reported with 4 uncited sentences | Sentence splitter skips known abbreviations |
 
+## SQL Analyst
+
+| Finding | Evidence | Handling |
+|---|---|---|
+| A model guesses tickers it is not given | "Chevron" became `COP` (ConocoPhillips) when the schema listed tickers only | Company names shown next to tickers in the schema text |
+| "Fiscal 2025" is a different period for each company | NVIDIA's fiscal 2025 ended in January 2025, AMD's in December 2025; a cross-company growth ranking compares periods almost a year apart | Values are correct as filed; the writer should state `period_end` when year-ends differ (Phase 6) |
+| The cited filing can be a later year's 10-K | NVIDIA's fiscal 2025 revenue cites the fiscal 2026 filing, because the latest filing wins and it restates the prior year | By design (restatements replace originals); noted so a reader is not surprised |
+| A stated default is not a rule | The default fiscal year was in the schema text, and the model still returned every year | Explicit rule in the prompt |
+| A gold query can ask for more than the question | One gold query required a growth percentage for "which companies had lower revenue" | Gold corrected; first-run score reported both ways |
+| A sign can hide a correct number | "fell by 3.9%" was flagged because the row holds −3.9 | The number check compares absolute values |
+| A warning fired on the model's own `LIMIT` | "Row limit reached" appeared for `LIMIT 1` | Only the cap imposed by the validator counts |
+
 ## Evaluation
 
 | Finding | Evidence | Handling |
@@ -46,6 +58,7 @@ Problems found while building, each with its evidence and how it is handled, fol
 | Embedding model fixed (`bge-base-en-v1.5`, local) | Replaced by a hosted 8B embedding model | Largest measured gain: dense Recall@5 24.4% → 84.1% on paraphrased questions |
 | BM25 + hybrid search as the retrieval upgrade | Built, measured, removed | No measurable benefit once the embedder was strong; see [Evaluation](05-evaluation.md#what-was-tried) |
 | Local cross-encoder reranker | Hosted reranking API | Same reason as the LLM: memory |
+| Deterministic ratio tools in Python | Dropped: ratios and growth are computed in SQL | The goal was that the model never does arithmetic, and SQL already guarantees it |
 | RAGAS for faithfulness | Custom claim-level judge (pending) | Fewer dependencies, and the judging rules stay readable |
 | Hand-labelled retrieval questions | LLM-generated with a verifiable quote, LLM-screened, read through by hand | Labels can be recomputed if chunking changes |
 | 50–100 companies, 10-Qs, banks | 20 companies in 4 sectors, 10-K only | Banks need different revenue concepts in the metric map |

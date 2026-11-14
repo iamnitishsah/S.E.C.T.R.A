@@ -7,7 +7,8 @@
 |---|---|
 | Corpus | 20 companies, 80 annual reports, 534,026 XBRL facts, 11,540 text chunks |
 | Retrieval | **95.1% Recall@5** on 82 paraphrased questions searched across the whole corpus (84.1% before reranking) |
-| Status | Phases 0–3 complete · Phase 4 (evaluation) retrieval done, answer faithfulness pending · agents, risk diffing and UI planned |
+| Text-to-SQL | **93.5%** execution accuracy on 46 questions on the first run |
+| Status | Phases 0–5 complete, except answer faithfulness in Phase 4 · multi-agent routing, risk diffing and UI planned |
 
 ---
 
@@ -42,7 +43,7 @@ S.E.C.T.R.A gives each kind of question to the tool that is good at it:
 
 | Need | Source of truth | Mechanism | Status |
 |---|---|---|---|
-| Exact figures (revenue, net income, assets…) | XBRL facts in **MySQL**, normalized into 15 canonical metrics | SQL over `financial_metrics` | ✅ database built and validated · SQL agent in Phase 5 |
+| Exact figures (revenue, net income, assets…) | XBRL facts in **MySQL**, normalized into 15 canonical metrics | Text-to-SQL agent over `financial_metrics`, validated and read-only | ✅ built and measured |
 | Explanations, risks, strategy | Filing text in **Qdrant**, split by 10-K Item | Dense retrieval → reranking → cited generation | ✅ built and measured |
 | Questions needing both | Both | Supervisor agent routes and merges | Phase 6 |
 
@@ -93,7 +94,7 @@ Not found in the indexed filings.
 | Metric validation | Values compared by hand with printed statements | **10 / 10 match** after one mapping fix (Chevron revenue) |
 | Section extraction | Filings with Items 1A **and** 7 correctly extracted | **76 / 80 (95.0%)**; all 4 failures have one known cause |
 | Chunking | Chunks produced | **11,540** (median 319 tokens, max 458) |
-| Tests | Unit tests, no network | **64 passing** |
+| Tests | Unit tests, no network | **123 passing** |
 
 ### Retrieval
 
@@ -114,6 +115,24 @@ What was learned on the way, with the full numbers in [docs/05-evaluation.md](do
 - **A similarity score is a weak refusal signal.** A threshold that refuses no real question stops 5 of 15 unanswerable ones; the rest are left to the model's `NOT_FOUND` rule.
 
 Not measured yet: whether generated answers are supported by the passages they cite.
+
+### SQL Analyst
+
+46 questions with gold SQL, scored by comparing query results (execution accuracy):
+
+| Run | Accuracy |
+|---|---|
+| First run | 43 / 46 (**93.5%**), after correcting one flawed gold query |
+
+No query needed a retry, and all 10 questions the database cannot answer (unreported metrics, stock prices, forecasts, companies that are not indexed) were declined or returned no rows. A wrong ticker guess, a missing year filter and an ignored default year were the three real failures; details are in [docs/06-sql-analyst.md](docs/06-sql-analyst.md).
+
+```text
+$ python -m sectra.analyst.agent "Which semiconductor company had the highest net income in fiscal 2025?"
+The semiconductor company with the highest net income in fiscal 2025 is NVIDIA, with 72.88 bn.
+
+ticker  fiscal_year  source_accession      net_income_bn
+NVDA    2025         0001045810-26-000021  72.88
+```
 
 ---
 
@@ -148,7 +167,9 @@ flowchart TB
         Q4["Rerank API<br/>60 candidates to 5"]
         Q3["Answer generator<br/>cited, refuses on weak evidence"]
         L1["LLM API<br/>Groq, Gemini or NVIDIA"]
-        P1["Supervisor, SQL Analyst,<br/>Research Writer agents"]
+        Q5["CLI: sectra.analyst.agent"]
+        Q6["SQL Analyst<br/>text-to-SQL, validator,<br/>read-only user"]
+        P1["Supervisor and<br/>Research Writer agents"]
         P2["Risk diff"]
         P3["FastAPI + Streamlit"]
     end
@@ -162,8 +183,10 @@ flowchart TB
     Q1 --> Q2 --> D2
     Q2 --> Q4 --> Q3
     Q3 --> L1
+    Q5 --> Q6 --> D1
+    Q6 --> L1
     P3 -.-> P1
-    P1 -.-> D1
+    P1 -.-> Q6
     P1 -.-> Q2
     P2 -.-> D2
 
@@ -193,7 +216,7 @@ flowchart LR
 |---|---|---|
 | `up` / `down` | Start or stop MySQL and Qdrant | |
 | `download` | Fetch filing indexes, 10-K documents and XBRL (cached), write manifests and `docs/dataset.md` | ~70 s cold, ~1 s cached |
-| `db` | `db-schema` → `db-load` (manifests, 534K facts, metric map) → `db-derive` (views, materialized metrics) | ~45 s |
+| `db` | `db-schema` → `db-load` (manifests, 534K facts, metric map) → `db-derive` (views, materialized metrics) → `db-role` (read-only user) | ~45 s |
 | `sections` | Split all 80 filings into Items, write files + `filing_sections` + parse report | ~15 s |
 | `chunks` | Section-aware chunking → `chunks.jsonl` | ~30 s |
 | `embed` | Embed new or changed chunks through the embedding API | ~20 min first run, seconds after |
@@ -202,6 +225,7 @@ flowchart LR
 | `test` | Unit tests | <1 s |
 | `eval` | Retrieval evaluation on both question sets | a few minutes |
 | `threshold` | Refusal-threshold sweep from the saved results | <1 s |
+| `sql-eval` | SQL Analyst evaluation on 46 questions | ~8 min |
 
 ---
 
@@ -214,6 +238,7 @@ flowchart LR
 | [docs/03-filing-text.md](docs/03-filing-text.md) | HTML to clean text; splitting a 10-K into Items; chunking rules |
 | [docs/04-retrieval-and-answers.md](docs/04-retrieval-and-answers.md) | Embeddings, vector store, reranking, LLM layer, citation checks, the two refusal layers |
 | [docs/05-evaluation.md](docs/05-evaluation.md) | How the question sets were built; every retrieval variant measured; threshold calibration; what the numbers do not show |
+| [docs/06-sql-analyst.md](docs/06-sql-analyst.md) | Text-to-SQL flow; the read-only user and the query validator; the number check; execution-accuracy evaluation and its failures |
 | [docs/findings.md](docs/findings.md) | Problems found in the data and the pipeline, with evidence and fixes; changes to the original plan |
 | [docs/dataset.md](docs/dataset.md) | Generated per-company dataset report |
 | [docs/validation.md](docs/validation.md) | Hand checks of database values against printed financial statements |
@@ -250,6 +275,7 @@ The first `make all` downloads ~313 MB from SEC and embeds 11,540 chunks through
 |---|---|
 | `SEC_USER_AGENT` | `"Your Name you@email.com"`, required by SEC |
 | `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_HOST`, `MYSQL_PORT` | Database |
+| `MYSQL_READER_USER`, `MYSQL_READER_PASSWORD` | Read-only database user for generated SQL (created by `make db-role`) |
 | `QDRANT_URL` | `http://localhost:6333` |
 | `NVIDIA_API_KEY` | Embedding and reranking APIs (and the `nvidia` LLM backend) |
 | `GROQ_API_KEY`, `GEMINI_API_KEY` | LLM providers |
@@ -261,6 +287,7 @@ The first `make all` downloads ~313 MB from SEC and embeds 11,540 chunks through
 |---|---|
 | `companies.yaml` | Tickers by sector; forms; filings per company |
 | `retrieval.yaml` | Indexed Items; chunking; embedding API (URL, model, key variable, dimensions); vector store; rerank API and candidate count; which retriever `ask` uses and its refusal threshold |
+| `sql.yaml` | SQL Analyst: table allowlist, row limit, query timeout, read-only user variables |
 | `llm.yaml` | LLM backends (base URL, key variable, model); generation settings (`temperature: 0`, `max_tokens: 2000`) |
 
 Switching a model or provider is a config change. Changing the embedding model or its dimensions requires `make embed index`, and the refusal thresholds should be recalibrated with `make eval threshold`.
@@ -274,11 +301,16 @@ python -m sectra.rag.ask "..." --backend gemini --show-passages
 python -m sectra.rag.ask "..." --retriever dense          # skip reranking
 python -m sectra.llm.base groq                            # list models available to your key
 
-# Measure retrieval
-make eval
-make threshold
+# Ask the financial database
+python -m sectra.analyst.agent "Which companies grew revenue by more than 20% in fiscal 2025?" --show-sql
+python -m sectra.analyst.tools                            # the schema text the model sees
 
-# Query the financial database (MySQL shell)
+# Measure
+make eval                                                 # retrieval
+make threshold
+make sql-eval                                             # SQL Analyst
+
+# Query the financial database by hand (MySQL shell)
 docker compose exec mysql sh -c 'MYSQL_PWD="$MYSQL_PASSWORD" mysql -u"$MYSQL_USER" "$MYSQL_DATABASE"'
 ```
 ```sql
@@ -300,7 +332,7 @@ The Qdrant dashboard is at http://localhost:6333/dashboard.
 | 2 | 10-K HTML → clean text → Items | ✅ |
 | 3 | Chunking, embeddings, vector store, cited answers with refusal | ✅ |
 | 4 | Evaluation and retrieval upgrades | Retrieval and refusal threshold ✅ · answer faithfulness and generator comparison pending |
-| 5 | SQL Analyst agent: validated read-only text-to-SQL, deterministic ratio tools | Planned |
+| 5 | SQL Analyst: text-to-SQL with a query validator and a read-only user; execution-accuracy evaluation | ✅ |
 | 6 | Multi-agent orchestration: supervisor, routing, grounding checks | Planned |
 | 7 | Risk diffing between two fiscal years of Item 1A | Planned |
 | 8 | Injection filter, red-team set, FastAPI, Streamlit | Planned |
@@ -321,6 +353,7 @@ S.E.C.T.R.A/
 ├── configs/
 │   ├── companies.yaml           # tickers by sector, forms, filings per company
 │   ├── retrieval.yaml           # chunking, embedding API, vector store, rerank API, answering
+│   ├── sql.yaml                 # SQL Analyst: table allowlist, row limit, timeout
 │   └── llm.yaml                 # LLM backends and generation settings
 │
 ├── sql/
@@ -347,7 +380,8 @@ S.E.C.T.R.A/
 │   │   ├── section_splitter.py  # text -> Items
 │   │   └── build_sections.py    # all filings -> files + filing_sections + report
 │   ├── storage/
-│   │   ├── mysql.py             # SQLAlchemy engine from .env
+│   │   ├── mysql.py             # SQLAlchemy engines from .env (owner and read-only)
+│   │   ├── setup_reader.py      # creates the read-only MySQL user
 │   │   └── vector_store.py      # Qdrant collection, upsert, filtered search
 │   ├── retrieval/
 │   │   ├── embedder.py          # embedding API client
@@ -359,14 +393,19 @@ S.E.C.T.R.A/
 │   ├── rag/
 │   │   ├── answer.py            # retrieve -> prompt -> cite -> validate
 │   │   └── ask.py               # CLI + run log
+│   ├── analyst/
+│   │   ├── validator.py         # SELECT-only, allowlist, LIMIT; re-generates the query
+│   │   ├── tools.py             # get_schema(), run_readonly_sql()
+│   │   └── agent.py             # question -> SQL -> rows -> answer + number check; CLI
 │   └── evaluation/
 │       ├── qa_set.py            # generate, review, build and paraphrase the question sets
 │       ├── retrieval_eval.py    # Recall@k, MRR, paired comparison
-│       └── threshold.py         # refusal-threshold sweep
+│       ├── threshold.py         # refusal-threshold sweep
+│       └── sql_eval.py          # execution accuracy of the SQL Analyst
 │
-├── tests/                       # 64 tests; fakes instead of network calls
+├── tests/                       # 123 tests; fakes and SQLite instead of network calls
 ├── eval/
-│   ├── datasets/                # candidates, unanswerable, retrieval_qa, retrieval_qa_paraphrased
+│   ├── datasets/                # retrieval question sets, sql_qa (46 questions with gold SQL)
 │   └── results/                 # per-question results, experiments.md, section_parse_report.csv
 ├── docs/                        # see Section 4
 └── data/                        # git-ignored; rebuilt by `make all`
@@ -390,7 +429,7 @@ S.E.C.T.R.A/
 | Tests | pytest | ✅ |
 | Packaging | Docker Compose, `pyproject.toml`, Makefile | ✅ |
 | Faithfulness judge | Claim-level LLM judge | Planned |
-| SQL safety | `sqlglot` validator, read-only role | Phase 5 |
+| SQL safety | `sqlglot` validator, read-only MySQL user, statement timeout | ✅ |
 | Agents | LangGraph | Phase 6 |
 | API / UI | FastAPI, Streamlit | Phase 8 |
 
@@ -403,6 +442,9 @@ S.E.C.T.R.A/
 - **Metric normalization** is validated on a sample, not exhaustively; rare tags may be unmapped. Gaps are reported as NULL.
 - **Per-share history** is not split-adjusted across filings.
 - **No segment-level numbers** in SQL; they exist only in filing text.
+- **The SQL Analyst is measured on 46 questions written alongside its prompt**, over one fact table and 15 metrics. The 100% second-run score is tuned on those questions; 93.5% is the first-run figure.
+- **Fiscal years are each company's own.** "Fiscal 2025" ended in January 2025 for NVIDIA and December 2025 for AMD, so cross-company comparisons for one fiscal year cover different periods.
+- **The two pipelines are separate commands.** Nothing yet routes a question to SQL or to text, or combines them.
 - **Retrieval is measured on one kind of question:** 82 single-passage questions written and paraphrased by LLMs. Multi-passage, cross-company and cross-year questions are not measured.
 - **Answer faithfulness is not measured yet.** Citation checks confirm that cited passages exist, not that they support each claim.
 - **Out-of-corpus questions** (a company or year that is not indexed) are mostly caught by the model's refusal, not by retrieval scores.

@@ -2,7 +2,7 @@
 
 How retrieval quality was measured, what was tried, and what the numbers do and do not show.
 
-**Status:** retrieval and the refusal threshold are measured. Answer faithfulness and the generator comparison are not done yet (see [Roadmap](roadmap.md)).
+**Status:** retrieval and the refusal threshold are measured. Answer faithfulness and the generator comparison are not done yet (see the roadmap in the [README](../README.md#6-roadmap)).
 
 ## Headline result
 

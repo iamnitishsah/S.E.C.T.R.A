@@ -1,0 +1,1953 @@
+{
+ "backend": "groq",
+ "model": "openai/gpt-oss-120b",
+ "summary": {
+  "n": 46,
+  "passed": 46,
+  "accuracy": 1.0,
+  "by_type": {
+   "lookup": 1.0,
+   "ranking": 1.0,
+   "ratio": 1.0,
+   "growth": 1.0,
+   "aggregate": 1.0,
+   "not_reported": 1.0,
+   "cannot_answer": 1.0
+  },
+  "retried": 0,
+  "unsupported_number_answers": 2
+ },
+ "records": [
+  {
+   "id": "sql_01",
+   "type": "lookup",
+   "question": "What was Apple's revenue in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'AAPL' AND canonical_metric = 'revenue' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AAPL' AND fm.fiscal_year = 2025 AND fm.canonical_metric = 'revenue' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AAPL' AND fm.fiscal_year = 2025 AND fm.canonical_metric = 'revenue' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     416.16
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn"
+   ],
+   "answer": "Apple\u2019s revenue in fiscal\u202f2025 was **$416.16\u202fbillion**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1539,
+   "output_tokens": 314,
+   "latency_s": 1.96
+  },
+  {
+   "id": "sql_02",
+   "type": "lookup",
+   "question": "What was Microsoft's net income in fiscal 2024?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS net_income_bn FROM financial_metrics WHERE ticker = 'MSFT' AND canonical_metric = 'net_income' AND fiscal_year = 2024",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM financial_metrics AS fm WHERE fm.ticker = 'MSFT' AND fm.canonical_metric = 'net_income' AND fm.fiscal_year = 2024 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM financial_metrics AS fm WHERE fm.ticker = 'MSFT' AND fm.canonical_metric = 'net_income' AND fm.fiscal_year = 2024 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "MSFT",
+     2024,
+     "0001193125-26-323660",
+     88.14
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "net_income_bn"
+   ],
+   "answer": "Microsoft\u2019s net income for fiscal\u202f2024 was **$88.14\u202fbillion** (as reported in filing\u202f0001193125\u201126\u2011323660).",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1543,
+   "output_tokens": 443,
+   "latency_s": 2.13
+  },
+  {
+   "id": "sql_03",
+   "type": "lookup",
+   "question": "What was NVIDIA's diluted earnings per share in fiscal 2026?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value, 2) AS eps_diluted FROM financial_metrics WHERE ticker = 'NVDA' AND canonical_metric = 'eps_diluted' AND fiscal_year = 2026",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ticker, fiscal_year, source_accession, value AS eps_diluted FROM financial_metrics WHERE ticker = 'NVDA' AND canonical_metric = 'eps_diluted' AND fiscal_year = 2026 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ticker, fiscal_year, source_accession, value AS eps_diluted FROM financial_metrics WHERE ticker = 'NVDA' AND canonical_metric = 'eps_diluted' AND fiscal_year = 2026 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "NVDA",
+     2026,
+     "0001045810-26-000021",
+     4.9
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "eps_diluted"
+   ],
+   "answer": "NVIDIA\u2019s diluted earnings per share for fiscal\u202f2026 was **$4.9** per share.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1528,
+   "output_tokens": 323,
+   "latency_s": 1.24
+  },
+  {
+   "id": "sql_04",
+   "type": "lookup",
+   "question": "What were Chevron's total assets at the end of fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS total_assets_bn FROM financial_metrics WHERE ticker = 'CVX' AND canonical_metric = 'total_assets' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS total_assets_bn FROM financial_metrics WHERE ticker = 'CVX' AND canonical_metric = 'total_assets' AND fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS total_assets_bn FROM financial_metrics WHERE ticker = 'CVX' AND canonical_metric = 'total_assets' AND fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "CVX",
+     2025,
+     "0000093410-26-000078",
+     324.01
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "total_assets_bn"
+   ],
+   "answer": "Chevron\u2019s total assets at the end of fiscal\u202f2025 were **$324.01\u202fbillion**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1536,
+   "output_tokens": 405,
+   "latency_s": 1.87
+  },
+  {
+   "id": "sql_05",
+   "type": "lookup",
+   "question": "How much cash did Amazon generate from operations in fiscal 2023?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS operating_cash_flow_bn FROM financial_metrics WHERE ticker = 'AMZN' AND canonical_metric = 'operating_cash_flow' AND fiscal_year = 2023",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS operating_cash_flow_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AMZN' AND fm.canonical_metric = 'operating_cash_flow' AND fm.fiscal_year = 2023 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS operating_cash_flow_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AMZN' AND fm.canonical_metric = 'operating_cash_flow' AND fm.fiscal_year = 2023 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "AMZN",
+     2023,
+     "0001018724-26-000004",
+     84.95
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "operating_cash_flow_bn"
+   ],
+   "answer": "Amazon generated **$84.95\u202fbillion** in operating cash flow in fiscal\u202f2023. (Source accession\u202f0001018724\u201126\u2011000004)",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1553,
+   "output_tokens": 415,
+   "latency_s": 1.28
+  },
+  {
+   "id": "sql_06",
+   "type": "lookup",
+   "question": "How much did Eli Lilly spend on research and development in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS rnd_expense_bn FROM financial_metrics WHERE ticker = 'LLY' AND canonical_metric = 'rnd_expense' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS rnd_expense_bn FROM financial_metrics AS fm WHERE fm.ticker = 'LLY' AND fm.canonical_metric = 'rnd_expense' AND fm.fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS rnd_expense_bn FROM financial_metrics AS fm WHERE fm.ticker = 'LLY' AND fm.canonical_metric = 'rnd_expense' AND fm.fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "LLY",
+     2025,
+     "0000059478-26-000013",
+     13.34
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "rnd_expense_bn"
+   ],
+   "answer": "Eli\u202fLilly spent **$13.34\u202fbillion** on research and development in fiscal\u202f2025.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1556,
+   "output_tokens": 496,
+   "latency_s": 3.36
+  },
+  {
+   "id": "sql_07",
+   "type": "lookup",
+   "question": "How much cash and cash equivalents did AMD hold at the end of fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS cash_bn FROM financial_metrics WHERE ticker = 'AMD' AND canonical_metric = 'cash' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS cash_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AMD' AND fm.fiscal_year = 2025 AND fm.canonical_metric = 'cash' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS cash_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AMD' AND fm.fiscal_year = 2025 AND fm.canonical_metric = 'cash' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "AMD",
+     2025,
+     "0000002488-26-000018",
+     5.54
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "cash_bn"
+   ],
+   "answer": "AMD reported cash and cash equivalents of **$5.54\u202fbillion** at the end of its fiscal year\u202f2025. (Source accession: 0000002488-26-000018)",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1552,
+   "output_tokens": 400,
+   "latency_s": 13.54
+  },
+  {
+   "id": "sql_08",
+   "type": "lookup",
+   "question": "What was Intel's revenue in each fiscal year from 2022 to 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'INTC' AND canonical_metric = 'revenue' AND fiscal_year BETWEEN 2022 AND 2025 ORDER BY fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'INTC' AND canonical_metric = 'revenue' AND fiscal_year BETWEEN 2022 AND 2025 ORDER BY fiscal_year LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'INTC' AND canonical_metric = 'revenue' AND fiscal_year BETWEEN 2022 AND 2025 ORDER BY fiscal_year LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 4,
+   "rows": [
+    [
+     "INTC",
+     2022,
+     "0000050863-25-000009",
+     63.05
+    ],
+    [
+     "INTC",
+     2023,
+     "0000050863-26-000011",
+     54.23
+    ],
+    [
+     "INTC",
+     2024,
+     "0000050863-26-000011",
+     53.1
+    ],
+    [
+     "INTC",
+     2025,
+     "0000050863-26-000011",
+     52.85
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn"
+   ],
+   "answer": "- **Fiscal year\u202f2022:** Intel reported revenue of **$63.05\u202fbillion**.  \n- **Fiscal year\u202f2023:** Intel reported revenue of **$54.23\u202fbillion**.  \n- **Fiscal year\u202f2024:** Intel reported revenue of **$53.1\u202fbillion**.  \n- **Fiscal year\u202f2025:** Intel reported revenue of **$52.85\u202fbillion**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1617,
+   "output_tokens": 511,
+   "latency_s": 12.56
+  },
+  {
+   "id": "sql_09",
+   "type": "lookup",
+   "question": "What was Apple's revenue in every fiscal year from 2021 to 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'AAPL' AND canonical_metric = 'revenue' AND fiscal_year BETWEEN 2021 AND 2025 ORDER BY fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AAPL' AND fm.canonical_metric = 'revenue' AND fm.fiscal_year BETWEEN 2021 AND 2025 ORDER BY fm.fiscal_year LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn FROM financial_metrics AS fm WHERE fm.ticker = 'AAPL' AND fm.canonical_metric = 'revenue' AND fm.fiscal_year BETWEEN 2021 AND 2025 ORDER BY fm.fiscal_year LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 5,
+   "rows": [
+    [
+     "AAPL",
+     2021,
+     "0000320193-23-000106",
+     365.82
+    ],
+    [
+     "AAPL",
+     2022,
+     "0000320193-24-000123",
+     394.33
+    ],
+    [
+     "AAPL",
+     2023,
+     "0000320193-25-000079",
+     383.28
+    ],
+    [
+     "AAPL",
+     2024,
+     "0000320193-26-000026",
+     391.04
+    ],
+    [
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     416.16
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn"
+   ],
+   "answer": "Apple\u2019s revenue was:\n\n- **Fiscal\u202f2021:**\u202f$365.82\u202fbillion  \n- **Fiscal\u202f2022:**\u202f$394.33\u202fbillion  \n- **Fiscal\u202f2023:**\u202f$383.28\u202fbillion  \n- **Fiscal\u202f2024:**\u202f$391.04\u202fbillion  \n- **Fiscal\u202f2025:**\u202f$416.16\u202fbillion",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1655,
+   "output_tokens": 666,
+   "latency_s": 15.6
+  },
+  {
+   "id": "sql_10",
+   "type": "lookup",
+   "question": "What is Qualcomm's net income?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS net_income_bn FROM financial_metrics WHERE ticker = 'QCOM' AND canonical_metric = 'net_income' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM financial_metrics AS fm WHERE fm.ticker = 'QCOM' AND fm.canonical_metric = 'net_income' AND fm.fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM financial_metrics AS fm WHERE fm.ticker = 'QCOM' AND fm.canonical_metric = 'net_income' AND fm.fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "QCOM",
+     2025,
+     "0000804328-26-000128",
+     5.54
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "net_income_bn"
+   ],
+   "answer": "Qualcomm reported a net income of **$5.54\u202fbillion** for fiscal year **2025**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1535,
+   "output_tokens": 382,
+   "latency_s": 13.71
+  },
+  {
+   "id": "sql_11",
+   "type": "ranking",
+   "question": "Which semiconductor company had the highest net income in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS net_income_bn FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 AND sector = 'semiconductors' ORDER BY value DESC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM financial_metrics AS fm WHERE fm.canonical_metric = 'net_income' AND fm.fiscal_year = 2025 AND fm.sector = 'semiconductors' ORDER BY net_income_bn DESC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM financial_metrics AS fm WHERE fm.canonical_metric = 'net_income' AND fm.fiscal_year = 2025 AND fm.sector = 'semiconductors' ORDER BY net_income_bn DESC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "NVDA",
+     2025,
+     "0001045810-26-000021",
+     72.88
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "net_income_bn"
+   ],
+   "answer": "The semiconductor company with the highest net income in fiscal\u202f2025 was **NVIDIA (ticker\u202fNVDA)**, reporting net income of **$72.88\u202fbillion** for that year.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1556,
+   "output_tokens": 428,
+   "latency_s": 9.39
+  },
+  {
+   "id": "sql_12",
+   "type": "ranking",
+   "question": "Which three companies had the highest revenue in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 ORDER BY value DESC LIMIT 3",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn FROM financial_metrics AS fm WHERE fm.canonical_metric = 'revenue' AND fm.fiscal_year = 2025 ORDER BY fm.value DESC LIMIT 3",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn FROM financial_metrics AS fm WHERE fm.canonical_metric = 'revenue' AND fm.fiscal_year = 2025 ORDER BY fm.value DESC LIMIT 3",
+     "error": ""
+    }
+   ],
+   "n_rows": 3,
+   "rows": [
+    [
+     "AMZN",
+     2025,
+     "0001018724-26-000004",
+     716.92
+    ],
+    [
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     416.16
+    ],
+    [
+     "GOOGL",
+     2025,
+     "0001652044-26-000018",
+     402.84
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn"
+   ],
+   "answer": "- **Amazon.com, Inc.** reported revenue of **$716.92\u202fbn** in fiscal\u202f2025.  \n- **Apple Inc.** reported revenue of **$416.16\u202fbn** in fiscal\u202f2025.  \n- **Alphabet Inc.** reported revenue of **$402.84\u202fbn** in fiscal\u202f2025.  \n\nThese are the three companies with the highest revenue for fiscal year\u202f2025 according to the data.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1588,
+   "output_tokens": 449,
+   "latency_s": 6.28
+  },
+  {
+   "id": "sql_13",
+   "type": "ranking",
+   "question": "Which energy company had the lowest revenue in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 AND sector = 'energy' ORDER BY value ASC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 AND sector = 'energy' ORDER BY value ASC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 AND sector = 'energy' ORDER BY value ASC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "EOG",
+     2025,
+     "0000821189-26-000054",
+     22.63
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn"
+   ],
+   "answer": "The energy company with the lowest revenue in fiscal\u202f2025 was **EOG Resources (ticker\u202fEOG)**, reporting revenue of **$22.63\u202fbillion** for that year.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1533,
+   "output_tokens": 478,
+   "latency_s": 7.62
+  },
+  {
+   "id": "sql_14",
+   "type": "ranking",
+   "question": "Rank the healthcare companies by research and development spending in fiscal 2025.",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS rnd_expense_bn FROM financial_metrics WHERE canonical_metric = 'rnd_expense' AND fiscal_year = 2025 AND sector = 'healthcare' ORDER BY value DESC LIMIT 5",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS rnd_expense_bn, ROW_NUMBER() OVER (ORDER BY fm.value DESC) AS `rank` FROM financial_metrics AS fm WHERE fm.canonical_metric = 'rnd_expense' AND fm.fiscal_year = 2025 AND fm.sector = 'healthcare' ORDER BY rnd_expense_bn DESC LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS rnd_expense_bn, ROW_NUMBER() OVER (ORDER BY fm.value DESC) AS `rank` FROM financial_metrics AS fm WHERE fm.canonical_metric = 'rnd_expense' AND fm.fiscal_year = 2025 AND fm.sector = 'healthcare' ORDER BY rnd_expense_bn DESC LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 5,
+   "rows": [
+    [
+     "MRK",
+     2025,
+     "0000310158-26-000063",
+     15.79,
+     1
+    ],
+    [
+     "LLY",
+     2025,
+     "0000059478-26-000013",
+     13.34,
+     2
+    ],
+    [
+     "PFE",
+     2025,
+     "0000078003-26-000026",
+     10.44,
+     3
+    ],
+    [
+     "ABBV",
+     2025,
+     "0001551152-26-000008",
+     9.1,
+     4
+    ],
+    [
+     "JNJ",
+     2025,
+     "0000200406-26-000016",
+     0.11,
+     5
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "rnd_expense_bn",
+    "rank"
+   ],
+   "answer": "**Research and development spending in fiscal\u202f2025 (healthcare sector)**  \n\n| Rank | Company (ticker) | Fiscal year | R&D spending (billion\u202fUSD) |\n|------|------------------|-------------|----------------------------|\n| 1 | Merck\u202f&\u202fCo. (MRK) | 2025 | 15.79 |\n| 2 | Eli\u202fLilly (LLY) | 2025 | 13.34 |\n| 3 | Pfizer (PFE) | 2025 | 10.44 |\n| 4 | AbbVie (ABBV) | 2025 | 9.1 |\n| 5 | Johnson\u202f&\u202fJohnson (JNJ) | 2025 | 0.11 |\n\nThese figures come directly from the query results; no additional calculations or estimates have been applied.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1686,
+   "output_tokens": 584,
+   "latency_s": 14.74
+  },
+  {
+   "id": "sql_15",
+   "type": "ranking",
+   "question": "Which technology company had the largest total assets in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS total_assets_bn FROM financial_metrics WHERE canonical_metric = 'total_assets' AND fiscal_year = 2025 AND sector = 'technology' ORDER BY value DESC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS total_assets_bn FROM financial_metrics AS fm JOIN companies AS c ON fm.cik = c.cik WHERE c.sector = 'technology' AND fm.canonical_metric = 'total_assets' AND fm.fiscal_year = 2025 ORDER BY total_assets_bn DESC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS total_assets_bn FROM financial_metrics AS fm JOIN companies AS c ON fm.cik = c.cik WHERE c.sector = 'technology' AND fm.canonical_metric = 'total_assets' AND fm.fiscal_year = 2025 ORDER BY total_assets_bn DESC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "AMZN",
+     2025,
+     "0001018724-26-000004",
+     818.04
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "total_assets_bn"
+   ],
+   "answer": "The technology company with the largest total assets in fiscal\u202f2025 is **Amazon** (ticker\u202fAMZN). According to the filing\u202f0001018724\u201126\u2011000004, Amazon reported total assets of **$818.04\u202fbillion** for fiscal\u202f2025.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1566,
+   "output_tokens": 419,
+   "latency_s": 13.27
+  },
+  {
+   "id": "sql_16",
+   "type": "ranking",
+   "question": "Which company had the highest diluted earnings per share in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value, 2) AS eps_diluted FROM financial_metrics WHERE canonical_metric = 'eps_diluted' AND fiscal_year = 2025 ORDER BY value DESC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, fm.value AS eps_diluted FROM financial_metrics AS fm WHERE fm.canonical_metric = 'eps_diluted' AND fm.fiscal_year = 2025 ORDER BY fm.value DESC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, fm.value AS eps_diluted FROM financial_metrics AS fm WHERE fm.canonical_metric = 'eps_diluted' AND fm.fiscal_year = 2025 ORDER BY fm.value DESC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "META",
+     2025,
+     "0001628280-26-003942",
+     23.49
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "eps_diluted"
+   ],
+   "answer": "Meta reported the highest diluted earnings per share in fiscal\u202f2025, at **$23.49** per share.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1539,
+   "output_tokens": 394,
+   "latency_s": 9.21
+  },
+  {
+   "id": "sql_17",
+   "type": "ratio",
+   "question": "What was Apple's gross margin in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS gross_margin_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'gross_profit' AND b.canonical_metric = 'revenue' AND a.ticker = 'AAPL' AND a.fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT gp.ticker, gp.fiscal_year, gp.source_accession AS source_accession_gross_profit, rev.source_accession AS source_accession_revenue, ROUND(100 * gp.value / rev.value, 2) AS gross_margin_pct FROM financial_metrics AS gp JOIN financial_metrics AS rev ON gp.cik = rev.cik AND gp.fiscal_year = rev.fiscal_year WHERE gp.ticker = 'AAPL' AND gp.fiscal_year = 2025 AND gp.canonical_metric = 'gross_profit' AND rev.canonical_metric = 'revenue' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT gp.ticker, gp.fiscal_year, gp.source_accession AS source_accession_gross_profit, rev.source_accession AS source_accession_revenue, ROUND(100 * gp.value / rev.value, 2) AS gross_margin_pct FROM financial_metrics AS gp JOIN financial_metrics AS rev ON gp.cik = rev.cik AND gp.fiscal_year = rev.fiscal_year WHERE gp.ticker = 'AAPL' AND gp.fiscal_year = 2025 AND gp.canonical_metric = 'gross_profit' AND rev.canonical_metric = 'revenue' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     "0000320193-26-000026",
+     46.91
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession_gross_profit",
+    "source_accession_revenue",
+    "gross_margin_pct"
+   ],
+   "answer": "Apple\u2019s gross margin for fiscal\u202f2025 was **46.91\u202f%**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1614,
+   "output_tokens": 667,
+   "latency_s": 11.38
+  },
+  {
+   "id": "sql_18",
+   "type": "ratio",
+   "question": "What was NVIDIA's net profit margin (net income as a percentage of revenue) in fiscal 2026?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS net_margin_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'net_income' AND b.canonical_metric = 'revenue' AND a.ticker = 'NVDA' AND a.fiscal_year = 2026",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ni.ticker, ni.fiscal_year, ni.source_accession AS net_income_source_accession, rev.source_accession AS revenue_source_accession, ROUND(100 * ni.value / rev.value, 2) AS net_profit_margin_pct FROM financial_metrics AS ni JOIN financial_metrics AS rev ON ni.cik = rev.cik AND ni.fiscal_year = rev.fiscal_year WHERE ni.ticker = 'NVDA' AND ni.fiscal_year = 2026 AND ni.canonical_metric = 'net_income' AND rev.canonical_metric = 'revenue' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ni.ticker, ni.fiscal_year, ni.source_accession AS net_income_source_accession, rev.source_accession AS revenue_source_accession, ROUND(100 * ni.value / rev.value, 2) AS net_profit_margin_pct FROM financial_metrics AS ni JOIN financial_metrics AS rev ON ni.cik = rev.cik AND ni.fiscal_year = rev.fiscal_year WHERE ni.ticker = 'NVDA' AND ni.fiscal_year = 2026 AND ni.canonical_metric = 'net_income' AND rev.canonical_metric = 'revenue' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "NVDA",
+     2026,
+     "0001045810-26-000021",
+     "0001045810-26-000021",
+     55.6
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "net_income_source_accession",
+    "revenue_source_accession",
+    "net_profit_margin_pct"
+   ],
+   "answer": "NVIDIA\u2019s net profit margin in fiscal\u202f2026 was **55.6\u202f%**. (The figure comes from the filing with accession number\u202f0001045810\u201126\u2011000021.)",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1634,
+   "output_tokens": 811,
+   "latency_s": 16.74
+  },
+  {
+   "id": "sql_19",
+   "type": "ratio",
+   "question": "For each semiconductor company, what share of revenue was spent on research and development in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS rnd_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'rnd_expense' AND b.canonical_metric = 'revenue' AND a.sector = 'semiconductors' AND a.fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm_rnd.ticker, fm_rnd.fiscal_year, fm_rnd.source_accession AS source_accession_rnd, fm_rev.source_accession AS source_accession_rev, ROUND(100 * fm_rnd.value / fm_rev.value, 2) AS rnd_to_revenue_pct FROM financial_metrics AS fm_rnd JOIN financial_metrics AS fm_rev ON fm_rnd.cik = fm_rev.cik AND fm_rnd.fiscal_year = fm_rev.fiscal_year WHERE fm_rnd.canonical_metric = 'rnd_expense' AND fm_rev.canonical_metric = 'revenue' AND fm_rnd.fiscal_year = 2025 AND fm_rnd.sector = 'semiconductors' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm_rnd.ticker, fm_rnd.fiscal_year, fm_rnd.source_accession AS source_accession_rnd, fm_rev.source_accession AS source_accession_rev, ROUND(100 * fm_rnd.value / fm_rev.value, 2) AS rnd_to_revenue_pct FROM financial_metrics AS fm_rnd JOIN financial_metrics AS fm_rev ON fm_rnd.cik = fm_rev.cik AND fm_rnd.fiscal_year = fm_rev.fiscal_year WHERE fm_rnd.canonical_metric = 'rnd_expense' AND fm_rev.canonical_metric = 'revenue' AND fm_rnd.fiscal_year = 2025 AND fm_rnd.sector = 'semiconductors' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 5,
+   "rows": [
+    [
+     "AMD",
+     2025,
+     "0000002488-26-000018",
+     "0000002488-26-000018",
+     23.36
+    ],
+    [
+     "INTC",
+     2025,
+     "0000050863-26-000011",
+     "0000050863-26-000011",
+     26.06
+    ],
+    [
+     "QCOM",
+     2025,
+     "0000804328-26-000128",
+     "0000804328-26-000128",
+     20.42
+    ],
+    [
+     "NVDA",
+     2025,
+     "0001045810-26-000021",
+     "0001045810-26-000021",
+     9.9
+    ],
+    [
+     "AVGO",
+     2025,
+     "0001730168-25-000121",
+     "0001730168-25-000121",
+     17.18
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession_rnd",
+    "source_accession_rev",
+    "rnd_to_revenue_pct"
+   ],
+   "answer": "- **Advanced Micro Devices (AMD)** spent **23.36\u202f%** of its fiscal\u202f2025 revenue on research and development.  \n- **Intel Corporation (INTC)** spent **26.06\u202f%** of its fiscal\u202f2025 revenue on research and development.  \n- **Qualcomm Inc. (QCOM)** spent **20.42\u202f%** of its fiscal\u202f2025 revenue on research and development.  \n- **NVIDIA Corporation (NVDA)** spent **9.9\u202f%** of its fiscal\u202f2025 revenue on research and development.  \n- **Broadcom Inc. (AVGO)** spent **17.18\u202f%** of its fiscal\u202f2025 revenue on research and development.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1797,
+   "output_tokens": 1154,
+   "latency_s": 21.15
+  },
+  {
+   "id": "sql_20",
+   "type": "ratio",
+   "question": "What was Microsoft's operating margin (operating income as a percentage of revenue) in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS operating_margin_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'operating_income' AND b.canonical_metric = 'revenue' AND a.ticker = 'MSFT' AND a.fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT op.ticker, op.fiscal_year, op.source_accession AS operating_income_source, rev.source_accession AS revenue_source, ROUND(100 * op.value / rev.value, 2) AS operating_margin_pct FROM financial_metrics AS op JOIN financial_metrics AS rev ON op.cik = rev.cik AND op.fiscal_year = rev.fiscal_year WHERE op.canonical_metric = 'operating_income' AND rev.canonical_metric = 'revenue' AND op.ticker = 'MSFT' AND op.fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT op.ticker, op.fiscal_year, op.source_accession AS operating_income_source, rev.source_accession AS revenue_source, ROUND(100 * op.value / rev.value, 2) AS operating_margin_pct FROM financial_metrics AS op JOIN financial_metrics AS rev ON op.cik = rev.cik AND op.fiscal_year = rev.fiscal_year WHERE op.canonical_metric = 'operating_income' AND rev.canonical_metric = 'revenue' AND op.ticker = 'MSFT' AND op.fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "MSFT",
+     2025,
+     "0001193125-26-323660",
+     "0001193125-26-323660",
+     45.62
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "operating_income_source",
+    "revenue_source",
+    "operating_margin_pct"
+   ],
+   "answer": "Microsoft\u2019s operating margin in fiscal\u202f2025 was **45.62\u202f%** (based on the filing with accession number\u202f0001193125\u201126\u2011323660).",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1623,
+   "output_tokens": 741,
+   "latency_s": 15.5
+  },
+  {
+   "id": "sql_21",
+   "type": "ratio",
+   "question": "Which technology company had the highest net profit margin in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS net_margin_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'net_income' AND b.canonical_metric = 'revenue' AND a.sector = 'technology' AND a.fiscal_year = 2025 ORDER BY a.value / b.value DESC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm_net.ticker, fm_net.fiscal_year, fm_net.source_accession AS net_income_source, fm_rev.source_accession AS revenue_source, ROUND(100 * fm_net.value / fm_rev.value, 2) AS net_profit_margin_pct FROM financial_metrics AS fm_net JOIN financial_metrics AS fm_rev ON fm_net.cik = fm_rev.cik AND fm_net.fiscal_year = fm_rev.fiscal_year JOIN companies AS c ON fm_net.cik = c.cik WHERE fm_net.canonical_metric = 'net_income' AND fm_rev.canonical_metric = 'revenue' AND fm_net.fiscal_year = 2025 AND c.sector = 'technology' ORDER BY net_profit_margin_pct DESC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT fm_net.ticker, fm_net.fiscal_year, fm_net.source_accession AS net_income_source, fm_rev.source_accession AS revenue_source, ROUND(100 * fm_net.value / fm_rev.value, 2) AS net_profit_margin_pct FROM financial_metrics AS fm_net JOIN financial_metrics AS fm_rev ON fm_net.cik = fm_rev.cik AND fm_net.fiscal_year = fm_rev.fiscal_year JOIN companies AS c ON fm_net.cik = c.cik WHERE fm_net.canonical_metric = 'net_income' AND fm_rev.canonical_metric = 'revenue' AND fm_net.fiscal_year = 2025 AND c.sector = 'technology' ORDER BY net_profit_margin_pct DESC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "MSFT",
+     2025,
+     "0001193125-26-323660",
+     "0001193125-26-323660",
+     36.15
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "net_income_source",
+    "revenue_source",
+    "net_profit_margin_pct"
+   ],
+   "answer": "Microsoft\u202f(technology sector) posted the highest net\u2011profit margin among technology companies for fiscal\u202f2025, with a margin of **36.15\u202f%**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1646,
+   "output_tokens": 853,
+   "latency_s": 17.6
+  },
+  {
+   "id": "sql_22",
+   "type": "ratio",
+   "question": "What percentage of Alphabet's operating cash flow went to capital expenditures in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS capex_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'capex' AND b.canonical_metric = 'operating_cash_flow' AND a.ticker = 'GOOGL' AND a.fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT capex.ticker, capex.fiscal_year, capex.source_accession AS capex_accession, ocf.source_accession AS ocf_accession, ROUND(100 * capex.value / ocf.value, 2) AS capex_to_ocf_pct FROM financial_metrics AS capex JOIN financial_metrics AS ocf ON capex.cik = ocf.cik AND capex.fiscal_year = ocf.fiscal_year WHERE capex.ticker = 'GOOGL' AND capex.fiscal_year = 2025 AND capex.canonical_metric = 'capex' AND ocf.canonical_metric = 'operating_cash_flow' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT capex.ticker, capex.fiscal_year, capex.source_accession AS capex_accession, ocf.source_accession AS ocf_accession, ROUND(100 * capex.value / ocf.value, 2) AS capex_to_ocf_pct FROM financial_metrics AS capex JOIN financial_metrics AS ocf ON capex.cik = ocf.cik AND capex.fiscal_year = ocf.fiscal_year WHERE capex.ticker = 'GOOGL' AND capex.fiscal_year = 2025 AND capex.canonical_metric = 'capex' AND ocf.canonical_metric = 'operating_cash_flow' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "GOOGL",
+     2025,
+     "0001652044-26-000018",
+     "0001652044-26-000018",
+     55.52
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "capex_accession",
+    "ocf_accession",
+    "capex_to_ocf_pct"
+   ],
+   "answer": "In fiscal\u202f2025, Alphabet (ticker\u202fGOOGL) allocated **55.52\u202f%** of its operating cash flow to capital expenditures.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1648,
+   "output_tokens": 578,
+   "latency_s": 8.46
+  },
+  {
+   "id": "sql_23",
+   "type": "ratio",
+   "question": "What was Apple's return on equity (net income as a percentage of total equity) in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS roe_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'net_income' AND b.canonical_metric = 'total_equity' AND a.ticker = 'AAPL' AND a.fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ni.ticker, ni.fiscal_year, ni.source_accession AS source_accession_net, te.source_accession AS source_accession_eq, ROUND(100 * ni.value / te.value, 2) AS roe_pct FROM financial_metrics AS ni JOIN financial_metrics AS te ON ni.cik = te.cik AND ni.fiscal_year = te.fiscal_year WHERE ni.canonical_metric = 'net_income' AND te.canonical_metric = 'total_equity' AND ni.ticker = 'AAPL' AND ni.fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ni.ticker, ni.fiscal_year, ni.source_accession AS source_accession_net, te.source_accession AS source_accession_eq, ROUND(100 * ni.value / te.value, 2) AS roe_pct FROM financial_metrics AS ni JOIN financial_metrics AS te ON ni.cik = te.cik AND ni.fiscal_year = te.fiscal_year WHERE ni.canonical_metric = 'net_income' AND te.canonical_metric = 'total_equity' AND ni.ticker = 'AAPL' AND ni.fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     "0000320193-26-000026",
+     151.91
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession_net",
+    "source_accession_eq",
+    "roe_pct"
+   ],
+   "answer": "Apple\u2019s return on equity for fiscal\u202f2025 was **151.91\u202f%**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1629,
+   "output_tokens": 659,
+   "latency_s": 9.46
+  },
+  {
+   "id": "sql_24",
+   "type": "ratio",
+   "question": "Which companies had net income above 25% of revenue in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * a.value / b.value, 2) AS net_margin_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year WHERE a.canonical_metric = 'net_income' AND b.canonical_metric = 'revenue' AND a.fiscal_year = 2025 AND 100 * a.value / b.value > 25",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ni.ticker, ni.fiscal_year, ni.source_accession AS net_income_accession, rev.source_accession AS revenue_accession, ROUND(ni.value / 1e9, 2) AS net_income_bn, ROUND(rev.value / 1e9, 2) AS revenue_bn, ROUND(100 * ni.value / rev.value, 2) AS net_income_pct_of_revenue FROM financial_metrics AS ni JOIN financial_metrics AS rev ON ni.cik = rev.cik AND ni.fiscal_year = rev.fiscal_year WHERE ni.canonical_metric = 'net_income' AND rev.canonical_metric = 'revenue' AND ni.fiscal_year = 2025 AND ni.value > 0.25 * rev.value LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ni.ticker, ni.fiscal_year, ni.source_accession AS net_income_accession, rev.source_accession AS revenue_accession, ROUND(ni.value / 1e9, 2) AS net_income_bn, ROUND(rev.value / 1e9, 2) AS revenue_bn, ROUND(100 * ni.value / rev.value, 2) AS net_income_pct_of_revenue FROM financial_metrics AS ni JOIN financial_metrics AS rev ON ni.cik = rev.cik AND ni.fiscal_year = rev.fiscal_year WHERE ni.canonical_metric = 'net_income' AND rev.canonical_metric = 'revenue' AND ni.fiscal_year = 2025 AND ni.value > 0.25 * rev.value LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 9,
+   "rows": [
+    [
+     "LLY",
+     2025,
+     "0000059478-26-000013",
+     "0000059478-26-000013",
+     20.64,
+     65.18,
+     31.67
+    ],
+    [
+     "JNJ",
+     2025,
+     "0000200406-26-000016",
+     "0000200406-26-000016",
+     26.8,
+     94.19,
+     28.46
+    ],
+    [
+     "MRK",
+     2025,
+     "0000310158-26-000063",
+     "0000310158-26-000063",
+     18.25,
+     65.01,
+     28.08
+    ],
+    [
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     "0000320193-26-000026",
+     112.01,
+     416.16,
+     26.92
+    ],
+    [
+     "MSFT",
+     2025,
+     "0001193125-26-323660",
+     "0001193125-26-323660",
+     101.83,
+     281.72,
+     36.15
+    ],
+    [
+     "NVDA",
+     2025,
+     "0001045810-26-000021",
+     "0001045810-26-000021",
+     72.88,
+     130.5,
+     55.85
+    ],
+    [
+     "META",
+     2025,
+     "0001628280-26-003942",
+     "0001628280-26-003942",
+     60.46,
+     200.97,
+     30.08
+    ],
+    [
+     "GOOGL",
+     2025,
+     "0001652044-26-000018",
+     "0001652044-26-000018",
+     132.17,
+     402.84,
+     32.81
+    ],
+    [
+     "AVGO",
+     2025,
+     "0001730168-25-000121",
+     "0001730168-25-000121",
+     23.13,
+     63.89,
+     36.2
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "net_income_accession",
+    "revenue_accession",
+    "net_income_bn",
+    "revenue_bn",
+    "net_income_pct_of_revenue"
+   ],
+   "answer": "In fiscal\u202f2025 the following companies reported net income that was **more than 25\u202f% of their revenue**:\n\n| Company (ticker) | Fiscal year | Net income as a % of revenue |\n|------------------|-------------|------------------------------|\n| Eli\u202fLilly and Company (LLY) | 2025 | 31.67\u202f% |\n| Johnson\u202f&\u202fJohnson (JNJ) | 2025 | 28.46\u202f% |\n| Merck\u202f&\u202fCo. (MRK) | 2025 | 28.08\u202f% |\n| Apple\u202fInc. (AAPL) | 2025 | 26.92\u202f% |\n| Microsoft\u202fCorp. (MSFT) | 2025 | 36.15\u202f% |\n| NVIDIA\u202fCorp. (NVDA) | 2025 | 55.85\u202f% |\n| Meta\u202fPlatforms,\u202fInc. (META) | 2025 | 30.08\u202f% |\n| Alphabet\u202fInc. (GOOGL) | 2025 | 32.81\u202f% |\n| Broadcom\u202fInc. (AVGO) | 2025 | 36.2\u202f% |\n\nAll nine rows in the query result meet the condition \u201cnet income\u202f>\u202f25\u202f% of revenue,\u201d so each of these companies qualifies.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 2030,
+   "output_tokens": 1173,
+   "latency_s": 10.22
+  },
+  {
+   "id": "sql_25",
+   "type": "growth",
+   "question": "By what percentage did NVIDIA's revenue grow in fiscal 2025 compared with fiscal 2024?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * (a.value - b.value) / b.value, 2) AS growth_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year + 1 WHERE a.canonical_metric = 'revenue' AND b.canonical_metric = 'revenue' AND a.ticker = 'NVDA' AND a.fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm_cur.ticker, fm_cur.fiscal_year, fm_cur.source_accession AS source_accession_current, fm_pri.source_accession AS source_accession_prior, ROUND(100 * (fm_cur.value - fm_pri.value) / fm_pri.value, 2) AS revenue_growth_pct FROM financial_metrics AS fm_cur JOIN financial_metrics AS fm_pri ON fm_cur.cik = fm_pri.cik AND fm_cur.fiscal_year = fm_pri.fiscal_year + 1 WHERE fm_cur.ticker = 'NVDA' AND fm_cur.canonical_metric = 'revenue' AND fm_pri.canonical_metric = 'revenue' AND fm_cur.fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm_cur.ticker, fm_cur.fiscal_year, fm_cur.source_accession AS source_accession_current, fm_pri.source_accession AS source_accession_prior, ROUND(100 * (fm_cur.value - fm_pri.value) / fm_pri.value, 2) AS revenue_growth_pct FROM financial_metrics AS fm_cur JOIN financial_metrics AS fm_pri ON fm_cur.cik = fm_pri.cik AND fm_cur.fiscal_year = fm_pri.fiscal_year + 1 WHERE fm_cur.ticker = 'NVDA' AND fm_cur.canonical_metric = 'revenue' AND fm_pri.canonical_metric = 'revenue' AND fm_cur.fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "NVDA",
+     2025,
+     "0001045810-26-000021",
+     "0001045810-26-000021",
+     114.2
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession_current",
+    "source_accession_prior",
+    "revenue_growth_pct"
+   ],
+   "answer": "NVIDIA\u2019s revenue grew by **114.2\u202f%** in fiscal\u202f2025 compared with fiscal\u202f2024.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1658,
+   "output_tokens": 722,
+   "latency_s": 17.52
+  },
+  {
+   "id": "sql_26",
+   "type": "growth",
+   "question": "Which companies grew revenue by more than 20% in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * (a.value - b.value) / b.value, 2) AS growth_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year + 1 WHERE a.canonical_metric = 'revenue' AND b.canonical_metric = 'revenue' AND a.fiscal_year = 2025 AND 100 * (a.value - b.value) / b.value > 20",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT f2025.ticker, f2025.fiscal_year, f2025.source_accession, ROUND(100 * (f2025.value - f2024.value) / f2024.value, 2) AS revenue_growth_pct FROM financial_metrics AS f2025 JOIN financial_metrics AS f2024 ON f2025.cik = f2024.cik AND f2025.fiscal_year = f2024.fiscal_year + 1 WHERE f2025.canonical_metric = 'revenue' AND f2024.canonical_metric = 'revenue' AND f2025.fiscal_year = 2025 AND ROUND(100 * (f2025.value - f2024.value) / f2024.value, 2) > 20 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT f2025.ticker, f2025.fiscal_year, f2025.source_accession, ROUND(100 * (f2025.value - f2024.value) / f2024.value, 2) AS revenue_growth_pct FROM financial_metrics AS f2025 JOIN financial_metrics AS f2024 ON f2025.cik = f2024.cik AND f2025.fiscal_year = f2024.fiscal_year + 1 WHERE f2025.canonical_metric = 'revenue' AND f2024.canonical_metric = 'revenue' AND f2025.fiscal_year = 2025 AND ROUND(100 * (f2025.value - f2024.value) / f2024.value, 2) > 20 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 5,
+   "rows": [
+    [
+     "AMD",
+     2025,
+     "0000002488-26-000018",
+     34.34
+    ],
+    [
+     "LLY",
+     2025,
+     "0000059478-26-000013",
+     44.7
+    ],
+    [
+     "NVDA",
+     2025,
+     "0001045810-26-000021",
+     114.2
+    ],
+    [
+     "META",
+     2025,
+     "0001628280-26-003942",
+     22.17
+    ],
+    [
+     "AVGO",
+     2025,
+     "0001730168-25-000121",
+     23.87
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_growth_pct"
+   ],
+   "answer": "- Advanced Micro Devices (AMD) grew revenue by **34.34\u202f%** in fiscal\u202f2025.  \n- Eli\u202fLilly and Company (LLY) grew revenue by **44.7\u202f%** in fiscal\u202f2025.  \n- NVIDIA Corporation (NVDA) grew revenue by **114.2\u202f%** in fiscal\u202f2025.  \n- Meta Platforms, Inc. (META) grew revenue by **22.17\u202f%** in fiscal\u202f2025.  \n- Broadcom Inc. (AVGO) grew revenue by **23.87\u202f%** in fiscal\u202f2025.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1733,
+   "output_tokens": 942,
+   "latency_s": 16.64
+  },
+  {
+   "id": "sql_27",
+   "type": "growth",
+   "question": "Which energy companies had lower revenue in fiscal 2025 than in fiscal 2024?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(a.value / 1e9, 2) AS revenue_bn FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year + 1 WHERE a.canonical_metric = 'revenue' AND b.canonical_metric = 'revenue' AND a.sector = 'energy' AND a.fiscal_year = 2025 AND a.value < b.value",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm2025.ticker, fm2025.fiscal_year, ROUND(fm2025.value / 1e9, 2) AS revenue_2025_bn, fm2025.source_accession AS source_accession_2025, ROUND(fm2024.value / 1e9, 2) AS revenue_2024_bn, fm2024.source_accession AS source_accession_2024 FROM financial_metrics AS fm2025 JOIN financial_metrics AS fm2024 ON fm2025.cik = fm2024.cik AND fm2025.fiscal_year = fm2024.fiscal_year + 1 WHERE fm2025.canonical_metric = 'revenue' AND fm2024.canonical_metric = 'revenue' AND fm2025.fiscal_year = 2025 AND fm2025.sector = 'energy' AND fm2024.sector = 'energy' AND fm2025.value < fm2024.value LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm2025.ticker, fm2025.fiscal_year, ROUND(fm2025.value / 1e9, 2) AS revenue_2025_bn, fm2025.source_accession AS source_accession_2025, ROUND(fm2024.value / 1e9, 2) AS revenue_2024_bn, fm2024.source_accession AS source_accession_2024 FROM financial_metrics AS fm2025 JOIN financial_metrics AS fm2024 ON fm2025.cik = fm2024.cik AND fm2025.fiscal_year = fm2024.fiscal_year + 1 WHERE fm2025.canonical_metric = 'revenue' AND fm2024.canonical_metric = 'revenue' AND fm2025.fiscal_year = 2025 AND fm2025.sector = 'energy' AND fm2024.sector = 'energy' AND fm2025.value < fm2024.value LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 4,
+   "rows": [
+    [
+     "SLB",
+     2025,
+     35.71,
+     "0001193125-26-021017",
+     36.29,
+     "0001193125-26-021017"
+    ],
+    [
+     "CVX",
+     2025,
+     184.43,
+     "0000093410-26-000078",
+     193.41,
+     "0000093410-26-000078"
+    ],
+    [
+     "EOG",
+     2025,
+     22.63,
+     "0000821189-26-000054",
+     23.7,
+     "0000821189-26-000054"
+    ],
+    [
+     "MPC",
+     2025,
+     132.7,
+     "0001510295-26-000009",
+     138.86,
+     "0001510295-26-000009"
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "revenue_2025_bn",
+    "source_accession_2025",
+    "revenue_2024_bn",
+    "source_accession_2024"
+   ],
+   "answer": "The query returns four energy companies whose 2025 revenue was lower than their 2024 revenue:\n\n| Company (ticker) | 2025 Revenue (bn\u202fUSD) | 2024 Revenue (bn\u202fUSD) |\n|------------------|----------------------|----------------------|\n| Schlumberger (SLB) | 35.71 | 36.29 |\n| Chevron (CVX) | 184.43 | 193.41 |\n| EOG Resources (EOG) | 22.63 | 23.7 |\n| Marathon Petroleum (MPC) | 132.7 | 138.86 |\n\nAll four companies reported a decline in revenue from fiscal 2024 to fiscal 2025. No additional data are needed to answer the question.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1836,
+   "output_tokens": 1133,
+   "latency_s": 12.44
+  },
+  {
+   "id": "sql_28",
+   "type": "growth",
+   "question": "What was AMD's year-over-year revenue growth in fiscal 2023, 2024 and 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * (a.value - b.value) / b.value, 2) AS growth_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year + 1 WHERE a.canonical_metric = 'revenue' AND b.canonical_metric = 'revenue' AND a.ticker = 'AMD' AND a.fiscal_year BETWEEN 2023 AND 2025 ORDER BY a.fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT cur.ticker, cur.fiscal_year, cur.source_accession, ROUND(100 * (cur.value - prev.value) / prev.value, 2) AS revenue_growth_pct FROM financial_metrics AS cur JOIN financial_metrics AS prev ON cur.cik = prev.cik AND cur.fiscal_year = prev.fiscal_year + 1 WHERE cur.ticker = 'AMD' AND cur.canonical_metric = 'revenue' AND prev.canonical_metric = 'revenue' AND cur.fiscal_year IN (2023, 2024, 2025) LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT cur.ticker, cur.fiscal_year, cur.source_accession, ROUND(100 * (cur.value - prev.value) / prev.value, 2) AS revenue_growth_pct FROM financial_metrics AS cur JOIN financial_metrics AS prev ON cur.cik = prev.cik AND cur.fiscal_year = prev.fiscal_year + 1 WHERE cur.ticker = 'AMD' AND cur.canonical_metric = 'revenue' AND prev.canonical_metric = 'revenue' AND cur.fiscal_year IN (2023, 2024, 2025) LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 3,
+   "rows": [
+    [
+     "AMD",
+     2023,
+     "0000002488-26-000018",
+     -3.9
+    ],
+    [
+     "AMD",
+     2024,
+     "0000002488-26-000018",
+     13.69
+    ],
+    [
+     "AMD",
+     2025,
+     "0000002488-26-000018",
+     34.34
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_growth_pct"
+   ],
+   "answer": "- **AMD \u2013 Fiscal\u202f2023:** revenue grew **\u20113.9\u202f%** year\u2011over\u2011year.  \n- **AMD \u2013 Fiscal\u202f2024:** revenue grew **13.69\u202f%** year\u2011over\u2011year.  \n- **AMD \u2013 Fiscal\u202f2025:** revenue grew **34.34\u202f%** year\u2011over\u2011year.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [
+    "3.9"
+   ],
+   "input_tokens": 1659,
+   "output_tokens": 693,
+   "latency_s": 10.77
+  },
+  {
+   "id": "sql_29",
+   "type": "growth",
+   "question": "Which semiconductor company had the fastest revenue growth in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND(100 * (a.value - b.value) / b.value, 2) AS growth_pct FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year + 1 WHERE a.canonical_metric = 'revenue' AND b.canonical_metric = 'revenue' AND a.sector = 'semiconductors' AND a.fiscal_year = 2025 ORDER BY (a.value - b.value) / b.value DESC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm2025.ticker, fm2025.fiscal_year, fm2025.source_accession AS source_accession_2025, fm2024.source_accession AS source_accession_2024, ROUND(100 * (fm2025.value - fm2024.value) / fm2024.value, 2) AS revenue_growth_pct FROM financial_metrics AS fm2025 JOIN financial_metrics AS fm2024 ON fm2025.cik = fm2024.cik AND fm2025.fiscal_year = fm2024.fiscal_year + 1 AND fm2025.canonical_metric = 'revenue' AND fm2024.canonical_metric = 'revenue' JOIN companies AS c ON fm2025.cik = c.cik WHERE c.sector = 'semiconductors' AND fm2025.fiscal_year = 2025 ORDER BY revenue_growth_pct DESC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT fm2025.ticker, fm2025.fiscal_year, fm2025.source_accession AS source_accession_2025, fm2024.source_accession AS source_accession_2024, ROUND(100 * (fm2025.value - fm2024.value) / fm2024.value, 2) AS revenue_growth_pct FROM financial_metrics AS fm2025 JOIN financial_metrics AS fm2024 ON fm2025.cik = fm2024.cik AND fm2025.fiscal_year = fm2024.fiscal_year + 1 AND fm2025.canonical_metric = 'revenue' AND fm2024.canonical_metric = 'revenue' JOIN companies AS c ON fm2025.cik = c.cik WHERE c.sector = 'semiconductors' AND fm2025.fiscal_year = 2025 ORDER BY revenue_growth_pct DESC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "NVDA",
+     2025,
+     "0001045810-26-000021",
+     "0001045810-26-000021",
+     114.2
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession_2025",
+    "source_accession_2024",
+    "revenue_growth_pct"
+   ],
+   "answer": "The semiconductor company with the fastest revenue growth in fiscal\u202f2025 was **NVIDIA** (ticker\u202fNVDA).  \n\n- **Fiscal year:**\u202f2025  \n- **Revenue growth:**\u202f**114.2\u202f%** (calculated from the company\u2019s 2025 filing\u202f0001045810\u201126\u2011000021 compared with its 2024 filing\u202f0001045810\u201126\u2011000021).  \n\nNo other companies in the data grew faster, and the table provides the complete answer.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [
+    "2024"
+   ],
+   "input_tokens": 1683,
+   "output_tokens": 945,
+   "latency_s": 9.0
+  },
+  {
+   "id": "sql_30",
+   "type": "growth",
+   "question": "By how many billion dollars did Pfizer's net income change from fiscal 2023 to fiscal 2024?",
+   "expect": "rows",
+   "gold_sql": "SELECT a.ticker, a.fiscal_year, ROUND((a.value - b.value) / 1e9, 2) AS change_bn FROM financial_metrics a JOIN financial_metrics b ON a.cik = b.cik AND a.fiscal_year = b.fiscal_year + 1 WHERE a.canonical_metric = 'net_income' AND b.canonical_metric = 'net_income' AND a.ticker = 'PFE' AND a.fiscal_year = 2024",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT m2024.ticker, m2024.fiscal_year, m2024.source_accession AS source_accession_2024, m2023.source_accession AS source_accession_2023, ROUND((m2024.value - m2023.value) / 1e9, 2) AS net_income_change_bn FROM financial_metrics AS m2024 JOIN financial_metrics AS m2023 ON m2024.cik = m2023.cik AND m2024.fiscal_year = m2023.fiscal_year + 1 WHERE m2024.ticker = 'PFE' AND m2024.canonical_metric = 'net_income' AND m2023.canonical_metric = 'net_income' AND m2024.fiscal_year = 2024 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT m2024.ticker, m2024.fiscal_year, m2024.source_accession AS source_accession_2024, m2023.source_accession AS source_accession_2023, ROUND((m2024.value - m2023.value) / 1e9, 2) AS net_income_change_bn FROM financial_metrics AS m2024 JOIN financial_metrics AS m2023 ON m2024.cik = m2023.cik AND m2024.fiscal_year = m2023.fiscal_year + 1 WHERE m2024.ticker = 'PFE' AND m2024.canonical_metric = 'net_income' AND m2023.canonical_metric = 'net_income' AND m2024.fiscal_year = 2024 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "PFE",
+     2024,
+     "0000078003-26-000026",
+     "0000078003-26-000026",
+     5.91
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession_2024",
+    "source_accession_2023",
+    "net_income_change_bn"
+   ],
+   "answer": "Pfizer\u2019s net income **increased by\u202f$5.91\u202fbillion** when moving from fiscal\u202f2023 to fiscal\u202f2024.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1679,
+   "output_tokens": 803,
+   "latency_s": 15.24
+  },
+  {
+   "id": "sql_31",
+   "type": "aggregate",
+   "question": "What was the combined revenue of the five energy companies in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT sector, fiscal_year, ROUND(SUM(value) / 1e9, 2) AS total_revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 AND sector = 'energy' GROUP BY sector, fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn, ROUND(SUM(fm.value) OVER () / 1e9, 2) AS combined_revenue_bn FROM financial_metrics AS fm WHERE fm.canonical_metric = 'revenue' AND fm.fiscal_year = 2025 AND fm.ticker IN ('COP', 'CVX', 'EOG', 'MPC', 'SLB') LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS revenue_bn, ROUND(SUM(fm.value) OVER () / 1e9, 2) AS combined_revenue_bn FROM financial_metrics AS fm WHERE fm.canonical_metric = 'revenue' AND fm.fiscal_year = 2025 AND fm.ticker IN ('COP', 'CVX', 'EOG', 'MPC', 'SLB') LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 5,
+   "rows": [
+    [
+     "COP",
+     2025,
+     "0001163165-26-000009",
+     58.94,
+     434.42
+    ],
+    [
+     "CVX",
+     2025,
+     "0000093410-26-000078",
+     184.43,
+     434.42
+    ],
+    [
+     "EOG",
+     2025,
+     "0000821189-26-000054",
+     22.63,
+     434.42
+    ],
+    [
+     "MPC",
+     2025,
+     "0001510295-26-000009",
+     132.7,
+     434.42
+    ],
+    [
+     "SLB",
+     2025,
+     "0001193125-26-021017",
+     35.71,
+     434.42
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn",
+    "combined_revenue_bn"
+   ],
+   "answer": "The combined revenue for the five energy companies in fiscal\u202f2025 was **$434.42\u202fbillion**.\n\nHere\u2019s the revenue for each company in that year:\n\n- **ConocoPhillips** (ticker\u202fCOP) \u2013 $58.94\u202fbillion  \n- **Chevron** (ticker\u202fCVX) \u2013 $184.43\u202fbillion  \n- **EOG Resources** (ticker\u202fEOG) \u2013 $22.63\u202fbillion  \n- **Marathon Petroleum Corp.** (ticker\u202fMPC) \u2013 $132.70\u202fbillion  \n- **Schlumberger** (ticker\u202fSLB) \u2013 $35.71\u202fbillion  \n\nAll five together total $434.42\u202fbillion in revenue for fiscal\u202f2025.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1711,
+   "output_tokens": 941,
+   "latency_s": 11.83
+  },
+  {
+   "id": "sql_32",
+   "type": "aggregate",
+   "question": "What was the average net income per sector in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT sector, fiscal_year, ROUND(AVG(value) / 1e9, 2) AS avg_net_income_bn FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 GROUP BY sector, fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT sector, ROUND(AVG(value) / 1e9, 2) AS avg_net_income_bn, 2025 AS fiscal_year, GROUP_CONCAT(DISTINCT ticker SEPARATOR ',') AS tickers, GROUP_CONCAT(DISTINCT source_accession SEPARATOR ',') AS source_accessions FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 GROUP BY sector LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT sector, ROUND(AVG(value) / 1e9, 2) AS avg_net_income_bn, 2025 AS fiscal_year, GROUP_CONCAT(DISTINCT ticker SEPARATOR ',') AS tickers, GROUP_CONCAT(DISTINCT source_accession SEPARATOR ',') AS source_accessions FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 GROUP BY sector LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 4,
+   "rows": [
+    [
+     "energy",
+     6.54,
+     2025,
+     "COP,CVX,EOG,MPC,SLB",
+     "0000093410-26-000078,0000821189-26-000054,0001163165-26-000009,0001193125-26-021017,0001510295-26-000009"
+    ],
+    [
+     "healthcare",
+     15.54,
+     2025,
+     "ABBV,JNJ,LLY,MRK,PFE",
+     "0000059478-26-000013,0000078003-26-000026,0000200406-26-000016,0000310158-26-000063,0001551152-26-000008"
+    ],
+    [
+     "semiconductors",
+     21.12,
+     2025,
+     "AMD,AVGO,INTC,NVDA,QCOM",
+     "0000002488-26-000018,0000050863-26-000011,0000804328-26-000128,0001045810-26-000021,0001730168-25-000121"
+    ],
+    [
+     "technology",
+     96.83,
+     2025,
+     "AAPL,AMZN,GOOGL,META,MSFT",
+     "0000320193-26-000026,0001018724-26-000004,0001193125-26-323660,0001628280-26-003942,0001652044-26-000018"
+    ]
+   ],
+   "columns": [
+    "sector",
+    "avg_net_income_bn",
+    "fiscal_year",
+    "tickers",
+    "source_accessions"
+   ],
+   "answer": "**Fiscal\u202f2025 \u2013 Average Net Income by Sector**\n\n| Sector | Average Net Income (billion\u202fUSD) | Companies included (ticker) |\n|--------|----------------------------------|-----------------------------|\n| Energy | **6.54\u202fbn** | COP, CVX, EOG, MPC, SLB |\n| Healthcare | **15.54\u202fbn** | ABBV, JNJ, LLY, MRK, PFE |\n| Semiconductors | **21.12\u202fbn** | AMD, AVGO, INTC, NVDA, QCOM |\n| Technology | **96.83\u202fbn** | AAPL, AMZN, GOOGL, META, MSFT |\n\n*All figures are taken directly from the query result; no additional calculations have been performed.*",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1852,
+   "output_tokens": 1297,
+   "latency_s": 9.57
+  },
+  {
+   "id": "sql_33",
+   "type": "aggregate",
+   "question": "How much did the technology companies spend on research and development in total in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT sector, fiscal_year, ROUND(SUM(value) / 1e9, 2) AS total_rnd_bn FROM financial_metrics WHERE canonical_metric = 'rnd_expense' AND fiscal_year = 2025 AND sector = 'technology' GROUP BY sector, fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT 'TOTAL' AS ticker, fm.fiscal_year, GROUP_CONCAT(DISTINCT fm.source_accession SEPARATOR ',') AS source_accession, ROUND(SUM(fm.value) / 1e9, 2) AS rnd_expense_bn FROM financial_metrics AS fm JOIN companies AS c ON fm.cik = c.cik WHERE fm.canonical_metric = 'rnd_expense' AND fm.fiscal_year = 2025 AND c.sector = 'technology' GROUP BY fm.fiscal_year LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT 'TOTAL' AS ticker, fm.fiscal_year, GROUP_CONCAT(DISTINCT fm.source_accession SEPARATOR ',') AS source_accession, ROUND(SUM(fm.value) / 1e9, 2) AS rnd_expense_bn FROM financial_metrics AS fm JOIN companies AS c ON fm.cik = c.cik WHERE fm.canonical_metric = 'rnd_expense' AND fm.fiscal_year = 2025 AND c.sector = 'technology' GROUP BY fm.fiscal_year LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "TOTAL",
+     2025,
+     "0000320193-26-000026,0001193125-26-323660,0001628280-26-003942,0001652044-26-000018",
+     185.5
+    ]
+   ],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "rnd_expense_bn"
+   ],
+   "answer": "The technology sector companies together spent **$185.5\u202fbillion** on research and development in fiscal\u202f2025.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1627,
+   "output_tokens": 1018,
+   "latency_s": 14.23
+  },
+  {
+   "id": "sql_34",
+   "type": "aggregate",
+   "question": "What was the total net income of all companies in the database in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT fiscal_year, ROUND(SUM(value) / 1e9, 2) AS total_net_income_bn FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 GROUP BY fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ROUND(SUM(value) / 1e9, 2) AS total_net_income_bn, fiscal_year FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ROUND(SUM(value) / 1e9, 2) AS total_net_income_bn, fiscal_year FROM financial_metrics WHERE canonical_metric = 'net_income' AND fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     700.14,
+     2025
+    ]
+   ],
+   "columns": [
+    "total_net_income_bn",
+    "fiscal_year"
+   ],
+   "answer": "The combined net income of all companies in the database for fiscal year\u202f2025 was **$700.14\u202fbillion**.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1513,
+   "output_tokens": 948,
+   "latency_s": 16.32
+  },
+  {
+   "id": "sql_35",
+   "type": "aggregate",
+   "question": "How many companies reported gross profit in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT fiscal_year, COUNT(DISTINCT cik) AS n_companies FROM financial_metrics WHERE canonical_metric = 'gross_profit' AND fiscal_year = 2025 GROUP BY fiscal_year",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT COUNT(DISTINCT ticker) AS companies_reporting_gross_profit FROM financial_metrics WHERE canonical_metric = 'gross_profit' AND fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT COUNT(DISTINCT ticker) AS companies_reporting_gross_profit FROM financial_metrics WHERE canonical_metric = 'gross_profit' AND fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     7
+    ]
+   ],
+   "columns": [
+    "companies_reporting_gross_profit"
+   ],
+   "answer": "Seven companies reported gross profit in fiscal\u202f2025.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1483,
+   "output_tokens": 603,
+   "latency_s": 12.46
+  },
+  {
+   "id": "sql_36",
+   "type": "aggregate",
+   "question": "Which sector had the highest total revenue in fiscal 2025?",
+   "expect": "rows",
+   "gold_sql": "SELECT sector, fiscal_year, ROUND(SUM(value) / 1e9, 2) AS total_revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 GROUP BY sector, fiscal_year ORDER BY SUM(value) DESC LIMIT 1",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT sector, MIN(ticker) AS ticker, MIN(fiscal_year) AS fiscal_year, MIN(source_accession) AS source_accession, ROUND(SUM(value) / 1e9, 2) AS total_revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 GROUP BY sector ORDER BY total_revenue_bn DESC LIMIT 1",
+   "attempts": [
+    {
+     "sql": "SELECT sector, MIN(ticker) AS ticker, MIN(fiscal_year) AS fiscal_year, MIN(source_accession) AS source_accession, ROUND(SUM(value) / 1e9, 2) AS total_revenue_bn FROM financial_metrics WHERE canonical_metric = 'revenue' AND fiscal_year = 2025 GROUP BY sector ORDER BY total_revenue_bn DESC LIMIT 1",
+     "error": ""
+    }
+   ],
+   "n_rows": 1,
+   "rows": [
+    [
+     "technology",
+     "AAPL",
+     2025,
+     "0000320193-26-000026",
+     2018.61
+    ]
+   ],
+   "columns": [
+    "sector",
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "total_revenue_bn"
+   ],
+   "answer": "The query shows that the **technology sector** posted the highest total revenue for fiscal\u202f2025.  \n\n- **Company:** Apple\u202fInc. (ticker\u202fAAPL)  \n- **Fiscal year:** 2025  \n- **Total revenue:** **$2018.61\u202fbillion**  \n\nNo other sectors are listed, so the technology sector is the top\u2011revenue sector for that year.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1564,
+   "output_tokens": 998,
+   "latency_s": 17.68
+  },
+  {
+   "id": "sql_37",
+   "type": "not_reported",
+   "question": "What was Pfizer's gross profit in fiscal 2025?",
+   "expect": "no_data",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS gross_profit_bn FROM financial_metrics WHERE ticker = 'PFE' AND canonical_metric = 'gross_profit' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS gross_profit_bn FROM financial_metrics AS fm WHERE fm.ticker = 'PFE' AND fm.canonical_metric = 'gross_profit' AND fm.fiscal_year = 2025 LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS gross_profit_bn FROM financial_metrics AS fm WHERE fm.ticker = 'PFE' AND fm.canonical_metric = 'gross_profit' AND fm.fiscal_year = 2025 LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "gross_profit_bn"
+   ],
+   "answer": "The query returned no rows, so the database does not contain a reported gross\u2011profit figure for Pfizer in fiscal\u202f2025. This metric may not have been disclosed by the company for that year, or it may not be captured in the data source. Consequently, the gross\u2011profit amount for Pfizer\u2019s FY\u202f2025 cannot be provided.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1512,
+   "output_tokens": 373,
+   "latency_s": 8.19
+  },
+  {
+   "id": "sql_38",
+   "type": "not_reported",
+   "question": "What was Chevron's gross profit in fiscal 2025?",
+   "expect": "no_data",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS gross_profit_bn FROM financial_metrics WHERE ticker = 'CVX' AND canonical_metric = 'gross_profit' AND fiscal_year = 2025",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS gross_profit_bn FROM financial_metrics WHERE ticker = 'CVX' AND fiscal_year = 2025 AND canonical_metric = 'gross_profit' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS gross_profit_bn FROM financial_metrics WHERE ticker = 'CVX' AND fiscal_year = 2025 AND canonical_metric = 'gross_profit' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "gross_profit_bn"
+   ],
+   "answer": "The query returned no rows, so the database does not contain a reported gross\u2011profit figure for Chevron (ticker\u202fCVX) for fiscal year\u202f2025. This metric may not be reported by the company for that year, or it may not be available in the data source.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1497,
+   "output_tokens": 356,
+   "latency_s": 6.38
+  },
+  {
+   "id": "sql_39",
+   "type": "not_reported",
+   "question": "What was Apple's revenue in fiscal 2005?",
+   "expect": "no_data",
+   "gold_sql": "SELECT ticker, fiscal_year, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'AAPL' AND canonical_metric = 'revenue' AND fiscal_year = 2005",
+   "passed": true,
+   "why": "",
+   "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'AAPL' AND fiscal_year = 2005 AND canonical_metric = 'revenue' LIMIT 200",
+   "attempts": [
+    {
+     "sql": "SELECT ticker, fiscal_year, source_accession, ROUND(value / 1e9, 2) AS revenue_bn FROM financial_metrics WHERE ticker = 'AAPL' AND fiscal_year = 2005 AND canonical_metric = 'revenue' LIMIT 200",
+     "error": ""
+    }
+   ],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [
+    "ticker",
+    "fiscal_year",
+    "source_accession",
+    "revenue_bn"
+   ],
+   "answer": "The query returned no rows, so the database does not contain a reported revenue figure for Apple (ticker\u202fAAPL) for fiscal year\u202f2005. This metric may not be reported by the company for that year, or it is not present in the data source.",
+   "cannot_answer": false,
+   "reason": "",
+   "unsupported_numbers": [],
+   "input_tokens": 1492,
+   "output_tokens": 359,
+   "latency_s": 6.07
+  },
+  {
+   "id": "sql_40",
+   "type": "cannot_answer",
+   "question": "What is NVIDIA's stock price?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "Stock price data is not available in the provided tables.",
+   "unsupported_numbers": [],
+   "input_tokens": 1173,
+   "output_tokens": 77,
+   "latency_s": 9.11
+  },
+  {
+   "id": "sql_41",
+   "type": "cannot_answer",
+   "question": "How much revenue did Apple make from the iPhone in fiscal 2025?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "The iPhone-specific revenue metric is not available in the provided data.",
+   "unsupported_numbers": [],
+   "input_tokens": 1182,
+   "output_tokens": 161,
+   "latency_s": 6.08
+  },
+  {
+   "id": "sql_42",
+   "type": "cannot_answer",
+   "question": "What was Microsoft's revenue in the second quarter of fiscal 2025?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "Quarterly revenue data for Microsoft in fiscal 2025 is not available in the provided tables.",
+   "unsupported_numbers": [],
+   "input_tokens": 1180,
+   "output_tokens": 99,
+   "latency_s": 0.77
+  },
+  {
+   "id": "sql_43",
+   "type": "cannot_answer",
+   "question": "What will AMD's revenue be in fiscal 2030?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "The database does not contain AMD's revenue data for fiscal year 2030.",
+   "unsupported_numbers": [],
+   "input_tokens": 1178,
+   "output_tokens": 122,
+   "latency_s": 8.07
+  },
+  {
+   "id": "sql_44",
+   "type": "cannot_answer",
+   "question": "What was Tesla's revenue in fiscal 2025?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "Tesla (TSLA) is not among the listed companies/tickers in the database.",
+   "unsupported_numbers": [],
+   "input_tokens": 1177,
+   "output_tokens": 171,
+   "latency_s": 0.96
+  },
+  {
+   "id": "sql_45",
+   "type": "cannot_answer",
+   "question": "How many employees does Amazon have?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "The employee count metric is not available in the listed financial_metrics.",
+   "unsupported_numbers": [],
+   "input_tokens": 1173,
+   "output_tokens": 98,
+   "latency_s": 6.0
+  },
+  {
+   "id": "sql_46",
+   "type": "cannot_answer",
+   "question": "Should I buy Intel stock?",
+   "expect": "no_data",
+   "gold_sql": null,
+   "passed": true,
+   "why": "",
+   "sql": "",
+   "attempts": [],
+   "n_rows": 0,
+   "rows": [],
+   "columns": [],
+   "answer": "This cannot be answered from the financial database.",
+   "cannot_answer": true,
+   "reason": "The question asks for a stock recommendation, which cannot be derived from the available financial metrics.",
+   "unsupported_numbers": [],
+   "input_tokens": 1172,
+   "output_tokens": 136,
+   "latency_s": 0.91
+  }
+ ]
+}

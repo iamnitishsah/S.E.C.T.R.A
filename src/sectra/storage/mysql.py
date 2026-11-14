@@ -15,8 +15,8 @@ load_dotenv(ROOT / ".env")
 def get_engine(echo: bool = False, user_env: str = "MYSQL_USER", password_env: str = "MYSQL_PASSWORD") -> Engine:
     url = URL.create(  # URL.create escapes special characters in the password safely
         "mysql+pymysql",
-        username=os.environ["user_env"],
-        password=os.environ["password_env"],
+        username=os.environ[user_env],
+        password=os.environ[password_env],
         host=os.getenv("MYSQL_HOST", "127.0.0.1"),
         port=int(os.getenv("MYSQL_PORT", "3306")),
         database=os.environ["MYSQL_DATABASE"],
