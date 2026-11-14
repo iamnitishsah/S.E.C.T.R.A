@@ -1,0 +1,15 @@
+{"id": "un_01", "question": "What is Apple's policy on employee cafeteria menus?", "category": "off_topic", "ticker": "AAPL", "fiscal_year": 2025}
+{"id": "un_02", "question": "What dress code does Microsoft require at its Redmond campus?", "category": "off_topic", "ticker": "MSFT", "fiscal_year": 2026}
+{"id": "un_03", "question": "Which brand of coffee machines does NVIDIA use in its offices?", "category": "off_topic", "ticker": "NVDA", "fiscal_year": 2026}
+{"id": "un_04", "question": "How many parking spaces does Qualcomm's headquarters have?", "category": "off_topic", "ticker": "QCOM", "fiscal_year": 2026}
+{"id": "un_05", "question": "What is the home address of Meta's chief financial officer?", "category": "off_topic", "ticker": "META", "fiscal_year": 2025}
+{"id": "un_06", "question": "What supply chain risks did Tesla describe in its fiscal 2025 10-K?", "category": "not_in_corpus", "ticker": "TSLA", "fiscal_year": 2025}
+{"id": "un_07", "question": "What did Walmart say about tariffs in its fiscal 2025 annual report?", "category": "not_in_corpus", "ticker": "WMT", "fiscal_year": 2025}
+{"id": "un_08", "question": "How did JPMorgan Chase explain the change in its net interest income in fiscal 2025?", "category": "not_in_corpus", "ticker": "JPM", "fiscal_year": 2025}
+{"id": "un_09", "question": "What risk factors did Apple list in its fiscal 2012 10-K?", "category": "outside_years", "ticker": "AAPL", "fiscal_year": 2012}
+{"id": "un_10", "question": "What did Merck's MD&A say about its drug pipeline in fiscal 2008?", "category": "outside_years", "ticker": "MRK", "fiscal_year": 2008}
+{"id": "un_11", "question": "Should I buy NVIDIA stock right now?", "category": "advice_or_forecast", "ticker": "NVDA", "fiscal_year": null}
+{"id": "un_12", "question": "What will AMD's revenue be in fiscal 2030?", "category": "advice_or_forecast", "ticker": "AMD", "fiscal_year": null}
+{"id": "un_13", "question": "How did Apple describe its acquisition of Netflix in fiscal 2025?", "category": "false_premise", "ticker": "AAPL", "fiscal_year": 2025}
+{"id": "un_14", "question": "What did Chevron say about its nuclear power plant division in fiscal 2025?", "category": "false_premise", "ticker": "CVX", "fiscal_year": 2025}
+{"id": "un_15", "question": "What reasons did Eli Lilly give for exiting the diabetes market in fiscal 2025?", "category": "false_premise", "ticker": "LLY", "fiscal_year": 2025}
