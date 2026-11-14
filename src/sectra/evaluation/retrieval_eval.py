@@ -1,7 +1,8 @@
 """Measure retrieval quality on eval/datasets/retrieval_qa.jsonl.
 
-    python -m sectra.evaluation.retrieval_eval                  # dense baseline
-    python -m sectra.evaluation.retrieval_eval --variant dense
+    python -m sectra.evaluation.retrieval_eval --variant dense       # run one variant, save its results
+    python -m sectra.evaluation.retrieval_eval --variant hybrid
+    python -m sectra.evaluation.retrieval_eval --compare dense bm25 hybrid   # table + question-by-question comparison
 
 Each variant is run in two settings:
   open    no filters: search every chunk (the question itself names company and year)
@@ -17,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import statistics
 from collections import Counter
 from pathlib import Path
@@ -28,11 +30,8 @@ K = 10
 
 
 def make_retriever(variant: str):
-    """Variants are added here as they are built (hybrid, rerank...)."""
-    if variant == "dense":
-        from sectra.retrieval.dense import DenseRetriever
-        return DenseRetriever()
-    raise SystemExit(f"unknown variant {variant!r}")
+    from sectra.retrieval.factory import get_retriever
+    return get_retriever(variant)
 
 
 def first_gold_rank(hits: list[dict], gold: list[str]) -> int | None:
@@ -122,13 +121,46 @@ def report(variant: str, questions: list[dict], results: dict[str, list[dict]]) 
     return summary
 
 
+def sign_test(wins: int, losses: int) -> float:
+    """Two-sided exact sign test: how likely is a split this uneven if both variants were equally good?"""
+    n, k = wins + losses, min(wins, losses)
+    if n == 0:
+        return 1.0
+    return min(1.0, 2 * sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n)
+
+
+def found_at(rows: list[dict], k: int = 5) -> set[str]:
+    return {r["id"] for r in rows if r.get("rank") and r["rank"] <= k}
+
+
+def compare(root: Path, variants: list[str]) -> None:
+    """Summary table for saved variants, then each one against the first, question by question."""
+    data = {v: json.loads((root / "eval/results" / f"retrieval_{v}.json").read_text()) for v in variants}
+    for setting in ("open", "scoped"):
+        print(f"\n{setting} setting")
+        print(f"  {'variant':10} {'R@1':>7} {'R@5':>7} {'R@10':>7} {'MRR@10':>7}")
+        for v in variants:
+            m = data[v]["summary"][setting]
+            print(f"  {v:10} {m['recall@1']:>7.1%} {m['recall@5']:>7.1%} {m['recall@10']:>7.1%} {m['mrr@10']:>7.3f}")
+        base = found_at(data[variants[0]]["results"][setting])
+        for v in variants[1:]:
+            other = found_at(data[v]["results"][setting])
+            wins, losses = len(other - base), len(base - other)
+            print(f"  {v} vs {variants[0]} at top 5: gained {wins} questions, lost {losses} "
+                  f"(sign test p = {sign_test(wins, losses):.3f})")
+
+
 def main() -> None:  # pragma: no cover - needs Qdrant
     from dotenv import load_dotenv
 
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--variant", default="dense")
+    p.add_argument("--compare", nargs="+", metavar="VARIANT", help="compare saved results; the first is the baseline")
     args = p.parse_args()
     load_dotenv(ROOT / ".env")
+    if args.compare:
+        compare(ROOT, args.compare)
+        return
 
     questions = load_jsonl(ROOT / "eval/datasets/retrieval_qa.jsonl")
     retriever = make_retriever(args.variant)

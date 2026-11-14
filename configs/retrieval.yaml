@@ -14,3 +14,11 @@ vector_store:
   collection: sec_chunks
   top_k: 5
   min_score: 0.5
+
+bm25:
+  k1: 1.2                # term-frequency saturation
+  b: 0.75                # length normalisation
+
+hybrid:
+  candidates: 30         # taken from dense and from BM25 before fusion
+  rrf_k: 60              # RRF constant: larger = flatter weighting of ranks

@@ -54,3 +54,22 @@ def test_report_runs(capsys):
     results = {s: ev.run_setting(questions, r, s) for s in ("open", "scoped")}
     summary = ev.report("dense", questions, results)
     assert summary["open"]["recall@5"] == 1.0 and "none retrieved" in capsys.readouterr().out
+
+
+def test_compare_and_sign_test(tmp_path, capsys):
+    import json
+    res = tmp_path / "eval/results"
+    res.mkdir(parents=True)
+
+    def save(variant, ranks):
+        rows = [{"id": f"q{i}", "type": "generated", "rank": r} for i, r in enumerate(ranks)]
+        both = {"open": rows, "scoped": rows}
+        res.joinpath(f"retrieval_{variant}.json").write_text(
+            json.dumps({"summary": {s: ev.summarize(rows) for s in both}, "results": both}))
+
+    save("dense", [1, None, 7, 3])
+    save("hybrid", [1, 2, 4, None])
+    ev.compare(tmp_path, ["dense", "hybrid"])
+    assert "gained 2 questions, lost 1" in capsys.readouterr().out
+    assert ev.sign_test(0, 0) == 1.0 and ev.sign_test(5, 5) == 1.0
+    assert abs(ev.sign_test(10, 0) - 2 / 2 ** 10) < 1e-12
