@@ -25,6 +25,14 @@ class HybridRetriever:
         self.dense, self.bm25 = dense, bm25
         self.candidates, self.rrf_k, self.default_k = candidates, rrf_k, default_k
 
+    def candidate_pool(self, query: str, ticker=None, fiscal_year=None, item_code=None) -> list[dict]:
+        """Everything either search put in its top `candidates`, in fused order (at most 2 x candidates)."""
+        f = {"ticker": ticker, "fiscal_year": fiscal_year, "item_code": item_code}
+        return rrf_fuse({
+            "dense": self.dense.search_filings(query, k=self.candidates, **f),
+            "bm25": self.bm25.search_filings(query, k=self.candidates, **f),
+        }, self.rrf_k)
+
     def search_filings(self, query: str, ticker=None, fiscal_year=None, item_code=None, k: int | None = None) -> list[dict]:
         f = {"ticker": ticker, "fiscal_year": fiscal_year, "item_code": item_code}
         n = max(self.candidates, k or self.default_k)

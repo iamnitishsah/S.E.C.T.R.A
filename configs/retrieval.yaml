@@ -22,3 +22,8 @@ bm25:
 hybrid:
   candidates: 30         # taken from dense and from BM25 before fusion
   rrf_k: 60              # RRF constant: larger = flatter weighting of ranks
+
+rerank:
+  url: https://ai.api.nvidia.com/v1/retrieval/nvidia/nemotron-3.5-rerank-8b/reranking
+  model: nvidia/nemotron-3.5-rerank-8b
+  api_key_env: NVIDIA_API_KEY

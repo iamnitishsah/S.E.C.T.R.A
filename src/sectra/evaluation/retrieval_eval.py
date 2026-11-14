@@ -1,8 +1,9 @@
-"""Measure retrieval quality on eval/datasets/retrieval_qa.jsonl.
+"""Measure retrieval quality on an evaluation set.
 
-    python -m sectra.evaluation.retrieval_eval --variant dense       # run one variant, save its results
-    python -m sectra.evaluation.retrieval_eval --variant hybrid
-    python -m sectra.evaluation.retrieval_eval --compare dense bm25 hybrid   # table + question-by-question comparison
+    python -m sectra.evaluation.retrieval_eval --variant dense          # run one variant, save its results
+    python -m sectra.evaluation.retrieval_eval --variant rerank --set paraphrased
+    python -m sectra.evaluation.retrieval_eval --compare dense bm25 hybrid rerank
+    python -m sectra.evaluation.retrieval_eval --compare dense bm25 hybrid rerank --set paraphrased
 
 Each variant is run in two settings:
   open    no filters: search every chunk (the question itself names company and year)
@@ -11,7 +12,7 @@ Each variant is run in two settings:
 A question counts as found at k if ANY of its gold chunks is in the top k.
   Recall@5, Recall@10   share of questions found in the top 5 / 10
   MRR@10                mean of 1/rank of the first gold chunk (0 if not in the top 10)
-Results are saved per question, so later variants can be compared question by question.
+Results are saved per question, so variants can be compared question by question.
 """
 
 from __future__ import annotations
@@ -27,6 +28,16 @@ from sectra.evaluation.qa_set import load_jsonl
 
 ROOT = Path(__file__).resolve().parents[3]
 K = 10
+
+
+def dataset_path(root: Path, set_name: str) -> Path:
+    name = "retrieval_qa.jsonl" if set_name == "original" else f"retrieval_qa_{set_name}.jsonl"
+    return root / "eval/datasets" / name
+
+
+def result_path(root: Path, variant: str, set_name: str) -> Path:
+    suffix = "" if set_name == "original" else f"_{set_name}"
+    return root / "eval/results" / f"retrieval_{variant}{suffix}.json"
 
 
 def make_retriever(variant: str):
@@ -51,9 +62,9 @@ def miss_type(hits: list[dict], q: dict) -> str:
     return "wrong company"
 
 
-def run_setting(questions: list[dict], retriever, setting: str) -> list[dict]:
+def run_setting(questions: list[dict], retriever, setting: str, progress: bool = False) -> list[dict]:
     rows = []
-    for q in questions:
+    for n, q in enumerate(questions, start=1):
         filters = {"ticker": q.get("ticker"), "fiscal_year": q.get("fiscal_year")} if setting == "scoped" else {}
         hits = retriever.search_filings(q["question"], k=K, **filters)
         row = {"id": q["id"], "type": q["type"], "top1_score": round(hits[0]["score"], 4) if hits else None,
@@ -63,22 +74,33 @@ def run_setting(questions: list[dict], retriever, setting: str) -> list[dict]:
             row["rank"] = rank
             if rank is None or rank > 5:
                 row["miss"] = miss_type(hits, q)
+            pool = getattr(retriever, "last_pool", None)          # only the rerank variant has a candidate pool
+            if pool is not None:
+                row["in_pool"] = any(g in pool for g in q["gold_chunk_ids"])
         rows.append(row)
+        if progress:
+            print(f"\r  {setting}: {n}/{len(questions)}", end="", flush=True)
+    if progress:
+        print()
     return rows
 
 
 def summarize(rows: list[dict]) -> dict:
-    ranks = [r["rank"] for r in rows if r["type"] != "unanswerable"]
+    answerable = [r for r in rows if r["type"] != "unanswerable"]
+    ranks = [r["rank"] for r in answerable]
     n = len(ranks)
     if not n:
         return {"n": 0}
-    return {
+    out = {
         "n": n,
         "recall@1": round(sum(r == 1 for r in ranks if r) / n, 3),
         "recall@5": round(sum(r <= 5 for r in ranks if r) / n, 3),
         "recall@10": round(sum(r <= 10 for r in ranks if r) / n, 3),
         "mrr@10": round(sum(1 / r for r in ranks if r) / n, 3),
     }
+    if any("in_pool" in r for r in answerable):
+        out["pool_recall"] = round(sum(r.get("in_pool", False) for r in answerable) / n, 3)
+    return out
 
 
 def score_stats(scores: list[float]) -> str:
@@ -94,7 +116,10 @@ def report(variant: str, questions: list[dict], results: dict[str, list[dict]]) 
     print(f"\nvariant: {variant}")
     print(f"{'setting':8} {'n':>4} {'R@1':>7} {'R@5':>7} {'R@10':>7} {'MRR@10':>7}")
     for s, m in summary.items():
-        print(f"{s:8} {m['n']:>4} {m['recall@1']:>7.1%} {m['recall@5']:>7.1%} {m['recall@10']:>7.1%} {m['mrr@10']:>7.3f}")
+        line = f"{s:8} {m['n']:>4} {m['recall@1']:>7.1%} {m['recall@5']:>7.1%} {m['recall@10']:>7.1%} {m['mrr@10']:>7.3f}"
+        if "pool_recall" in m:
+            line += f"   (gold chunk among the candidates: {m['pool_recall']:.1%})"
+        print(line)
 
     open_rows = [r for r in results["open"] if r["type"] != "unanswerable"]
 
@@ -133,9 +158,10 @@ def found_at(rows: list[dict], k: int = 5) -> set[str]:
     return {r["id"] for r in rows if r.get("rank") and r["rank"] <= k}
 
 
-def compare(root: Path, variants: list[str]) -> None:
+def compare(root: Path, variants: list[str], set_name: str = "original") -> None:
     """Summary table for saved variants, then each one against the first, question by question."""
-    data = {v: json.loads((root / "eval/results" / f"retrieval_{v}.json").read_text()) for v in variants}
+    data = {v: json.loads(result_path(root, v, set_name).read_text()) for v in variants}
+    print(f"question set: {set_name}")
     for setting in ("open", "scoped"):
         print(f"\n{setting} setting")
         print(f"  {'variant':10} {'R@1':>7} {'R@5':>7} {'R@10':>7} {'MRR@10':>7}")
@@ -155,21 +181,27 @@ def main() -> None:  # pragma: no cover - needs Qdrant
 
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--variant", default="dense")
+    p.add_argument("--set", dest="set_name", default="original", help="original or paraphrased")
     p.add_argument("--compare", nargs="+", metavar="VARIANT", help="compare saved results; the first is the baseline")
     args = p.parse_args()
     load_dotenv(ROOT / ".env")
     if args.compare:
-        compare(ROOT, args.compare)
+        compare(ROOT, args.compare, args.set_name)
         return
 
-    questions = load_jsonl(ROOT / "eval/datasets/retrieval_qa.jsonl")
+    questions = load_jsonl(dataset_path(ROOT, args.set_name))
     retriever = make_retriever(args.variant)
-    results = {s: run_setting(questions, retriever, s) for s in ("open", "scoped")}
+    results = {s: run_setting(questions, retriever, s, progress=True) for s in ("open", "scoped")}
+    print(f"question set: {args.set_name}")
     summary = report(args.variant, questions, results)
+    rejected = getattr(getattr(retriever, "reranker", None), "rejected", 0)
+    if rejected:
+        print(f"\n{rejected} candidate passages were refused by the reranker's content-safety filter (scored 0)")
 
-    out = ROOT / "eval/results" / f"retrieval_{args.variant}.json"
+    out = result_path(ROOT, args.variant, args.set_name)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"variant": args.variant, "k": K, "summary": summary, "results": results}, indent=1))
+    out.write_text(json.dumps({"variant": args.variant, "set": args.set_name, "k": K,
+                               "summary": summary, "results": results}, indent=1))
     print(f"\nsaved {out.relative_to(ROOT)}")
 
 

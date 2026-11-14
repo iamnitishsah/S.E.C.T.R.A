@@ -43,6 +43,18 @@ Rules:
 Return only JSON: {"question": "...", "answer": "...", "answer_quote": "..."}"""
 
 
+PARAPHRASE_PROMPT = """You rewrite questions about SEC 10-K filings so they keep their meaning but use different words.
+
+Rules:
+1. Keep the company name and the fiscal year exactly as they are.
+2. Keep proper nouns, product and drug names, names of laws, and numbers.
+3. Rephrase everything else the way another analyst would ask the same thing. Avoid the words listed under "Avoid" wherever a natural alternative exists.
+4. The answer to the question must stay the same.
+5. One question, one sentence.
+
+Return only JSON: {"question": "..."}"""
+
+
 # ------------------------------------------------------------------ helpers
 
 HYPHENS = dict.fromkeys(map(ord, "\u2010\u2011\u2012\u2013\u2014\u2212"), "-")   # gpt-oss writes U+2011
@@ -302,6 +314,54 @@ def cmd_build(root: Path) -> list[dict]:
     return out
 
 
+# --------------------------------------------------------------- paraphrase
+
+def cmd_paraphrase(root: Path, llm, sleep: float = 4.0) -> None:
+    """Rewrite every answerable question in different words; gold chunks stay the same."""
+    ds = root / "eval/datasets"
+    questions = load_jsonl(ds / "retrieval_qa.jsonl")
+    passages = {r["id"]: r["passage"] for r in load_jsonl(ds / "candidates.jsonl")}
+    out = ds / "retrieval_qa_paraphrased.jsonl"
+    done = {r["id"] for r in load_jsonl(out)}
+    todo = [q for q in questions if q["id"] not in done]
+    print(f"{len(done)} already done, {len(todo)} to go")
+
+    for i, q in enumerate(todo, 1):
+        rec = dict(q)
+        passage = passages.get(q["id"])
+        if q["type"] != "unanswerable" and passage:
+            shared = sorted({w for w in re.findall(r"[a-z]{4,}", norm(q["question"])) if w not in STOPWORDS}
+                            & set(re.findall(r"[a-z]{4,}", norm(passage))))
+            user = (f"Question: {q['question']}\n"
+                    f"Answer (context only, do not include it): {q.get('answer', '')}\n"
+                    f"Avoid: {', '.join(shared)}")
+            try:
+                resp = llm.complete(PARAPHRASE_PROMPT, user, temperature=0.3, max_tokens=1500)
+            except Exception as exc:                              # rate limit etc.: stop, resume later
+                print(f"stopped at {i}/{len(todo)}: {exc!r}\nRun the same command again to resume.")
+                break
+            new_q = str((parse_json(resp.text) or {}).get("question", "")).strip()
+            ok = new_q.endswith("?") and str(q["fiscal_year"]) in new_q
+            if ok:
+                rec.update(question=new_q, original_question=q["question"],
+                           original_word_overlap=q.get("word_overlap"),
+                           word_overlap=word_overlap(new_q, passage), paraphraser=resp.model)
+            rec["paraphrased"] = ok
+            print(f"[{i}/{len(todo)}] overlap {q.get('word_overlap')} -> {rec['word_overlap']}  "
+                  f"{'ok  ' if ok else 'KEPT ORIGINAL'}  {rec['question'][:100]}")
+            time.sleep(sleep)
+        with open(out, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+    rows = [r for r in load_jsonl(out) if r["type"] != "unanswerable"]
+    if rows:
+        before = sorted(r.get("original_word_overlap", r.get("word_overlap")) for r in rows)
+        after = sorted(r["word_overlap"] for r in rows)
+        print(f"{len(rows)} answerable questions | {sum(r.get('paraphrased', False) for r in rows)} paraphrased | "
+              f"median word overlap {before[len(before) // 2]} -> {after[len(after) // 2]} | "
+              f"low-overlap (<=0.5): {sum(o <= 0.5 for o in after)}")
+
+
 def main() -> None:  # pragma: no cover
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -314,16 +374,22 @@ def main() -> None:  # pragma: no cover
     r = sub.add_parser("review")
     r.add_argument("--recheck", type=int, default=0, help="hand-check N verdicts made by a non-human reviewer")
     sub.add_parser("build")
+    pp = sub.add_parser("paraphrase")
+    pp.add_argument("--backend")
+    pp.add_argument("--sleep", type=float, default=4.0)
     args = p.parse_args()
 
-    if args.cmd == "generate":
+    if args.cmd in ("generate", "paraphrase"):
         from dotenv import load_dotenv
 
         from sectra.llm.base import get_llm
         load_dotenv(ROOT / ".env")
         llm = get_llm(args.backend)
         print(f"[backend: {llm.name} / {llm.model}]")
-        cmd_generate(ROOT, llm, args.per_ticker, args.seed, args.sleep, args.limit)
+        if args.cmd == "generate":
+            cmd_generate(ROOT, llm, args.per_ticker, args.seed, args.sleep, args.limit)
+        else:
+            cmd_paraphrase(ROOT, llm, args.sleep)
     elif args.cmd == "review":
         cmd_review(ROOT, args.recheck)
     else:
