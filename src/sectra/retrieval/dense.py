@@ -25,7 +25,7 @@ class DenseRetriever:
         self.default_k = cfg["vector_store"].get("top_k", 5)
         self.client = client or vector_store.get_client()
         e = cfg["embedding"]
-        self.embedder = embedder or Embedder(e["model"], e["query_instruction"], batch_size=e["batch_size"])
+        self.embedder = embedder or Embedder(cfg["embedding"])
 
     def search_filings(self, query: str, ticker=None, fiscal_year=None, item_code=None,
                        k: int | None = None) -> list[dict]:

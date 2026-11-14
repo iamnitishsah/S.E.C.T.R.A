@@ -1,14 +1,20 @@
 index_items: ["1", "1A", "1C", "3", "7", "7A"]
 
 chunking:
-  target_tokens: 350     # body size; bge reads at most 512 tokens
-  overlap_tokens: 50     # whole lines carried into the next chunk
-  max_tokens: 480        # alarm threshold incl. header (target + overlap + header)
+  tokenizer: BAAI/bge-base-en-v1.5
+  target_tokens: 350
+  overlap_tokens: 50
+  max_tokens: 480
 
 embedding:
-  model: BAAI/bge-base-en-v1.5
-  query_instruction: "Represent this sentence for searching relevant passages: "
+  url: https://integrate.api.nvidia.com/v1/embeddings
+  model: nvidia/nemotron-3.5-embed-8b
+  api_key_env: NVIDIA_API_KEY
+  dimensions: 1024
   batch_size: 32
+  doc_input_type: passage
+  query_input_type: query
+  workers: 2
 
 vector_store:
   collection: sec_chunks

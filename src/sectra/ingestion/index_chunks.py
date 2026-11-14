@@ -21,10 +21,11 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def run(root: Path, client) -> int:
     from sectra.storage.vector_store import delete_stale, ensure_collection, upsert_chunks
+    from sectra.ingestion.embed_chunks import embedding_dir
 
     cfg = yaml.safe_load(open(root / "configs" / "retrieval.yaml"))
     name = cfg["vector_store"]["collection"]
-    emb_dir = root / "data/processed/embeddings" / cfg["embedding"]["model"].replace("/", "__")
+    emb_dir = embedding_dir(root, cfg["embedding"])
 
     with open(root / "data/processed/chunks/chunks.jsonl", encoding="utf-8") as fh:
         chunks = [json.loads(line) for line in fh]

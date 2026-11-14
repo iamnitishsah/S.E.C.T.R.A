@@ -225,7 +225,7 @@ def main() -> None:  # pragma: no cover - needs MySQL + tokenizer download
     items = [str(i) for i in cfg["index_items"]]
     ch = cfg["chunking"]
 
-    tok = AutoTokenizer.from_pretrained(cfg["embedding"]["model"])
+    tok = AutoTokenizer.from_pretrained(cfg["chunking"]["tokenizer"])
     tok.model_max_length = 1_000_000          # we only count tokens; silences the ">512" warning
 
     def count(s: str) -> int:
