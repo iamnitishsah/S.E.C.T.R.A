@@ -10,6 +10,7 @@ from sectra.agents.nodes import Deps, text_targets
 from sectra.agents.router import Catalog, Route
 from sectra.analyst.agent import SQLAnswer
 from sectra.llm.base import LLMResponse
+from sqlalchemy.pool import StaticPool
 
 SQL_CFG = {"allowed_tables": ["financial_metrics", "companies", "filings"], "max_rows": 50, "timeout_ms": 5000}
 GROWTH_SQL = ("```sql\nSELECT ticker, fiscal_year, value AS growth_pct, source_accession FROM financial_metrics "
@@ -43,7 +44,7 @@ def route_json(**kw):
 
 @pytest.fixture()
 def deps():
-    eng = create_engine("sqlite://")
+    eng = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
     with eng.begin() as conn:
         conn.execute(text("CREATE TABLE financial_metrics (cik TEXT, ticker TEXT, sector TEXT, fiscal_year INT, "
                           "canonical_metric TEXT, value NUMERIC, unit TEXT, source_accession TEXT)"))
