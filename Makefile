@@ -3,7 +3,7 @@
 MYSQL = docker compose exec -T mysql sh -c 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql -u"$$MYSQL_USER" "$$MYSQL_DATABASE"'
 EVAL  = python -m sectra.evaluation.retrieval_eval
 
-.PHONY: help up down all download db db-schema db-load db-derive sections chunks embed index test eval threshold db-role sql-eval routing-eval
+.PHONY: help up down all download db db-schema db-load db-derive sections chunks embed index test eval threshold db-role sql-eval routing-eval api up-api down-api docker-build
 
 help:
 	@echo "make up         start MySQL and Qdrant"
@@ -17,7 +17,19 @@ up:
 	docker compose up -d
 
 down:
-	docker compose down
+	docker compose --profile api down
+
+api:
+	uvicorn sectra.api.main:app --reload
+
+docker-build:
+	docker build -t sectra-api .
+
+up-api:
+	docker compose --profile api up -d --build
+
+down-api:
+	docker compose --profile api stop api
 
 all: download db sections chunks embed index
 

@@ -1,3 +1,8 @@
+# Local development.
+#   docker compose up -d                          MySQL + Qdrant (what `make up` runs)
+#   docker compose --profile api up -d --build    also the API in a container, on http://localhost:8000
+# The API is behind a profile because it needs a loaded database; run `make all` first.
+
 services:
   mysql:
     image: mysql:8.4
@@ -27,6 +32,27 @@ services:
       - "6334:6334"     # gRPC
     volumes:
       - qdrant_data:/qdrant/storage
+
+  api:
+    profiles: ["api"]
+    build: .
+    image: sectra-api
+    container_name: sectra-api
+    restart: unless-stopped
+    env_file: .env
+    environment:        # inside the compose network the services are reached by name, not localhost
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      QDRANT_URL: http://qdrant:6333
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/logs:/app/data/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
 
 volumes:
   mysql_data:

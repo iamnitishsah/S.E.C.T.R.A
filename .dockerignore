@@ -1,0 +1,25 @@
+# Keep the build context small and keep secrets and data out of the image.
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+.venv
+venv
+__pycache__
+*.py[cod]
+*.egg-info
+.pytest_cache
+.idea
+.vscode
+.DS_Store
+data
+notebooks
+eval
+docs
+tests
+sql
+*.md
+Makefile
+docker-compose*.yml
+Dockerfile
