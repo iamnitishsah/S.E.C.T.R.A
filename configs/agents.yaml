@@ -1,0 +1,14 @@
+aliases:                 # common names that differ from the SEC company name -> ticker
+  google: GOOGL
+  facebook: META
+  meta: META
+  lilly: LLY
+  "j&j": JNJ
+  jnj: JNJ
+  conoco: COP
+  schlumberger: SLB
+  marathon: MPC
+  merck: MRK
+  amd: AMD
+  broadcom: AVGO
+  mplx: MPC

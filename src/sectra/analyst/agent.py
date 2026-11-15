@@ -127,7 +127,7 @@ def unsupported_numbers(answer: str, result: QueryResult, question: str) -> list
 
 
 def ask_sql(question: str, llm, engine, cfg: dict, schema: str | None = None, max_attempts: int = 3,
-            temperature: float = 0.0, max_tokens: int = 2000) -> SQLAnswer:
+            temperature: float = 0.0, max_tokens: int = 2000, write_answer: bool = True) -> SQLAnswer:
     schema = schema or get_schema(engine)
     ans = SQLAnswer(question, "")
     result = None
@@ -157,6 +157,8 @@ def ask_sql(question: str, llm, engine, cfg: dict, schema: str | None = None, ma
     ans.sql, ans.columns, ans.rows, ans.truncated = result.sql, result.columns, result.rows, result.truncated
     acc_cols = [i for i, c in enumerate(result.columns) if "accession" in c.lower()]
     ans.sources = sorted({row[i] for row in result.rows for i in acc_cols if row[i]})
+    if not write_answer:                              # the graph's writer node writes the answer instead
+        return ans
     ans.text = call(ANSWER_SYSTEM, f"Question: {question}\n\nSQL:\n{result.sql}\n\nResult table "
                                    f"({len(result.rows)} rows):\n{format_rows(result, max_rows=50)}")
     ans.unsupported_numbers = unsupported_numbers(ans.text, result, question)

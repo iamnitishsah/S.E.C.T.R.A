@@ -1,0 +1,15 @@
+{"id": "hy_01", "type": "hybrid", "question": "How much did Nvidia's revenue grow in fiscal 2025, and what did management say drove the growth?", "tickers": ["NVDA"], "fiscal_year": 2025}
+{"id": "hy_02", "type": "hybrid", "question": "What was Eli Lilly's revenue in fiscal 2025, and which products does the company say drove it?", "tickers": ["LLY"], "fiscal_year": 2025}
+{"id": "hy_03", "type": "hybrid", "question": "What was Amazon's operating cash flow in fiscal 2025, and how does the company describe its capital investment plans?", "tickers": ["AMZN"], "fiscal_year": 2025}
+{"id": "hy_04", "type": "hybrid", "question": "How much did AMD spend on research and development in fiscal 2025, and what does it say that spending is focused on?", "tickers": ["AMD"], "fiscal_year": 2025}
+{"id": "hy_05", "type": "hybrid", "question": "What was Chevron's net income in fiscal 2025, and what reasons did it give for the change from the prior year?", "tickers": ["CVX"], "fiscal_year": 2025}
+{"id": "hy_06", "type": "hybrid", "question": "What was Apple's gross margin in fiscal 2025, and what factors does Apple say can affect its gross margin?", "tickers": ["AAPL"], "fiscal_year": 2025}
+{"id": "hy_07", "type": "hybrid", "question": "How did Pfizer's revenue change in fiscal 2025 compared with fiscal 2024, and what does the company attribute the change to?", "tickers": ["PFE"], "fiscal_year": 2025}
+{"id": "hy_08", "type": "hybrid", "question": "What was Meta's capital expenditure in fiscal 2025, and what does it say it is investing in?", "tickers": ["META"], "fiscal_year": 2025}
+{"id": "hy_09", "type": "hybrid", "question": "Which energy company had the highest net income in fiscal 2025, and what risks does it describe related to commodity prices?", "tickers": [], "fiscal_year": 2025}
+{"id": "hy_10", "type": "hybrid", "question": "Which semiconductor company had the fastest revenue growth in fiscal 2025, and what did it say drove that growth?", "tickers": [], "fiscal_year": 2025}
+{"id": "hy_11", "type": "hybrid", "question": "What was Microsoft's operating margin in fiscal 2025, and what does it say about demand for its cloud services?", "tickers": ["MSFT"], "fiscal_year": 2025}
+{"id": "hy_12", "type": "hybrid", "question": "How much cash did Broadcom hold at the end of fiscal 2025, and how does it describe its debt and liquidity?", "tickers": ["AVGO"], "fiscal_year": 2025}
+{"id": "hy_13", "type": "hybrid", "question": "What was Alphabet's net income in fiscal 2025, and which regulatory risks does it highlight?", "tickers": ["GOOGL"], "fiscal_year": 2025}
+{"id": "hy_14", "type": "hybrid", "question": "Compare the fiscal 2025 revenue of Merck and Johnson & Johnson, and describe what each says about losing patent protection.", "tickers": ["MRK", "JNJ"], "fiscal_year": 2025}
+{"id": "hy_15", "type": "hybrid", "question": "What share of its revenue did Qualcomm spend on research and development in fiscal 2025, and why does it say that spending matters?", "tickers": ["QCOM"], "fiscal_year": 2025}

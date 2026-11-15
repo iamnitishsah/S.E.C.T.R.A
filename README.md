@@ -8,7 +8,8 @@
 | Corpus | 20 companies, 80 annual reports, 534,026 XBRL facts, 11,540 text chunks |
 | Retrieval | **95.1% Recall@5** on 82 paraphrased questions searched across the whole corpus (84.1% before reranking) |
 | Text-to-SQL | **93.5%** execution accuracy on 46 questions on the first run |
-| Status | Phases 0–5 complete, except answer faithfulness in Phase 4 · multi-agent routing, risk diffing and UI planned |
+| Routing | **94.0%** of 151 questions routed correctly; **15 of 15** unanswerable questions refused end to end |
+| Status | Phases 0–6 complete, except answer faithfulness in Phase 4 · risk diffing and UI planned |
 
 ---
 
@@ -45,7 +46,7 @@ S.E.C.T.R.A gives each kind of question to the tool that is good at it:
 |---|---|---|---|
 | Exact figures (revenue, net income, assets…) | XBRL facts in **MySQL**, normalized into 15 canonical metrics | Text-to-SQL agent over `financial_metrics`, validated and read-only | ✅ built and measured |
 | Explanations, risks, strategy | Filing text in **Qdrant**, split by 10-K Item | Dense retrieval → reranking → cited generation | ✅ built and measured |
-| Questions needing both | Both | Supervisor agent routes and merges | Phase 6 |
+| Questions needing both | Both | LangGraph: router → SQL → retrieval → one writer citing table and passages | ✅ built and measured |
 
 **Design principle: the LLM never supplies facts from memory.** Every figure must come from a database row and every textual claim from a retrieved passage. When the evidence is missing, the system says *"not found"* instead of guessing.
 
@@ -94,7 +95,7 @@ Not found in the indexed filings.
 | Metric validation | Values compared by hand with printed statements | **10 / 10 match** after one mapping fix (Chevron revenue) |
 | Section extraction | Filings with Items 1A **and** 7 correctly extracted | **76 / 80 (95.0%)**; all 4 failures have one known cause |
 | Chunking | Chunks produced | **11,540** (median 319 tokens, max 458) |
-| Tests | Unit tests, no network | **123 passing** |
+| Tests | Unit tests, no network | **148 passing** |
 
 ### Retrieval
 
@@ -134,6 +135,30 @@ ticker  fiscal_year  source_accession      net_income_bn
 NVDA    2025         0001045810-26-000021  72.88
 ```
 
+### Research graph
+
+One command routes a question to the database, the filing text, or both (158 questions with known handling):
+
+| Measure | Result |
+|---|---|
+| Routed correctly | 142 / 151 (**94.0%**); hybrid 15 / 15, narrative 79 / 82, numeric 40 / 46 |
+| Answerable questions wrongly refused | 1 / 138 |
+| Company and fiscal year extracted | 94 / 94 and 81 / 81 |
+| Recall@5 using the router's filters | **98.8%**, equal to perfect filters (95.1% with none) |
+| Unanswerable questions refused end to end | **15 / 15** (the retrieval-score gate alone: 5 / 15) |
+
+The 15 refusals came from three layers: the router and corpus check (8), the evidence check (4) and the writer (3). Details and failures are in [docs/07-research-graph.md](docs/07-research-graph.md).
+
+```text
+$ python -m sectra.agents.graph "Which healthcare company grew revenue fastest in fiscal 2025, and what drove that growth?"
+Eli Lilly grew revenue fastest, at 44.7 % year-over-year in fiscal 2025 [T]. Revenue rose mainly because
+volume increased sharply, especially for Mounjaro and Zepbound [1][2].
+
+Steps:  router: both  ->  sql: 1 rows  ->  text: 5 passages (LLY FY2025)  ->  writer
+```
+
+(Output abridged.) The question names no company: the SQL step finds it, and the text search is then filtered to that company and year.
+
 ---
 
 ## 3. Architecture
@@ -169,7 +194,8 @@ flowchart TB
         L1["LLM API<br/>Groq, Gemini or NVIDIA"]
         Q5["CLI: sectra.analyst.agent"]
         Q6["SQL Analyst<br/>text-to-SQL, validator,<br/>read-only user"]
-        P1["Supervisor and<br/>Research Writer agents"]
+        Q7["CLI: sectra.agents.graph"]
+        Q8["Research graph (LangGraph)<br/>router, corpus check, writer"]
         P2["Risk diff"]
         P3["FastAPI + Streamlit"]
     end
@@ -185,13 +211,15 @@ flowchart TB
     Q3 --> L1
     Q5 --> Q6 --> D1
     Q6 --> L1
-    P3 -.-> P1
-    P1 -.-> Q6
-    P1 -.-> Q2
+    Q7 --> Q8
+    Q8 --> Q6
+    Q8 --> Q2
+    Q8 --> L1
+    P3 -.-> Q8
     P2 -.-> D2
 
     classDef planned stroke-dasharray: 5 5,color:#888
-    class P1,P2,P3 planned
+    class P2,P3 planned
 ```
 
 Every model (embedding, reranking, generation) is reached through a hosted API and chosen in `configs/`; no model name appears in the code. The step-by-step query flow is in [docs/04-retrieval-and-answers.md](docs/04-retrieval-and-answers.md).
@@ -226,6 +254,7 @@ flowchart LR
 | `eval` | Retrieval evaluation on both question sets | a few minutes |
 | `threshold` | Refusal-threshold sweep from the saved results | <1 s |
 | `sql-eval` | SQL Analyst evaluation on 46 questions | ~8 min |
+| `routing-eval` | Router, routed retrieval and end-to-end refusal on 158 questions | ~12 min |
 
 ---
 
@@ -238,10 +267,9 @@ flowchart LR
 | [docs/03-filing-text.md](docs/03-filing-text.md) | HTML to clean text; splitting a 10-K into Items; chunking rules |
 | [docs/04-retrieval-and-answers.md](docs/04-retrieval-and-answers.md) | Embeddings, vector store, reranking, LLM layer, citation checks, the two refusal layers |
 | [docs/05-evaluation.md](docs/05-evaluation.md) | How the question sets were built; every retrieval variant measured; threshold calibration; what the numbers do not show |
+| [docs/07-research-graph.md](docs/07-research-graph.md) | The LangGraph graph: router, corpus check, nodes, the writer and its checks; routing, routed-retrieval and refusal evaluation |
 | [docs/06-sql-analyst.md](docs/06-sql-analyst.md) | Text-to-SQL flow; the read-only user and the query validator; the number check; execution-accuracy evaluation and its failures |
 | [docs/findings.md](docs/findings.md) | Problems found in the data and the pipeline, with evidence and fixes; changes to the original plan |
-| [docs/dataset.md](docs/dataset.md) | Generated per-company dataset report |
-| [docs/validation.md](docs/validation.md) | Hand checks of database values against printed financial statements |
 | [eval/results/experiments.md](eval/results/experiments.md) | Archived numbers for every retrieval experiment, including removed variants |
 
 ---
@@ -288,6 +316,7 @@ The first `make all` downloads ~313 MB from SEC and embeds 11,540 chunks through
 | `companies.yaml` | Tickers by sector; forms; filings per company |
 | `retrieval.yaml` | Indexed Items; chunking; embedding API (URL, model, key variable, dimensions); vector store; rerank API and candidate count; which retriever `ask` uses and its refusal threshold |
 | `sql.yaml` | SQL Analyst: table allowlist, row limit, query timeout, read-only user variables |
+| `agents.yaml` | Company-name aliases for the router |
 | `llm.yaml` | LLM backends (base URL, key variable, model); generation settings (`temperature: 0`, `max_tokens: 2000`) |
 
 Switching a model or provider is a config change. Changing the embedding model or its dimensions requires `make embed index`, and the refusal thresholds should be recalibrated with `make eval threshold`.
@@ -305,10 +334,15 @@ python -m sectra.llm.base groq                            # list models availabl
 python -m sectra.analyst.agent "Which companies grew revenue by more than 20% in fiscal 2025?" --show-sql
 python -m sectra.analyst.tools                            # the schema text the model sees
 
+# Ask anything: routed to the database, the filings, or both
+python -m sectra.agents.graph "How fast did Nvidia's revenue grow in fiscal 2025, and what drove it?" --show-sql
+python -m sectra.agents.router "..."                       # the routing decision only
+
 # Measure
 make eval                                                 # retrieval
 make threshold
 make sql-eval                                             # SQL Analyst
+make routing-eval                                         # router, routed retrieval, refusal
 
 # Query the financial database by hand (MySQL shell)
 docker compose exec mysql sh -c 'MYSQL_PWD="$MYSQL_PASSWORD" mysql -u"$MYSQL_USER" "$MYSQL_DATABASE"'
@@ -333,7 +367,7 @@ The Qdrant dashboard is at http://localhost:6333/dashboard.
 | 3 | Chunking, embeddings, vector store, cited answers with refusal | ✅ |
 | 4 | Evaluation and retrieval upgrades | Retrieval and refusal threshold ✅ · answer faithfulness and generator comparison pending |
 | 5 | SQL Analyst: text-to-SQL with a query validator and a read-only user; execution-accuracy evaluation | ✅ |
-| 6 | Multi-agent orchestration: supervisor, routing, grounding checks | Planned |
+| 6 | Research graph (LangGraph): router, corpus check, SQL and text nodes, one cited writer; routing evaluation | ✅ |
 | 7 | Risk diffing between two fiscal years of Item 1A | Planned |
 | 8 | Injection filter, red-team set, FastAPI, Streamlit | Planned |
 | 9 | Failure analysis, demo, release | Planned |
@@ -354,6 +388,7 @@ S.E.C.T.R.A/
 │   ├── companies.yaml           # tickers by sector, forms, filings per company
 │   ├── retrieval.yaml           # chunking, embedding API, vector store, rerank API, answering
 │   ├── sql.yaml                 # SQL Analyst: table allowlist, row limit, timeout
+│   ├── agents.yaml              # company-name aliases for the router
 │   └── llm.yaml                 # LLM backends and generation settings
 │
 ├── sql/
@@ -393,6 +428,10 @@ S.E.C.T.R.A/
 │   ├── rag/
 │   │   ├── answer.py            # retrieve -> prompt -> cite -> validate
 │   │   └── ask.py               # CLI + run log
+│   ├── agents/
+│   │   ├── router.py            # route (sql | text | both | none) + deterministic corpus check
+│   │   ├── nodes.py             # router, sql, text, writer, refuse as plain functions
+│   │   └── graph.py             # LangGraph wiring, CLI, run log
 │   ├── analyst/
 │   │   ├── validator.py         # SELECT-only, allowlist, LIMIT; re-generates the query
 │   │   ├── tools.py             # get_schema(), run_readonly_sql()
@@ -401,11 +440,12 @@ S.E.C.T.R.A/
 │       ├── qa_set.py            # generate, review, build and paraphrase the question sets
 │       ├── retrieval_eval.py    # Recall@k, MRR, paired comparison
 │       ├── threshold.py         # refusal-threshold sweep
-│       └── sql_eval.py          # execution accuracy of the SQL Analyst
+│       ├── sql_eval.py          # execution accuracy of the SQL Analyst
+│       └── routing_eval.py      # routing, routed retrieval, end-to-end refusal
 │
-├── tests/                       # 123 tests; fakes and SQLite instead of network calls
+├── tests/                       # 148 tests; fakes and SQLite instead of network calls
 ├── eval/
-│   ├── datasets/                # retrieval question sets, sql_qa (46 questions with gold SQL)
+│   ├── datasets/                # retrieval question sets, sql_qa (46, with gold SQL), hybrid_qa (15)
 │   └── results/                 # per-question results, experiments.md, section_parse_report.csv
 ├── docs/                        # see Section 4
 └── data/                        # git-ignored; rebuilt by `make all`
@@ -430,7 +470,7 @@ S.E.C.T.R.A/
 | Packaging | Docker Compose, `pyproject.toml`, Makefile | ✅ |
 | Faithfulness judge | Claim-level LLM judge | Planned |
 | SQL safety | `sqlglot` validator, read-only MySQL user, statement timeout | ✅ |
-| Agents | LangGraph | Phase 6 |
+| Orchestration | LangGraph (state graph with conditional edges) | ✅ |
 | API / UI | FastAPI, Streamlit | Phase 8 |
 
 ---
@@ -444,7 +484,7 @@ S.E.C.T.R.A/
 - **No segment-level numbers** in SQL; they exist only in filing text.
 - **The SQL Analyst is measured on 46 questions written alongside its prompt**, over one fact table and 15 metrics. The 100% second-run score is tuned on those questions; 93.5% is the first-run figure.
 - **Fiscal years are each company's own.** "Fiscal 2025" ended in January 2025 for NVIDIA and December 2025 for AMD, so cross-company comparisons for one fiscal year cover different periods.
-- **The two pipelines are separate commands.** Nothing yet routes a question to SQL or to text, or combines them.
+- **Routing is measured; hybrid answer quality is not.** The router sends some sector-level rankings to the hybrid path unnecessarily, and a subsidiary or brand name it does not know is refused.
 - **Retrieval is measured on one kind of question:** 82 single-passage questions written and paraphrased by LLMs. Multi-passage, cross-company and cross-year questions are not measured.
 - **Answer faithfulness is not measured yet.** Citation checks confirm that cited passages exist, not that they support each claim.
 - **Out-of-corpus questions** (a company or year that is not indexed) are mostly caught by the model's refusal, not by retrieval scores.

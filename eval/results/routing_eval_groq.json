@@ -1,0 +1,3970 @@
+{
+ "backend": "groq",
+ "model": "openai/gpt-oss-120b",
+ "summary": {
+  "routing": {
+   "numeric": 0.87,
+   "narrative": 0.963,
+   "hybrid": 1.0,
+   "unanswerable": 1.0,
+   "all": 0.94
+  },
+  "outcomes": {
+   "numeric": {
+    "sql": 32,
+    "both": 6,
+    "refuse": 5,
+    "text": 3
+   },
+   "narrative": {
+    "text": 78,
+    "sql": 2,
+    "refuse": 1,
+    "both": 1
+   },
+   "hybrid": {
+    "both": 15
+   },
+   "unanswerable": {
+    "refuse": 8
+   }
+  },
+  "wrongly_refused": 1,
+  "answerable": 138,
+  "ticker_accuracy": 1.0,
+  "year_accuracy": 1.0,
+  "fallbacks": 0
+ },
+ "records": [
+  {
+   "id": "sql_01",
+   "group": "numeric",
+   "question": "What was Apple's revenue in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_02",
+   "group": "numeric",
+   "question": "What was Microsoft's net income in fiscal 2024?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "MSFT": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_03",
+   "group": "numeric",
+   "question": "What was NVIDIA's diluted earnings per share in fiscal 2026?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "NVDA": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_04",
+   "group": "numeric",
+   "question": "What were Chevron's total assets at the end of fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "CVX": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_05",
+   "group": "numeric",
+   "question": "How much cash did Amazon generate from operations in fiscal 2023?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "AMZN": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_06",
+   "group": "numeric",
+   "question": "How much did Eli Lilly spend on research and development in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "LLY"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "LLY": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_07",
+   "group": "numeric",
+   "question": "How much cash and cash equivalents did AMD hold at the end of fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AMD": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_08",
+   "group": "numeric",
+   "question": "What was Intel's revenue in each fiscal year from 2022 to 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "INTC"
+   ],
+   "fiscal_years": [
+    2022,
+    2023,
+    2024,
+    2025
+   ],
+   "text_years": {
+    "INTC": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_09",
+   "group": "numeric",
+   "question": "What was Apple's revenue in every fiscal year from 2021 to 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_10",
+   "group": "numeric",
+   "question": "What is Qualcomm's net income?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [],
+   "text_years": {
+    "QCOM": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_11",
+   "group": "numeric",
+   "question": "Which semiconductor company had the highest net income in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_12",
+   "group": "numeric",
+   "question": "Which three companies had the highest revenue in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_13",
+   "group": "numeric",
+   "question": "Which energy company had the lowest revenue in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_14",
+   "group": "numeric",
+   "question": "Rank the healthcare companies by research and development spending in fiscal 2025.",
+   "accept": [
+    "sql"
+   ],
+   "got": "both",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_15",
+   "group": "numeric",
+   "question": "Which technology company had the largest total assets in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "both",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_16",
+   "group": "numeric",
+   "question": "Which company had the highest diluted earnings per share in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_17",
+   "group": "numeric",
+   "question": "What was Apple's gross margin in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_18",
+   "group": "numeric",
+   "question": "What was NVIDIA's net profit margin (net income as a percentage of revenue) in fiscal 2026?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "NVDA": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_19",
+   "group": "numeric",
+   "question": "For each semiconductor company, what share of revenue was spent on research and development in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_20",
+   "group": "numeric",
+   "question": "What was Microsoft's operating margin (operating income as a percentage of revenue) in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "MSFT": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_21",
+   "group": "numeric",
+   "question": "Which technology company had the highest net profit margin in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "both",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_22",
+   "group": "numeric",
+   "question": "What percentage of Alphabet's operating cash flow went to capital expenditures in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "GOOGL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "GOOGL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_23",
+   "group": "numeric",
+   "question": "What was Apple's return on equity (net income as a percentage of total equity) in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_24",
+   "group": "numeric",
+   "question": "Which companies had net income above 25% of revenue in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_25",
+   "group": "numeric",
+   "question": "By what percentage did NVIDIA's revenue grow in fiscal 2025 compared with fiscal 2024?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2024,
+    2025
+   ],
+   "text_years": {
+    "NVDA": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_26",
+   "group": "numeric",
+   "question": "Which companies grew revenue by more than 20% in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_27",
+   "group": "numeric",
+   "question": "Which energy companies had lower revenue in fiscal 2025 than in fiscal 2024?",
+   "accept": [
+    "sql"
+   ],
+   "got": "both",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2024,
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_28",
+   "group": "numeric",
+   "question": "What was AMD's year-over-year revenue growth in fiscal 2023, 2024 and 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2023,
+    2024,
+    2025
+   ],
+   "text_years": {
+    "AMD": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_29",
+   "group": "numeric",
+   "question": "Which semiconductor company had the fastest revenue growth in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_30",
+   "group": "numeric",
+   "question": "By how many billion dollars did Pfizer's net income change from fiscal 2023 to fiscal 2024?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2023,
+    2024
+   ],
+   "text_years": {
+    "PFE": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_31",
+   "group": "numeric",
+   "question": "What was the combined revenue of the five energy companies in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_32",
+   "group": "numeric",
+   "question": "What was the average net income per sector in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "both",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_33",
+   "group": "numeric",
+   "question": "How much did the technology companies spend on research and development in total in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_34",
+   "group": "numeric",
+   "question": "What was the total net income of all companies in the database in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_35",
+   "group": "numeric",
+   "question": "How many companies reported gross profit in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_36",
+   "group": "numeric",
+   "question": "Which sector had the highest total revenue in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "both",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_37",
+   "group": "numeric",
+   "question": "What was Pfizer's gross profit in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "PFE": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_38",
+   "group": "numeric",
+   "question": "What was Chevron's gross profit in fiscal 2025?",
+   "accept": [
+    "sql"
+   ],
+   "got": "sql",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "CVX": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_39",
+   "group": "numeric",
+   "question": "What was Apple's revenue in fiscal 2005?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2005
+   ],
+   "text_years": {},
+   "refusal": "the database has AAPL for fiscal 2009-2026, not 2005",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_40",
+   "group": "numeric",
+   "question": "What is NVIDIA's stock price?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [],
+   "text_years": {},
+   "refusal": "The request asks for a current stock price, which is not provided by the 10-K data and is disallowed.",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_41",
+   "group": "numeric",
+   "question": "How much revenue did Apple make from the iPhone in fiscal 2025?",
+   "accept": [
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_42",
+   "group": "numeric",
+   "question": "What was Microsoft's revenue in the second quarter of fiscal 2025?",
+   "accept": [
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "MSFT": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_43",
+   "group": "numeric",
+   "question": "What will AMD's revenue be in fiscal 2030?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2030
+   ],
+   "text_years": {},
+   "refusal": "The request asks for a future revenue forecast, which is not provided in 10‑K reports.",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_44",
+   "group": "numeric",
+   "question": "What was Tesla's revenue in fiscal 2025?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "not among the indexed companies: Tesla (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_45",
+   "group": "numeric",
+   "question": "How many employees does Amazon have?",
+   "accept": [
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [],
+   "text_years": {
+    "AMZN": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "sql_46",
+   "group": "numeric",
+   "question": "Should I buy Intel stock?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "INTC"
+   ],
+   "fiscal_years": [],
+   "text_years": {},
+   "refusal": "The user is asking for investment advice, which is not allowed.",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "gen_0000320193-24-000123_1A_043",
+   "group": "narrative",
+   "question": "In fiscal 2024, what did Apple Inc. disclose about the concentration of its non‑sale‑related amounts owed to suppliers and advance payments?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "AAPL": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000320193-23-000106_1A_040",
+   "group": "narrative",
+   "question": "In fiscal 2023, which categories of amounts owed to Apple did the company say could subject it to financial exposure?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "AAPL": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000320193-25-000079_7_009",
+   "group": "narrative",
+   "question": "In fiscal 2025, what were Apple’s production procurement commitments and how much of that total was due in the next year?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000320193-26-000026_7_013",
+   "group": "narrative",
+   "question": "In fiscal 2026, what does Apple disclose regarding its unsettled tax matters and the possible effect on its operating performance and economic standing?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "AAPL": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000320193-23-000106_1_003",
+   "group": "narrative",
+   "question": "In fiscal 2023, which key elements does Apple identify as crucial to its market position?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "AAPL": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001551152-23-000011_1A_018",
+   "group": "narrative",
+   "question": "In fiscal 2022, what amount did AbbVie disclose that the other company pledged to pay in a nationwide agreement over drug litigation?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "ABBV"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "ABBV": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001551152-26-000008_1A_015",
+   "group": "narrative",
+   "question": "In fiscal 2025, what did AbbVie indicate might affect its production and sourcing expenses due to shifts in worldwide commerce regulations?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "ABBV"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "ABBV": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001551152-23-000011_7_037",
+   "group": "narrative",
+   "question": "In fiscal 2022, what was the amount of AbbVie’s one‑off tax charge and how will it be settled?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "ABBV"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "ABBV": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001551152-25-000020_1_046",
+   "group": "narrative",
+   "question": "In fiscal 2024, what areas does AbbVie say it allocates resources toward for its staff?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "ABBV"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "ABBV": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000002488-23-000047_1A_030",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did AMD say might happen if it does not bring new offerings and tech to market on schedule?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AMD": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000002488-26-000018_1A_017",
+   "group": "narrative",
+   "question": "In fiscal 2025, what did AMD caution might happen to its merchandise revenue if the U.S. currency appreciates versus foreign money?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AMD": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000002488-23-000047_7_004",
+   "group": "narrative",
+   "question": "In fiscal 2022, what amount did Advanced Micro Devices return to investors via its buyback initiative?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AMD": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000002488-23-000047_1_023",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did AMD state about the target uses for its Versal line?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AMD": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001018724-25-000004_1A_038",
+   "group": "narrative",
+   "question": "In fiscal 2024, what potential consequences did Amazon say might arise from breaches of its public-sector agreement rules?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "AMZN": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001018724-25-000004_1A_034",
+   "group": "narrative",
+   "question": "In fiscal 2024, what did Amazon disclose about the impact of rising external‑vendor transactions on its reimbursement scheme for claim costs?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "AMZN": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001018724-23-000004_7_008",
+   "group": "narrative",
+   "question": "In fiscal 2022, how did Amazon record its stock?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AMZN": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001018724-24-000008_7_003",
+   "group": "narrative",
+   "question": "In fiscal 2023, what approaches did Amazon say it would employ to decrease per‑item expenses?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "AMZN": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001018724-23-000004_1_008",
+   "group": "narrative",
+   "question": "In fiscal 2022, when did Brian T. Olsavsky begin his tenure as Amazon's top finance executive?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AMZN": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001730168-24-000139_1A_010",
+   "group": "narrative",
+   "question": "In fiscal 2024, what percentage of Broadcom Inc.'s net top‑line was derived from transactions with channel partners?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AVGO"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "AVGO": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001730168-23-000096_1A_046",
+   "group": "narrative",
+   "question": "In fiscal 2023, what risk did Broadcom say might arise from an unfavorable ruling in an IP lawsuit?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AVGO"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "AVGO": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001730168-22-000118_7_007",
+   "group": "narrative",
+   "question": "In fiscal 2022, when does Broadcom Inc. record income from its chip products?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AVGO"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AVGO": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001730168-24-000139_7_027",
+   "group": "narrative",
+   "question": "In fiscal 2024, how much did Broadcom Inc. issue in structured borrowings to finance the monetary segment of the VMware acquisition payment?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AVGO"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "AVGO": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001730168-22-000118_7A_000",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did Broadcom Inc. disclose regarding its FX future positions as of the 30th day of the tenth month, 2022?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AVGO"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "AVGO": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001163165-26-000009_1A_027",
+   "group": "narrative",
+   "question": "In fiscal 2025, what possible impacts did ConocoPhillips say might follow a breach of its information, IT, OT, or control networks?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "COP"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "COP": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001163165-23-000006_1A_028",
+   "group": "narrative",
+   "question": "In fiscal 2022, what impacts did ConocoPhillips say may arise from a breach, harm, or interruption of its technology and facilities?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "COP"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "COP": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001163165-23-000006_7_041",
+   "group": "narrative",
+   "question": "In fiscal 2022, what amount did ConocoPhillips record as proceeds from selling its CVE equity stake?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "COP"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "COP": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001163165-25-000012_7_072",
+   "group": "narrative",
+   "question": "In fiscal 2024, what was ConocoPhillips' total net recorded speculative asset cost at year‑end and how much of that figure stemmed from the Marathon Oil purchase?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "COP"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "COP": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001163165-23-000006_7A_000",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did ConocoPhillips say regarding the purpose of using derivative agreements in its trading division?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "COP"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "COP": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000093410-24-000013_1A_007",
+   "group": "narrative",
+   "question": "In fiscal 2023, what did Chevron Corp disclose regarding its ability to cover business hazards and possible legal obligations?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "CVX": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000093410-23-000009_1A_006",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did Chevron say may happen if malicious individuals breached its operational technology infrastructure or additional essential assets?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "CVX": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000093410-25-000009_7_067",
+   "group": "narrative",
+   "question": "In fiscal 2024, why did Chevron say that conducting a scenario test of the decommissioning liability’s effect on profit was not feasible?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "CVX": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000093410-24-000013_1_039",
+   "group": "narrative",
+   "question": "In fiscal 2023, what spending commitment did Chevron announce for the Leviathan development?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "CVX": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000821189-23-000015_1A_036",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did EOG Resources state might raise its expenses when undertaking GHG emission cut efforts?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "EOG"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "EOG": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000821189-26-000054_7_002",
+   "group": "narrative",
+   "question": "In fiscal 2025, what were EOG Resources' typical oil and gas rates on the exchange and how did they shift compared to fiscal 2024?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "EOG"
+   ],
+   "fiscal_years": [
+    2024,
+    2025
+   ],
+   "text_years": {
+    "EOG": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000821189-23-000015_7_037",
+   "group": "narrative",
+   "question": "In fiscal 2022, what was EOG Resources' total capital invested in resource discovery and production activities?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "sql",
+   "route_ok": false,
+   "tickers": [
+    "EOG"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "EOG": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000821189-26-000054_1_010",
+   "group": "narrative",
+   "question": "In fiscal 2025, how many billion cubic feet of gas was EOG obligated to supply in 2026?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "EOG"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "EOG": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001652044-24-000022_1A_031",
+   "group": "narrative",
+   "question": "In fiscal 2023, what did Alphabet say about a preliminary arrangement on the EU AI Act and its effect on general‑purpose AI platforms and the models they employ?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "GOOGL"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "GOOGL": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001652044-25-000014_1A_047",
+   "group": "narrative",
+   "question": "In fiscal 2024, what did Alphabet Inc. say might happen if it fails to gather levies as a payroll‑deduction intermediary?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "GOOGL"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "GOOGL": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001652044-26-000018_7_013",
+   "group": "narrative",
+   "question": "In fiscal 2025, what total amount did Alphabet repurchase of its A and C stock?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "GOOGL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "GOOGL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001652044-25-000014_7_035",
+   "group": "narrative",
+   "question": "In fiscal 2024, what amount did Alphabet record as the earnings levy due for the one‑time shift?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "GOOGL"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "GOOGL": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000200406-23-000016_1A_013",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did Johnson & Johnson say may occur if a tax agency takes a stance that differs from what it anticipated?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "JNJ"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "JNJ": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000200406-25-000038_1A_014",
+   "group": "narrative",
+   "question": "In fiscal 2024, what does Johnson & Johnson say may happen to its sales if it does not protect its intellectual property from outside attempts to introduce non‑brand equivalents of its key drugs?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "JNJ"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "JNJ": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000200406-26-000016_7_049",
+   "group": "narrative",
+   "question": "In fiscal 2025, which model does Johnson & Johnson apply to compute the estimated amount for the overall equity gain target associated with its PSUs?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "JNJ"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "JNJ": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000200406-24-000013_7_019",
+   "group": "narrative",
+   "question": "In fiscal 2023, what amount did Johnson & Johnson record for the allocation of non‑physical items within its goods‑related outlay?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "JNJ"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "JNJ": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000200406-24-000013_1C_001",
+   "group": "narrative",
+   "question": "In fiscal 2023, who at Johnson & Johnson is in charge of overseeing and mitigating information security threats?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "JNJ"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "JNJ": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000059478-23-000082_1A_024",
+   "group": "narrative",
+   "question": "In fiscal 2022, what did Eli Lilly say may become more challenging due to the merging of insurers, payer networks, and additional participants?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "LLY"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "LLY": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000059478-23-000082_7_026",
+   "group": "narrative",
+   "question": "In fiscal 2022, how did Eli Lilly report the change in U.S. sales for Humalog and what was the main factor?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "LLY"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "LLY": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000059478-26-000013_1_023",
+   "group": "narrative",
+   "question": "In fiscal 2025, which act did Eli Lilly say enables the FDA to permit copycat copies of new medicines?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "LLY"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "LLY": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001326801-25-000017_1A_030",
+   "group": "narrative",
+   "question": "In fiscal 2024, what did Meta Platforms say it disclosed in early 2025 about its material guidelines and moderation measures?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "META"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "META": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001628280-26-003942_7_019",
+   "group": "narrative",
+   "question": "In fiscal 2025, what did Meta Platforms disclose about how it determines the estimated price of its non‑traded ownership positions and when it records a write‑down if a loss signal arises?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "META"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "META": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001326801-25-000017_7_030",
+   "group": "narrative",
+   "question": "In fiscal 2024, by how many dollars did Meta Platforms' ad income rise relative to 2023?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "META"
+   ],
+   "fiscal_years": [
+    2023,
+    2024
+   ],
+   "text_years": {
+    "META": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001510295-25-000012_1A_025",
+   "group": "narrative",
+   "question": "In fiscal 2024, what amounts of goodwill and other intangible assets did Marathon Petroleum Corp report on its balance sheet as of December 31, 2024?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MPC"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "MPC": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001510295-26-000009_1A_004",
+   "group": "narrative",
+   "question": "In fiscal 2025, which events does Marathon Petroleum Corp list that might negatively disrupt its activities?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MPC"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "MPC": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001510295-25-000012_7_003",
+   "group": "narrative",
+   "question": "In fiscal 2024, what change in MPLX's stake was made in the BANGL, LLC collaboration?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "refuse",
+   "route_ok": false,
+   "tickers": [],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {},
+   "refusal": "not among the indexed companies: MPLX (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "gen_0001510295-24-000015_7_047",
+   "group": "narrative",
+   "question": "In fiscal 2023, how much money did Marathon Petroleum Corp allocate to share buybacks?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MPC"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "MPC": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001510295-24-000015_1_025",
+   "group": "narrative",
+   "question": "In fiscal 2023, what did Marathon Petroleum Corp disclose about the EPA and the engineering agency's latest regulation released on the 18th of the first month of 2023?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MPC"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "MPC": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001628280-24-006850_1A_014",
+   "group": "narrative",
+   "question": "In fiscal 2023, what did Merck indicate would occur to its drug revenue if its exclusivity period ends?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MRK"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "MRK": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001628280-24-006850_7_057",
+   "group": "narrative",
+   "question": "In fiscal 2023, what was Merck & Co.'s total in‑process R&D amount and which two programs comprised the majority of it?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MRK"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "MRK": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001628280-23-005061_7_060",
+   "group": "narrative",
+   "question": "In fiscal 2022, what was the amount of the initial cash payment Merck made to Orion for the joint research and marketing of ODM-208 (MK-5684)?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MRK"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "MRK": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000950170-24-087843_1A_039",
+   "group": "narrative",
+   "question": "In fiscal 2024, what steps did Microsoft say it might take to address external IP disputes?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "MSFT": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001193125-26-323660_1A_011",
+   "group": "narrative",
+   "question": "In fiscal 2026, what deal did Microsoft report completing in the tenth month of 2023?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "MSFT": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000950170-25-100235_7_009",
+   "group": "narrative",
+   "question": "In fiscal 2025, how much higher was Microsoft’s expense of goods sold than in fiscal 2024?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "sql",
+   "route_ok": false,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2024,
+    2025
+   ],
+   "text_years": {
+    "MSFT": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000950170-24-087843_7_021",
+   "group": "narrative",
+   "question": "In fiscal 2024, what total of Microsoft’s liquid assets did the company disclose at the end of the second quarter?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "MSFT": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000950170-25-100235_1_020",
+   "group": "narrative",
+   "question": "In fiscal 2025, which category of licensing solution firms does Microsoft say mainly works with big enterprises?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "MSFT": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001045810-25-000023_1A_021",
+   "group": "narrative",
+   "question": "In fiscal 2025, what share of NVIDIA's total earnings came from markets beyond the U.S.?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "NVDA": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001045810-23-000017_7_017",
+   "group": "narrative",
+   "question": "In fiscal 2023, what was NVIDIA's profit percentage and what primary factor led to its drop?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "NVDA": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001045810-26-000021_7_008",
+   "group": "narrative",
+   "question": "In fiscal year 2026, how did stock allowances and dispositions of earlier impaired assets affect NVIDIA's core profitability?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "NVDA": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001045810-25-000023_1_032",
+   "group": "narrative",
+   "question": "In fiscal 2025, what was the gender breakdown of NVIDIA's total employees?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "NVDA": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000078003-23-000024_1A_043",
+   "group": "narrative",
+   "question": "In fiscal 2022, what concern did Pfizer highlight regarding the broader use of its COVID‑19 vaccine and antiviral treatment?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "PFE": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000078003-26-000026_1A_033",
+   "group": "narrative",
+   "question": "In fiscal 2025, what concern did Pfizer highlight regarding patient recruitment for its studies?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "PFE": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000078003-24-000039_7_061",
+   "group": "narrative",
+   "question": "In fiscal 2023, which financial effects from the transaction does Pfizer indicate are part of its deal‑specific entries?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "PFE": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000078003-23-000024_7_061",
+   "group": "narrative",
+   "question": "In fiscal 2022, what per‑share gain did Pfizer attribute to the revision of non‑cash intangible expense on its non‑GAAP earnings per share?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2022
+   ],
+   "text_years": {
+    "PFE": 2022
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000078003-26-000026_1_057",
+   "group": "narrative",
+   "question": "In fiscal 2025, what did Pfizer say about its results in the country's volume‑driven procurement tender?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "PFE": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000804328-26-000128_1A_002",
+   "group": "narrative",
+   "question": "In fiscal 2026, what did Qualcomm state regarding its reliance on external vendors for procurement, manufacturing, assembly, testing of its products and certain intellectual property?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "QCOM": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000804328-25-000085_1A_056",
+   "group": "narrative",
+   "question": "In fiscal 2025, what did Qualcomm warn might impair its capacity to obtain or use certain technical assets if a key vendor were transferred to a rival?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "QCOM": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000804328-23-000055_7_009",
+   "group": "narrative",
+   "question": "In fiscal 2023, by how much did reduced integrated‑circuit deliveries cut Qualcomm's QCT mobile‑phone sales, and by how much did the increased earnings per integrated circuit counterbalance that?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "QCOM": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000804328-23-000055_7_018",
+   "group": "narrative",
+   "question": "In fiscal 2023, what monetary distribution per equity unit did Qualcomm declare on the 13th day of the tenth month, 2023?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [
+    2023
+   ],
+   "text_years": {
+    "QCOM": 2023
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000804328-26-000128_1_030",
+   "group": "narrative",
+   "question": "In fiscal 2026, what share of Qualcomm's overall sales did Apple represent and what share did Samsung represent?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [
+    2026
+   ],
+   "text_years": {
+    "QCOM": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001193125-26-021017_1A_015",
+   "group": "narrative",
+   "question": "In fiscal 2025, what does SLB disclose about the extent of protection provided by its policies for environmental contamination and operational disruptions?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "SLB"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "SLB": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000950170-25-007638_7_000",
+   "group": "narrative",
+   "question": "In fiscal 2024, what amount of discretionary funds did SLB generate?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "SLB"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "SLB": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0000950170-25-007638_7_005",
+   "group": "narrative",
+   "question": "In fiscal 2024, how did SLB's Digital & Integration before‑tax profit ratio change from the prior quarter, and by how many hundredths of a percent did it increase?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "SLB"
+   ],
+   "fiscal_years": [
+    2024
+   ],
+   "text_years": {
+    "SLB": 2024
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "gen_0001193125-26-021017_7A_000",
+   "group": "narrative",
+   "question": "In fiscal 2025, what share of SLB’s total sales was expressed in U.S. currency?",
+   "accept": [
+    "both",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "SLB"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "SLB": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true,
+   "year_ok": true
+  },
+  {
+   "id": "un_01",
+   "group": "unanswerable",
+   "question": "What is Apple's policy on employee cafeteria menus?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [],
+   "text_years": {
+    "AAPL": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "off_topic",
+   "judged_at_router": false
+  },
+  {
+   "id": "un_02",
+   "group": "unanswerable",
+   "question": "What dress code does Microsoft require at its Redmond campus?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [],
+   "text_years": {
+    "MSFT": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "off_topic",
+   "judged_at_router": false
+  },
+  {
+   "id": "un_03",
+   "group": "unanswerable",
+   "question": "Which brand of coffee machines does NVIDIA use in its offices?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [],
+   "text_years": {
+    "NVDA": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "off_topic",
+   "judged_at_router": false
+  },
+  {
+   "id": "un_04",
+   "group": "unanswerable",
+   "question": "How many parking spaces does Qualcomm's headquarters have?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [],
+   "text_years": {
+    "QCOM": 2026
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "off_topic",
+   "judged_at_router": false
+  },
+  {
+   "id": "un_05",
+   "group": "unanswerable",
+   "question": "What is the home address of Meta's chief financial officer?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "META"
+   ],
+   "fiscal_years": [],
+   "text_years": {},
+   "refusal": "The request asks for personal private information, which is disallowed.",
+   "fallback": false,
+   "category": "off_topic",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_06",
+   "group": "unanswerable",
+   "question": "What supply chain risks did Tesla describe in its fiscal 2025 10-K?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "not among the indexed companies: Tesla (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)",
+   "fallback": false,
+   "category": "not_in_corpus",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_07",
+   "group": "unanswerable",
+   "question": "What did Walmart say about tariffs in its fiscal 2025 annual report?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "not among the indexed companies: Walmart (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)",
+   "fallback": false,
+   "category": "not_in_corpus",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_08",
+   "group": "unanswerable",
+   "question": "How did JPMorgan Chase explain the change in its net interest income in fiscal 2025?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "not among the indexed companies: JPMorgan Chase (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)",
+   "fallback": false,
+   "category": "not_in_corpus",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_09",
+   "group": "unanswerable",
+   "question": "What risk factors did Apple list in its fiscal 2012 10-K?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2012
+   ],
+   "text_years": {},
+   "refusal": "no AAPL 10-K is indexed for fiscal 2012 (indexed: 2023, 2024, 2025, 2026)",
+   "fallback": false,
+   "category": "outside_years",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_10",
+   "group": "unanswerable",
+   "question": "What did Merck's MD&A say about its drug pipeline in fiscal 2008?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "MRK"
+   ],
+   "fiscal_years": [
+    2008
+   ],
+   "text_years": {},
+   "refusal": "no MRK 10-K is indexed for fiscal 2008 (indexed: 2022, 2023, 2024, 2025)",
+   "fallback": false,
+   "category": "outside_years",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_11",
+   "group": "unanswerable",
+   "question": "Should I buy NVIDIA stock right now?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [],
+   "text_years": {},
+   "refusal": "The user is asking for investment advice, which is disallowed.",
+   "fallback": false,
+   "category": "advice_or_forecast",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_12",
+   "group": "unanswerable",
+   "question": "What will AMD's revenue be in fiscal 2030?",
+   "accept": [
+    "refuse"
+   ],
+   "got": "refuse",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2030
+   ],
+   "text_years": {},
+   "refusal": "The request asks for a future forecast, which is not provided in the 10-K reports.",
+   "fallback": false,
+   "category": "advice_or_forecast",
+   "judged_at_router": true
+  },
+  {
+   "id": "un_13",
+   "group": "unanswerable",
+   "question": "How did Apple describe its acquisition of Netflix in fiscal 2025?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "false_premise",
+   "judged_at_router": false
+  },
+  {
+   "id": "un_14",
+   "group": "unanswerable",
+   "question": "What did Chevron say about its nuclear power plant division in fiscal 2025?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "CVX": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "false_premise",
+   "judged_at_router": false
+  },
+  {
+   "id": "un_15",
+   "group": "unanswerable",
+   "question": "What reasons did Eli Lilly give for exiting the diabetes market in fiscal 2025?",
+   "accept": [
+    "both",
+    "refuse",
+    "sql",
+    "text"
+   ],
+   "got": "text",
+   "route_ok": true,
+   "tickers": [
+    "LLY"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "LLY": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": "false_premise",
+   "judged_at_router": false
+  },
+  {
+   "id": "hy_01",
+   "group": "hybrid",
+   "question": "How much did Nvidia's revenue grow in fiscal 2025, and what did management say drove the growth?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "NVDA"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "NVDA": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_02",
+   "group": "hybrid",
+   "question": "What was Eli Lilly's revenue in fiscal 2025, and which products does the company say drove it?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "LLY"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "LLY": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_03",
+   "group": "hybrid",
+   "question": "What was Amazon's operating cash flow in fiscal 2025, and how does the company describe its capital investment plans?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "AMZN"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AMZN": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_04",
+   "group": "hybrid",
+   "question": "How much did AMD spend on research and development in fiscal 2025, and what does it say that spending is focused on?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "AMD"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AMD": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_05",
+   "group": "hybrid",
+   "question": "What was Chevron's net income in fiscal 2025, and what reasons did it give for the change from the prior year?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "CVX"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "CVX": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_06",
+   "group": "hybrid",
+   "question": "What was Apple's gross margin in fiscal 2025, and what factors does Apple say can affect its gross margin?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "AAPL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AAPL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_07",
+   "group": "hybrid",
+   "question": "How did Pfizer's revenue change in fiscal 2025 compared with fiscal 2024, and what does the company attribute the change to?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "PFE"
+   ],
+   "fiscal_years": [
+    2024,
+    2025
+   ],
+   "text_years": {
+    "PFE": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_08",
+   "group": "hybrid",
+   "question": "What was Meta's capital expenditure in fiscal 2025, and what does it say it is investing in?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "META"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "META": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_09",
+   "group": "hybrid",
+   "question": "Which energy company had the highest net income in fiscal 2025, and what risks does it describe related to commodity prices?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "hy_10",
+   "group": "hybrid",
+   "question": "Which semiconductor company had the fastest revenue growth in fiscal 2025, and what did it say drove that growth?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {},
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true
+  },
+  {
+   "id": "hy_11",
+   "group": "hybrid",
+   "question": "What was Microsoft's operating margin in fiscal 2025, and what does it say about demand for its cloud services?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "MSFT"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "MSFT": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_12",
+   "group": "hybrid",
+   "question": "How much cash did Broadcom hold at the end of fiscal 2025, and how does it describe its debt and liquidity?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "AVGO"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "AVGO": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_13",
+   "group": "hybrid",
+   "question": "What was Alphabet's net income in fiscal 2025, and which regulatory risks does it highlight?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "GOOGL"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "GOOGL": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_14",
+   "group": "hybrid",
+   "question": "Compare the fiscal 2025 revenue of Merck and Johnson & Johnson, and describe what each says about losing patent protection.",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "MRK",
+    "JNJ"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "MRK": 2025,
+    "JNJ": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  },
+  {
+   "id": "hy_15",
+   "group": "hybrid",
+   "question": "What share of its revenue did Qualcomm spend on research and development in fiscal 2025, and why does it say that spending matters?",
+   "accept": [
+    "both"
+   ],
+   "got": "both",
+   "route_ok": true,
+   "tickers": [
+    "QCOM"
+   ],
+   "fiscal_years": [
+    2025
+   ],
+   "text_years": {
+    "QCOM": 2025
+   },
+   "refusal": "",
+   "fallback": false,
+   "category": null,
+   "judged_at_router": true,
+   "tickers_ok": true
+  }
+ ],
+ "retrieval": {
+  "n": 82,
+  "filtered_by_router": 81,
+  "recall@1": 0.829,
+  "recall@5": 0.988,
+  "recall@10": 1.0,
+  "mrr@10": 0.901
+ },
+ "end_to_end": {
+  "n": 15,
+  "refused": 15,
+  "by_layer": {
+   "no evidence (score gate or SQL declined)": 4,
+   "router": 8,
+   "writer (NOT_FOUND)": 3
+  },
+  "rows": [
+   {
+    "id": "un_01",
+    "category": "off_topic",
+    "question": "What is Apple's policy on employee cafeteria menus?",
+    "stopped_by": "no evidence (score gate or SQL declined)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "no passage in the filings matches the question"
+   },
+   {
+    "id": "un_02",
+    "category": "off_topic",
+    "question": "What dress code does Microsoft require at its Redmond campus?",
+    "stopped_by": "no evidence (score gate or SQL declined)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "no passage in the filings matches the question"
+   },
+   {
+    "id": "un_03",
+    "category": "off_topic",
+    "question": "Which brand of coffee machines does NVIDIA use in its offices?",
+    "stopped_by": "no evidence (score gate or SQL declined)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "no passage in the filings matches the question"
+   },
+   {
+    "id": "un_04",
+    "category": "off_topic",
+    "question": "How many parking spaces does Qualcomm's headquarters have?",
+    "stopped_by": "no evidence (score gate or SQL declined)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "no passage in the filings matches the question"
+   },
+   {
+    "id": "un_05",
+    "category": "off_topic",
+    "question": "What is the home address of Meta's chief financial officer?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "The request asks for personal private information, which is disallowed."
+   },
+   {
+    "id": "un_06",
+    "category": "not_in_corpus",
+    "question": "What supply chain risks did Tesla describe in its fiscal 2025 10-K?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "not among the indexed companies: Tesla (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)"
+   },
+   {
+    "id": "un_07",
+    "category": "not_in_corpus",
+    "question": "What did Walmart say about tariffs in its fiscal 2025 annual report?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "not among the indexed companies: Walmart (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)"
+   },
+   {
+    "id": "un_08",
+    "category": "not_in_corpus",
+    "question": "How did JPMorgan Chase explain the change in its net interest income in fiscal 2025?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "not among the indexed companies: JPMorgan Chase (indexed: AAPL, ABBV, AMD, AMZN, AVGO, COP, CVX, EOG, GOOGL, INTC, JNJ, LLY, META, MPC, MRK, MSFT, NVDA, PFE, QCOM, SLB)"
+   },
+   {
+    "id": "un_09",
+    "category": "outside_years",
+    "question": "What risk factors did Apple list in its fiscal 2012 10-K?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "no AAPL 10-K is indexed for fiscal 2012 (indexed: 2023, 2024, 2025, 2026)"
+   },
+   {
+    "id": "un_10",
+    "category": "outside_years",
+    "question": "What did Merck's MD&A say about its drug pipeline in fiscal 2008?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "no MRK 10-K is indexed for fiscal 2008 (indexed: 2022, 2023, 2024, 2025)"
+   },
+   {
+    "id": "un_11",
+    "category": "advice_or_forecast",
+    "question": "Should I buy NVIDIA stock right now?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "The user is asking for investment advice, which is disallowed."
+   },
+   {
+    "id": "un_12",
+    "category": "advice_or_forecast",
+    "question": "What will AMD's revenue be in fiscal 2030?",
+    "stopped_by": "router",
+    "answer": "This cannot be answered from the indexed filings and database.",
+    "reason": "The request asks for a future forecast, which is not provided in the 10-K reports."
+   },
+   {
+    "id": "un_13",
+    "category": "false_premise",
+    "question": "How did Apple describe its acquisition of Netflix in fiscal 2025?",
+    "stopped_by": "writer (NOT_FOUND)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "The provided passages do not contain any description of Apple’s acquisition of Netflix in fiscal 2025."
+   },
+   {
+    "id": "un_14",
+    "category": "false_premise",
+    "question": "What did Chevron say about its nuclear power plant division in fiscal 2025?",
+    "stopped_by": "writer (NOT_FOUND)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "The provided passages contain no statements from Chevron about a nuclear power plant division in fiscal 2025."
+   },
+   {
+    "id": "un_15",
+    "category": "false_premise",
+    "question": "What reasons did Eli Lilly give for exiting the diabetes market in fiscal 2025?",
+    "stopped_by": "writer (NOT_FOUND)",
+    "answer": "Not found in the indexed filings and database.",
+    "reason": "The provided passages do not contain any statement from Eli Lilly explaining reasons for exiting the diabetes market in fiscal 2025."
+   }
+  ]
+ }
+}

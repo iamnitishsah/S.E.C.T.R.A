@@ -86,8 +86,11 @@ def check_citations(text: str, n_passages: int) -> tuple[list[int], list[int], l
         s = line.strip()
         if s.startswith("#") or (s.startswith("**") and s.endswith("**")) or s.endswith(":"):
             continue
-        for sent in split_sentences(line.strip().lstrip("-*\u2022 ").strip()):
-            if len(sent.split()) >= 6 and not CITATION_RE.search(sent):
+        sents = split_sentences(line.strip().lstrip("-*\u2022 ").strip())
+        cited_at = [i for i, sent in enumerate(sents) if CITATION_RE.search(sent)]
+        covered = cited_at[-1] if cited_at else -1      # a citation covers the sentences before it in the same bullet
+        for sent in sents[covered + 1:]:
+            if len(sent.split()) >= 6:
                 uncited.append(sent)
     return valid, invalid, uncited
 

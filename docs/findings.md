@@ -40,6 +40,19 @@ Problems found while building, each with its evidence and how it is handled, fol
 | A sign can hide a correct number | "fell by 3.9%" was flagged because the row holds −3.9 | The number check compares absolute values |
 | A warning fired on the model's own `LIMIT` | "Row limit reached" appeared for `LIMIT 1` | Only the cap imposed by the validator counts |
 
+## Research graph
+
+| Finding | Evidence | Handling |
+|---|---|---|
+| A router can refuse what a similarity score cannot | Company-not-indexed and year-not-indexed questions passed the Phase 4 score gate; the corpus check refuses all of them | Deterministic check against the catalog before any retrieval |
+| No single layer catches every unanswerable question | Of 15: router 8, evidence check 4, writer 3 | Three layers kept |
+| The router over-uses the hybrid route | Six sector-level rankings ("which technology company had the largest total assets") went to `both` | Prompt rule added; not re-measured |
+| A subsidiary name is read as an unknown company | "MPLX" (owned by Marathon Petroleum) was refused as not indexed | Alias added; the general case remains |
+| A stray list item in YAML became a `None` table name | `configs/sql.yaml` gained a lone `-`; the validator crashed on it | Empty items ignored when the config is loaded |
+| Models cite at the end of a bullet, not after every sentence | Four of five bullets were flagged as uncited | A citation covers the sentences before it in the same bullet |
+| Citation markers were read as figures | `[2]` and `[3]` flagged as numbers not in the evidence | Citations removed before the number check |
+| `gpt-oss` writes `【T】` for `[T]` | Table citations were not recognised | Normalized like `【1】` |
+
 ## Evaluation
 
 | Finding | Evidence | Handling |
