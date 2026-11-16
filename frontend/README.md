@@ -1,75 +1,62 @@
-# React + TypeScript + Vite
+# S.E.C.T.R.A Web Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A domain-aligned, minimal, institutional financial terminal interface for **S.E.C.T.R.A** (*Securities & Exchange Commission Tracking, Retrieval & Analysis*). Connects to the exposed FastAPI service on AWS EC2 or a local instance.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Institutional Design**: Slate/zinc palette with monospace numeric precision, Bloomberg/FactSet quantitative research aesthetic.
+- **Tripartite Routing & Trace Visualization**: Step-by-step LangGraph orchestration trace (`router` → `sql` → `text` → `writer`) with route status badges (`SQL`, `TEXT`, `HYBRID`, `REFUSED`).
+- **Interactive Citations**: Clickable `[T]` indicators scroll to the executed SQL table; `[n]` indicators highlight source 10-K passages with direct links to SEC EDGAR archive filings.
+- **Factuality & Citation Guardrails**: Real-time warnings for uncited statements, unsupported figures, or token limits.
+- **Dynamic Endpoint Configuration**: Live backend health badge with ping latency indicator and in-app switcher between AWS EC2 (`http://32.236.49.234:8000`) and Localhost (`http://localhost:8000`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 4 Dedicated Views
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Overview & Data Engine (`/overview`)**: Executive problem statement, the 3-pillar source of truth model, dataset scope (20 companies, 80 filings, 534k facts, 11.5k chunks), XBRL normalization rules, and interactive sector-filtered company catalog.
+2. **Research Terminal (`/demo`)**: Preset query benchmarks across numeric, narrative, hybrid, and unanswerable categories; live query submission; grounded answers; structured SQL data table inspector; and retrieved passage cards.
+3. **Architecture & Safety (`/architecture`)**: Offline ingestion pipeline, query-time LangGraph orchestration with dynamic scoping, two-layer SQL safety (read-only user + `sqlglot` AST validator), and three-tier refusal architecture.
+4. **Benchmarks & Eval (`/benchmarks`)**: Empirical retrieval accuracy (95.1% Reranked Recall@5, 98.8% scoped), wording bias experiment (BM25 82.9% on raw vs 22.0% on paraphrased), and 93.5% first-run text-to-SQL accuracy.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Configuration (`.env`)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The web client reads from `frontend/.env` (or in-app settings modal stored in `localStorage`):
 
+```bash
+# AWS EC2 FastAPI Endpoint
+VITE_API_BASE_URL=http://32.236.49.234:8000
+
+# Authentication Header
+VITE_API_KEY=SECTRA@Nitish
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Running Locally
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# From repository root:
+make frontend
 
+# Or from inside frontend/:
+cd frontend
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## Production Build
+
+```bash
+cd frontend
+npm run build
+npm run preview
 ```

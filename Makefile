@@ -3,7 +3,7 @@
 MYSQL = docker compose exec -T mysql sh -c 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql -u"$$MYSQL_USER" "$$MYSQL_DATABASE"'
 EVAL  = python -m sectra.evaluation.retrieval_eval
 
-.PHONY: help up down all download db db-schema db-load db-derive sections chunks embed index test eval threshold db-role sql-eval routing-eval api up-api down-api docker-build build logs deploy-data
+.PHONY: help up down all download db db-schema db-load db-derive sections chunks embed index test eval threshold db-role sql-eval routing-eval api up-api down-api docker-build build logs deploy-data frontend
 
 help:
 	@echo "make up         start MySQL and Qdrant"
@@ -12,6 +12,8 @@ help:
 	@echo "make eval       retrieval evaluation, both question sets (needs Qdrant + API keys)"
 	@echo "make threshold  refusal-threshold sweep from the saved eval results"
 	@echo "make down       stop the containers"
+	@echo "make api        run FastAPI backend service"
+	@echo "make frontend   run Vite React frontend development server"
 
 up:
 	docker compose up -d
@@ -93,3 +95,6 @@ sql-eval:
 
 routing-eval:
 	python -m sectra.evaluation.routing_eval --retrieval --end-to-end
+
+frontend:
+	cd frontend && npm run dev
