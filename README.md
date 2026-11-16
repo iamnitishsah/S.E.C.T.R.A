@@ -454,7 +454,7 @@ scp -i ~/.ssh/<key>.pem .env $HOST:S.E.C.T.R.A/.env
 ssh -i ~/.ssh/<key>.pem $HOST 'cd S.E.C.T.R.A && make up && make build'
 make deploy-data HOST=$HOST                                              # database + vectors
 ssh -i ~/.ssh/<key>.pem $HOST 'cd S.E.C.T.R.A && make up-api'
-curl -s -m 10 http://<public-ip>:8000/health
+curl -s -m 10 http://32.236.49.234:8000/health
 ```
 
 The instance's security group allows SSH (22) and the API port (8000).
