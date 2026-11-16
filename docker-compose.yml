@@ -1,7 +1,7 @@
-# Local development.
-#   docker compose up -d                          MySQL + Qdrant (what `make up` runs)
-#   docker compose --profile api up -d --build    also the API in a container, on http://localhost:8000
-# The API is behind a profile because it needs a loaded database; run `make all` first.
+# The same file runs on a laptop and on the server; only .env differs.
+#   make up        MySQL + Qdrant
+#   make up-api    also the API, on port 8000 (needs a loaded database)
+# MySQL and Qdrant listen on 127.0.0.1 only. The API is the one service reachable from outside.
 
 services:
   mysql:
@@ -14,7 +14,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "${MYSQL_PORT:-3306}:3306"
+      - "127.0.0.1:${MYSQL_PORT:-3306}:3306"     # this machine only; never open to the network
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -28,8 +28,7 @@ services:
     container_name: sectra-qdrant
     restart: unless-stopped
     ports:
-      - "6333:6333"     # REST API + web dashboard
-      - "6334:6334"     # gRPC
+      - "127.0.0.1:6333:6333"     # REST API + web dashboard; this machine only
     volumes:
       - qdrant_data:/qdrant/storage
 
