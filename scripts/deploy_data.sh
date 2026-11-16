@@ -19,8 +19,7 @@ count_local()  { docker compose exec -T mysql sh -c "MYSQL_PWD=\"\$MYSQL_ROOT_PA
 count_remote() { "${SSH[@]}" "cd $REMOTE_DIR && docker compose exec -T mysql sh -c 'MYSQL_PWD=\"\$MYSQL_ROOT_PASSWORD\" mysql -uroot -N -e \"SELECT COUNT(*) FROM \$MYSQL_DATABASE.$1\"'"; }
 
 echo "== 1/3 MySQL: dump here, restore on $HOST"
-docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -uroot --single-transaction --no-tablespaces --routines --databases "$MYSQL_DATABASE"' \
-    | gzip \
+docker compose exec -T mysql sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -uroot --single-transaction --no-tablespaces --routines --add-drop-database --databases "$MYSQL_DATABASE"' \    | gzip \
     | "${SSH[@]}" "cd $REMOTE_DIR && gunzip -c | docker compose exec -T mysql sh -c 'MYSQL_PWD=\"\$MYSQL_ROOT_PASSWORD\" exec mysql -uroot'"
 for table in companies filings filing_sections financial_metrics financial_facts; do
     printf "   %-20s local %-8s server %s\n" "$table" "$(count_local "$table")" "$(count_remote "$table")"
