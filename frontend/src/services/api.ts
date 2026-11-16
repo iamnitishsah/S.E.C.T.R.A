@@ -1,6 +1,6 @@
 import type { AskResponse, Company, HealthResponse, ApiConfig } from '../types/api';
 
-const DEFAULT_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://32.236.49.234:8000';
+const DEFAULT_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const DEFAULT_API_KEY = import.meta.env.VITE_API_KEY || 'SECTRA@Nitish';
 
 export function getStoredConfig(): ApiConfig {
