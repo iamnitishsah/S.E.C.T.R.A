@@ -1,42 +1,34 @@
-import type { AskResponse, Company, HealthResponse, ApiConfig } from '../types/api';
+import type { AskResponse, Company, HealthResponse } from '../types/api';
 
-const DEFAULT_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// The API Base URL is strictly controlled by environment configuration (e.g. Vercel env or .env)
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://32.236.49.234:8000').replace(/\/+$/, '');
 const DEFAULT_API_KEY = import.meta.env.VITE_API_KEY || 'SECTRA@Nitish';
 
-export function getStoredConfig(): ApiConfig {
-  const savedUrl = localStorage.getItem('sectra_api_base_url');
+export function getStoredApiKey(): string {
   const savedKey = localStorage.getItem('sectra_api_key');
-  return {
-    baseUrl: (savedUrl !== null ? savedUrl : DEFAULT_BASE_URL).replace(/\/+$/, ''),
-    apiKey: savedKey !== null ? savedKey : DEFAULT_API_KEY,
-  };
+  return savedKey !== null ? savedKey : DEFAULT_API_KEY;
 }
 
-export function saveStoredConfig(config: ApiConfig): void {
-  localStorage.setItem('sectra_api_base_url', config.baseUrl.replace(/\/+$/, ''));
-  localStorage.setItem('sectra_api_key', config.apiKey);
+export function saveStoredApiKey(apiKey: string): void {
+  localStorage.setItem('sectra_api_key', apiKey.trim());
 }
 
-export function resetStoredConfig(): ApiConfig {
-  localStorage.removeItem('sectra_api_base_url');
+export function resetStoredApiKey(): string {
   localStorage.removeItem('sectra_api_key');
-  return {
-    baseUrl: DEFAULT_BASE_URL.replace(/\/+$/, ''),
-    apiKey: DEFAULT_API_KEY,
-  };
+  return DEFAULT_API_KEY;
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const config = getStoredConfig();
-  const url = `${config.baseUrl}${endpoint}`;
+  const apiKey = getStoredApiKey();
+  const url = `${API_BASE_URL}${endpoint}`;
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
 
-  if (config.apiKey) {
-    headers['X-API-Key'] = config.apiKey;
+  if (apiKey) {
+    headers['X-API-Key'] = apiKey;
   }
 
   const response = await fetch(url, {

@@ -32,14 +32,13 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     refreshHealth();
-    // Periodically refresh health status every 45s
     const interval = setInterval(refreshHealth, 45000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#070b12] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
-      {/* Persistent Navigation Header */}
+    <div className="min-h-screen bg-[#0c0e12] text-neutral-100 flex flex-col font-sans selection:bg-neutral-700 selection:text-white">
+      {/* Navigation Header */}
       <Header
         activeTab={activeTab}
         onTabChange={(tab) => {
@@ -53,7 +52,7 @@ export const App: React.FC = () => {
         onRefreshHealth={refreshHealth}
       />
 
-      {/* Main Container */}
+      {/* Main Page Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {activeTab === 'overview' && <OverviewPage />}
         {activeTab === 'demo' && <DemoPage />}
@@ -61,27 +60,28 @@ export const App: React.FC = () => {
         {activeTab === 'benchmarks' && <BenchmarksPage />}
       </main>
 
-      {/* Settings Modal */}
+      {/* API Key Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         onConfigChanged={refreshHealth}
       />
 
-      {/* Institutional Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-8 text-xs font-mono text-slate-500">
+      {/* Minimal Footer */}
+      <footer className="border-t border-neutral-800 bg-[#0c0e12] py-8 text-xs font-mono text-neutral-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-slate-400">S.E.C.T.R.A</span>
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/logo.png"
+              alt="S.E.C.T.R.A"
+              className="w-4 h-4 rounded object-contain border border-neutral-800"
+            />
+            <span className="font-semibold text-neutral-300">S.E.C.T.R.A</span>
             <span>•</span>
             <span>Securities & Exchange Commission Tracking, Retrieval & Analysis</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px] text-slate-400">
-            <span>20 Companies</span>
-            <span>•</span>
-            <span>80 Annual 10-K Reports</span>
-            <span>•</span>
-            <span>Zero-Hallucination Tripartite Architecture</span>
+          <div className="text-[11px] text-neutral-500">
+            SEC EDGAR Financial Research System
           </div>
         </div>
       </footer>
