@@ -21,3 +21,5 @@ venv/
 # Project: downloaded filings, processed data, logs (rebuilt by `make all`); scratch scripts
 data/
 notebooks/
+
+sectra-key.pem

@@ -1,0 +1,41 @@
+name: test and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  deploy:
+    needs: test             # a failing test stops the deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: pull and rebuild on the server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/S.E.C.T.R.A
+            git pull --ff-only
+            docker compose --profile api up -d --build
+            docker image prune -f
+            for i in $(seq 1 18); do curl -fsS http://127.0.0.1:8000/health && exit 0; sleep 5; done
+            echo 'the API did not become healthy'; docker compose logs --tail 40 api; exit 1

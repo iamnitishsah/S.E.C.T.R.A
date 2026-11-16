@@ -24,3 +24,5 @@ Makefile
 docker-compose*.yml
 Dockerfile
 scripts
+
+sectra-key.pem
