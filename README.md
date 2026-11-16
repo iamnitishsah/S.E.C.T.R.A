@@ -9,7 +9,8 @@
 | Retrieval | **95.1% Recall@5** on 82 paraphrased questions searched across the whole corpus (84.1% before reranking) |
 | Text-to-SQL | **93.5%** execution accuracy on 46 questions on the first run |
 | Routing | **94.0%** of 151 questions routed correctly; **15 of 15** unanswerable questions refused end to end |
-| Status | Phases 0–6 complete, except answer faithfulness in Phase 4 · risk diffing and UI planned |
+| Deployment | FastAPI service on AWS EC2 with Docker Compose; GitHub Actions tests and deploys every push to `main` |
+| Status | Pipeline, SQL Analyst, research graph, API and deployment complete · answer faithfulness and a web frontend planned |
 
 ---
 
@@ -20,10 +21,11 @@
 3. [Architecture](#3-architecture)
 4. [Documentation](#4-documentation)
 5. [Running the project](#5-running-the-project)
-6. [Roadmap](#6-roadmap)
-7. [Repository structure](#7-repository-structure)
-8. [Tech stack](#8-tech-stack)
-9. [Limitations](#9-limitations)
+6. [API and deployment](#6-api-and-deployment)
+7. [Roadmap](#7-roadmap)
+8. [Repository structure](#8-repository-structure)
+9. [Tech stack](#9-tech-stack)
+10. [Limitations](#10-limitations)
 
 ---
 
@@ -95,7 +97,7 @@ Not found in the indexed filings.
 | Metric validation | Values compared by hand with printed statements | **10 / 10 match** after one mapping fix (Chevron revenue) |
 | Section extraction | Filings with Items 1A **and** 7 correctly extracted | **76 / 80 (95.0%)**; all 4 failures have one known cause |
 | Chunking | Chunks produced | **11,540** (median 319 tokens, max 458) |
-| Tests | Unit tests, no network | **148 passing** |
+| Tests | Unit tests, no network | **154 passing** |
 
 ### Retrieval
 
@@ -196,8 +198,8 @@ flowchart TB
         Q6["SQL Analyst<br/>text-to-SQL, validator,<br/>read-only user"]
         Q7["CLI: sectra.agents.graph"]
         Q8["Research graph (LangGraph)<br/>router, corpus check, writer"]
-        P2["Risk diff"]
-        P3["FastAPI + Streamlit"]
+        Q9["FastAPI service<br/>/ask, /companies, /health"]
+        P3["Web frontend"]
     end
 
     S1 --> I1
@@ -215,11 +217,11 @@ flowchart TB
     Q8 --> Q6
     Q8 --> Q2
     Q8 --> L1
-    P3 -.-> Q8
-    P2 -.-> D2
+    Q9 --> Q8
+    P3 -.-> Q9
 
     classDef planned stroke-dasharray: 5 5,color:#888
-    class P2,P3 planned
+    class P3 planned
 ```
 
 Every model (embedding, reranking, generation) is reached through a hosted API and chosen in `configs/`; no model name appears in the code. The step-by-step query flow is in [docs/04-retrieval-and-answers.md](docs/04-retrieval-and-answers.md).
@@ -255,6 +257,9 @@ flowchart LR
 | `threshold` | Refusal-threshold sweep from the saved results | <1 s |
 | `sql-eval` | SQL Analyst evaluation on 46 questions | ~8 min |
 | `routing-eval` | Router, routed retrieval and end-to-end refusal on 158 questions | ~12 min |
+| `api` | Run the API locally with reload | |
+| `build` / `up-api` / `logs` | Build the API image, run it next to MySQL and Qdrant, follow its logs | |
+| `deploy-data HOST=user@host` | Copy this machine's database and vectors to a server | ~3 min |
 
 ---
 
@@ -308,6 +313,9 @@ The first `make all` downloads ~313 MB from SEC and embeds 11,540 chunks through
 | `NVIDIA_API_KEY` | Embedding and reranking APIs (and the `nvidia` LLM backend) |
 | `GROQ_API_KEY`, `GEMINI_API_KEY` | LLM providers |
 | `LLM_BACKEND` | `groq`, `gemini` or `nvidia` |
+| `SECTRA_API_KEY` | If set, `POST /ask` requires the header `X-API-Key` |
+| `CORS_ORIGINS` | Browser origins allowed to call the API, comma-separated |
+| `RATE_LIMIT_PER_MIN` | Requests per minute per client IP on `/ask` (default 20) |
 
 **`configs/`**
 
@@ -358,7 +366,111 @@ The Qdrant dashboard is at http://localhost:6333/dashboard.
 
 ---
 
-## 6. Roadmap
+## 6. API and deployment
+
+### API (`src/sectra/api/main.py`)
+
+A FastAPI service over the research graph. The graph, the retriever, the company catalog and the database connections are built once at startup and reused by every request.
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /health` | Whether the service is up, and what is loaded |
+| `GET /companies` | The indexed companies, with the fiscal years that have filing text and metrics |
+| `POST /ask` | `{"question": "..."}` → the answer, its evidence, checks and a step trace |
+| `GET /docs` | Interactive OpenAPI documentation, generated from the typed request and response models |
+
+```bash
+make api                                   # http://localhost:8000/docs
+curl -s -X POST localhost:8000/ask -H "Content-Type: application/json" -H "X-API-Key: $SECTRA_API_KEY" \
+  -d '{"question": "Which semiconductor company had the highest net income in fiscal 2025?"}'
+```
+
+```json
+{
+  "question": "Which semiconductor company had the highest net income in fiscal 2025?",
+  "answer": "NVIDIA reported the highest net income among semiconductor companies in fiscal 2025, with $72.88 billion [T].",
+  "route": "sql",
+  "answered": true,
+  "table": {
+    "sql": "SELECT fm.ticker, fm.fiscal_year, fm.source_accession, ROUND(fm.value / 1e9, 2) AS net_income_bn FROM ...",
+    "columns": ["ticker", "fiscal_year", "source_accession", "net_income_bn"],
+    "rows": [["NVDA", 2025, "0001045810-26-000021", 72.88]],
+    "source_filings": ["0001045810-26-000021"]
+  },
+  "passages": [],
+  "warnings": {},
+  "steps": ["router: sql", "sql: 1 rows", "writer: answer written, 0 kind(s) of warning"]
+}
+```
+
+(Response abridged; it also carries the model, token counts and latency.)
+
+- **A declined question is a normal response**: HTTP 200 with `"answered": false` and a `reason`. Only a real failure, such as an LLM or database error, returns 502.
+- **Passages carry a `cited` flag**, so a client can show which sources the answer used.
+- **An API key and a per-IP rate limit** protect the LLM quota behind a public endpoint. CORS origins are set in `.env`.
+
+### Deployment
+
+One AWS EC2 instance (Ubuntu, `t3.small`) runs the same `docker-compose.yml` as a development machine. Only `.env` differs.
+
+```mermaid
+flowchart LR
+    DEV["Developer machine<br/>loaded MySQL + cached vectors"]
+    GH["GitHub<br/>push to main"]
+    CI["GitHub Actions<br/>pytest, then deploy over SSH"]
+    U["Client"]
+
+    subgraph EC2["EC2 instance: docker compose"]
+        API["api :8000<br/>FastAPI + research graph"]
+        MY[("mysql<br/>127.0.0.1 only")]
+        QD[("qdrant<br/>127.0.0.1 only")]
+    end
+    EXT["LLM, embedding and<br/>rerank APIs"]
+
+    U -->|"HTTP + X-API-Key"| API
+    API --> MY
+    API --> QD
+    API --> EXT
+    GH --> CI -->|"git pull, rebuild api"| API
+    DEV -.->|"make deploy-data (once)"| MY
+    DEV -.->|"SSH tunnel (once)"| QD
+```
+
+| Choice | Reason |
+|---|---|
+| One Compose file for laptop and server | No drift between environments; the same `make up`, `make build`, `make up-api`, `make logs` work on both |
+| MySQL and Qdrant bound to `127.0.0.1` | Neither database is reachable from the network, whatever the firewall allows. Only the API port is published |
+| Data copied from the development machine | The server never downloads from SEC or calls the embedding API. `scripts/deploy_data.sh` restores a dump of the local database over SSH, creates the read-only user, and indexes the cached vectors through an SSH tunnel, then prints row counts from both sides |
+| API image built on the server | No registry to manage; the image matches the instance's architecture |
+| `.env` copied with `scp` | Secrets never pass through git or GitHub |
+
+First-time setup, from the development machine:
+
+```bash
+export HOST=ubuntu@<public-ip>
+ssh -i ~/.ssh/<key>.pem $HOST 'bash -s' < scripts/server_setup.sh        # Docker, git, make, 2 GB swap
+ssh -i ~/.ssh/<key>.pem $HOST 'git clone https://github.com/iamnitishsah/S.E.C.T.R.A.git && mkdir -p S.E.C.T.R.A/data/logs'
+scp -i ~/.ssh/<key>.pem .env $HOST:S.E.C.T.R.A/.env
+ssh -i ~/.ssh/<key>.pem $HOST 'cd S.E.C.T.R.A && make up && make build'
+make deploy-data HOST=$HOST                                              # database + vectors
+ssh -i ~/.ssh/<key>.pem $HOST 'cd S.E.C.T.R.A && make up-api'
+curl -s -m 10 http://<public-ip>:8000/health
+```
+
+The instance's security group allows SSH (22) and the API port (8000).
+
+### CI/CD (`.github/workflows/deploy.yml`)
+
+Every push to `main` runs two jobs:
+
+1. **test**: install the project and run the unit tests.
+2. **deploy**: only if the tests pass, connect to the instance over SSH, `git pull`, rebuild and restart the API container, and wait for `/health` to answer. The databases are not touched.
+
+It needs three repository secrets: `EC2_HOST`, `EC2_USER` and `EC2_SSH_KEY`.
+
+---
+
+## 7. Roadmap
 
 | Phase | Scope | Status |
 |---|---|---|
@@ -368,19 +480,24 @@ The Qdrant dashboard is at http://localhost:6333/dashboard.
 | 4 | Evaluation and retrieval upgrades | Retrieval and refusal threshold ✅ · answer faithfulness and generator comparison pending |
 | 5 | SQL Analyst: text-to-SQL with a query validator and a read-only user; execution-accuracy evaluation | ✅ |
 | 6 | Research graph (LangGraph): router, corpus check, SQL and text nodes, one cited writer; routing evaluation | ✅ |
-| 7 | Risk diffing between two fiscal years of Item 1A | Planned |
-| 8 | Injection filter, red-team set, FastAPI, Streamlit | Planned |
-| 9 | Failure analysis, demo, release | Planned |
+| 7 | Risk diffing between two fiscal years of Item 1A | Skipped |
+| 8 | FastAPI service, Docker image, AWS EC2 deployment, GitHub Actions CI/CD | ✅ |
+| 9 | Web frontend, HTTPS, injection filter and red-team set, failure analysis | Planned |
 
 ---
 
-## 7. Repository structure
+## 8. Repository structure
 
 ```text
 S.E.C.T.R.A/
 ├── README.md
-├── Makefile                     # make = help; pipeline stages, eval and threshold as targets
-├── docker-compose.yml           # MySQL 8.4, Qdrant 1.18.2
+├── Makefile                     # make = help; pipeline, evaluation, API and deploy targets
+├── docker-compose.yml           # MySQL 8.4, Qdrant 1.18.2, API (same file locally and on the server)
+├── Dockerfile                   # API image
+├── .github/workflows/deploy.yml # test, then deploy to EC2 on push to main
+├── scripts/
+│   ├── server_setup.sh          # one-time server setup: Docker, git, make, swap
+│   └── deploy_data.sh           # copy the local database and vectors to the server
 ├── pyproject.toml
 ├── .env.example
 │
@@ -436,6 +553,8 @@ S.E.C.T.R.A/
 │   │   ├── validator.py         # SELECT-only, allowlist, LIMIT; re-generates the query
 │   │   ├── tools.py             # get_schema(), run_readonly_sql()
 │   │   └── agent.py             # question -> SQL -> rows -> answer + number check; CLI
+│   ├── api/
+│   │   └── main.py              # FastAPI: /ask, /companies, /health; API key, rate limit, CORS
 │   └── evaluation/
 │       ├── qa_set.py            # generate, review, build and paraphrase the question sets
 │       ├── retrieval_eval.py    # Recall@k, MRR, paired comparison
@@ -443,7 +562,7 @@ S.E.C.T.R.A/
 │       ├── sql_eval.py          # execution accuracy of the SQL Analyst
 │       └── routing_eval.py      # routing, routed retrieval, end-to-end refusal
 │
-├── tests/                       # 148 tests; fakes and SQLite instead of network calls
+├── tests/                       # 154 tests; fakes and SQLite instead of network calls
 ├── eval/
 │   ├── datasets/                # retrieval question sets, sql_qa (46, with gold SQL), hybrid_qa (15)
 │   └── results/                 # per-question results, experiments.md, section_parse_report.csv
@@ -453,7 +572,7 @@ S.E.C.T.R.A/
 
 ---
 
-## 8. Tech stack
+## 9. Tech stack
 
 | Layer | Choice | Status |
 |---|---|---|
@@ -467,15 +586,18 @@ S.E.C.T.R.A/
 | LLM | Groq `openai/gpt-oss-120b` (default), Gemini, NVIDIA; `openai` SDK as OpenAI-compatible client | ✅ |
 | Evaluation | Custom scripts: Recall@k, MRR, exact sign test, threshold sweep | ✅ |
 | Tests | pytest | ✅ |
-| Packaging | Docker Compose, `pyproject.toml`, Makefile | ✅ |
+| Packaging | Docker, Docker Compose, `pyproject.toml`, Makefile | ✅ |
 | Faithfulness judge | Claim-level LLM judge | Planned |
 | SQL safety | `sqlglot` validator, read-only MySQL user, statement timeout | ✅ |
 | Orchestration | LangGraph (state graph with conditional edges) | ✅ |
-| API / UI | FastAPI, Streamlit | Phase 8 |
+| API | FastAPI, uvicorn, Pydantic models | ✅ |
+| Deployment | AWS EC2, Docker Compose | ✅ |
+| CI/CD | GitHub Actions (pytest, deploy over SSH) | ✅ |
+| Frontend | Web client over the API | Planned |
 
 ---
 
-## 9. Limitations
+## 10. Limitations
 
 - **Coverage:** 20 companies, 4 annual 10-Ks each. Numeric history reaches back to ~2009, but text covers only the downloaded filings.
 - **Intel** (4 filings) has no extracted sections; its cross-reference format is not supported.
@@ -488,6 +610,7 @@ S.E.C.T.R.A/
 - **Retrieval is measured on one kind of question:** 82 single-passage questions written and paraphrased by LLMs. Multi-passage, cross-company and cross-year questions are not measured.
 - **Answer faithfulness is not measured yet.** Citation checks confirm that cited passages exist, not that they support each claim.
 - **Out-of-corpus questions** (a company or year that is not indexed) are mostly caught by the model's refusal, not by retrieval scores.
+- **The deployment is a single small instance over plain HTTP.** There is no HTTPS, load balancing or backup, the rate limiter is in memory, and the public IP changes if the instance is stopped. A browser frontend served over HTTPS will need TLS in front of the API.
 - **Hosted APIs:** free endpoints are rate-limited, a content-safety filter refuses a few passages, models are not fully deterministic, and model names change as providers retire them.
 
 ---
