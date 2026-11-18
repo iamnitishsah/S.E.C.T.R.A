@@ -95,7 +95,7 @@ export const ArchitecturePage: React.FC = () => (
     <Section title="The query graph">
       <ol className="relative">
         {STEPS.map((s, i) => (
-          <li key={s.name} className="relative grid grid-cols-[2rem_1fr] sm:grid-cols-[2rem_10rem_1fr] gap-x-4 pb-8 last:pb-0">
+          <li key={s.name} className="relative grid grid-cols-[2rem_1fr] sm:grid-cols-[2rem_12rem_1fr] gap-x-4 pb-8 last:pb-0">
             {i < STEPS.length - 1 && <span className="absolute left-[0.6875rem] top-6 bottom-0 w-px bg-rule-strong" />}
             <span className="relative mt-1 w-6 h-6 rounded-full bg-bg border border-rule-strong grid place-items-center">
               <span className={`w-2 h-2 rounded-full ${s.color}`} />
@@ -104,12 +104,12 @@ export const ArchitecturePage: React.FC = () => (
               <div className="font-medium">{s.name}</div>
               <div className="text-xs text-muted">{s.tech}</div>
             </div>
-            <p className="col-start-2 sm:col-start-3 text-sm leading-relaxed text-ink-2 max-w-2xl">{s.body}</p>
+            <p className="col-start-2 sm:col-start-3 text-base leading-relaxed text-ink-2 max-w-4xl">{s.body}</p>
           </li>
         ))}
       </ol>
 
-      <div className="mt-10 pl-5 border-l-2 border-both max-w-2xl">
+      <div className="mt-10 pl-5 border-l-2 border-both max-w-4xl">
         <p className="text-sm font-medium">When a question names no company</p>
         <p className="mt-1.5 text-sm leading-relaxed text-muted">
           For <em>“Which healthcare company grew revenue fastest in 2025, and what drove that growth?”</em> the SQL
@@ -137,7 +137,7 @@ export const ArchitecturePage: React.FC = () => (
       title="Three layers decline what can’t be answered"
       description="Of 15 unanswerable test questions, each layer caught the number shown. None got through."
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-8">
         {REFUSAL.map((r) => (
           <div key={r.title}>
             <div className="flex items-baseline gap-2">
@@ -154,7 +154,7 @@ export const ArchitecturePage: React.FC = () => (
     <Section title="Deployment">
       <dl className="divide-y divide-rule border-y border-rule">
         {DEPLOYMENT.map(([k, v]) => (
-          <div key={k} className="grid grid-cols-1 sm:grid-cols-[10rem_1fr] gap-1 sm:gap-4 py-3.5">
+          <div key={k} className="grid grid-cols-1 sm:grid-cols-[12rem_1fr] gap-1 sm:gap-4 py-3.5">
             <dt className="text-sm font-medium">{k}</dt>
             <dd className="text-sm text-muted">{v}</dd>
           </div>

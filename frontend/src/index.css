@@ -73,8 +73,16 @@
   --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
 }
 
+@theme {
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+}
+
 @layer base {
   body {
+    font-size: var(--text-base);
     background-color: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);

@@ -52,11 +52,11 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-bg/85 backdrop-blur-md border-b border-rule">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8">
-        <div className="flex items-center justify-between h-14 gap-6">
+      <div className="max-w-[1680px] mx-auto px-6 sm:px-10 lg:px-16">
+        <div className="flex items-center justify-between h-16 gap-6">
           <button onClick={() => onTabChange('overview')} className="flex items-center gap-2.5 shrink-0">
             <img src="/logo.png" alt="" className="w-6 h-6 rounded-md object-contain" />
-            <span className="font-semibold tracking-tight text-[15px]">S.E.C.T.R.A</span>
+            <span className="font-semibold tracking-tight text-base">S.E.C.T.R.A</span>
           </button>
 
           <nav className="hidden md:flex items-center self-stretch">{NAV_ITEMS.map(navButton)}</nav>
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        <nav className="flex md:hidden -mx-3 overflow-x-auto">{NAV_ITEMS.map(navButton)}</nav>
+        <nav className="flex md:hidden -mx-3 overflow-x-auto pb-1">{NAV_ITEMS.map(navButton)}</nav>
       </div>
     </header>
   );

@@ -54,12 +54,12 @@ export const BenchmarksPage: React.FC = () => (
               <th className="font-medium py-2.5 text-right">MRR@10</th>
             </tr>
           </thead>
-          <tbody className="font-mono text-[13px] tabular">
+          <tbody className="font-mono text-sm tabular">
             {RETRIEVAL.map((r, i) => (
               <tr key={i} className={`border-b border-rule ${r.prod ? 'text-ink' : 'text-muted'}`}>
                 <td className="py-3 pr-4 font-sans text-sm">
                   {r.name}
-                  {r.prod && <span className="ml-2 text-[11px] text-accent">in production</span>}
+                  {r.prod && <span className="ml-2 text-xs text-accent">in production</span>}
                 </td>
                 <td className="py-3 pr-4 font-sans text-sm">{r.setting}</td>
                 <td className="py-3 pr-4 text-right">{r.r1}%</td>

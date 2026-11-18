@@ -127,7 +127,7 @@ export const DemoPage: React.FC = () => {
           <button
             key={idx}
             onClick={() => scrollTo('evidence-table')}
-            className="relative -top-px mx-0.5 px-1 rounded font-mono text-[11px] font-medium text-sql bg-accent-soft hover:brightness-95 align-middle"
+            className="relative -top-px mx-0.5 px-1 rounded font-mono text-xs font-medium text-sql bg-accent-soft hover:brightness-95 align-middle"
             title="Database result"
           >
             T
@@ -144,7 +144,7 @@ export const DemoPage: React.FC = () => {
               setActivePassage(n);
               scrollTo(`passage-${n}`);
             }}
-            className="relative -top-px mx-0.5 min-w-[1.25rem] px-1 rounded font-mono text-[11px] font-medium text-text bg-sunken hover:bg-rule align-middle"
+            className="relative -top-px mx-0.5 min-w-[1.25rem] px-1 rounded font-mono text-xs font-medium text-text bg-sunken hover:bg-rule align-middle"
             title={`Passage ${n}`}
           >
             {n}
@@ -160,11 +160,11 @@ export const DemoPage: React.FC = () => {
     !!warnings.uncited_sentences?.length || !!warnings.unsupported_numbers?.length || !!warnings.truncated;
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h1 className="font-serif text-[2.25rem] sm:text-[2.75rem] leading-[1.1] tracking-[-0.01em]">
+    <div>
+      <h1 className="font-serif text-[2.5rem] sm:text-[3.25rem] leading-[1.08] tracking-[-0.01em]">
         Ask the filings
       </h1>
-      <p className="mt-3 text-[15px] text-ink-2">
+      <p className="mt-3 text-lg text-ink-2">
         Questions about figures, narrative, or both, across 20 companies and 80 annual reports.
       </p>
 
@@ -187,14 +187,14 @@ export const DemoPage: React.FC = () => {
           }}
           rows={2}
           placeholder="e.g. How fast did Nvidia’s revenue grow in fiscal 2025, and what drove it?"
-          className="block w-full resize-none bg-transparent px-4 pt-4 pb-2 text-[15px] leading-relaxed placeholder:text-faint focus:outline-none"
+          className="block w-full resize-none bg-transparent px-5 pt-5 pb-2 text-lg leading-relaxed placeholder:text-faint focus:outline-none"
         />
         <div className="flex items-center justify-between px-3 pb-3">
           <span className="pl-1 text-xs text-faint hidden sm:inline">Enter to ask · Shift+Enter for a new line</span>
           <button
             type="submit"
             disabled={loading || !question.trim()}
-            className="ml-auto inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-ink text-bg text-sm font-medium disabled:opacity-30 transition-opacity"
+            className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink text-bg text-sm font-medium disabled:opacity-30 transition-opacity"
           >
             {loading ? 'Researching…' : 'Ask'}
             {!loading && <ArrowRightIcon className="w-3.5 h-3.5" />}
@@ -204,7 +204,7 @@ export const DemoPage: React.FC = () => {
 
       {/* Examples */}
       {!response && !loading && (
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-x-12 gap-y-8">
           {PRESETS.map((g) => (
             <div key={g.group}>
               <p className="text-xs font-medium text-muted uppercase tracking-[0.1em] mb-2">{g.group}</p>
@@ -213,7 +213,7 @@ export const DemoPage: React.FC = () => {
                   <li key={q}>
                     <button
                       onClick={() => handleAsk(q)}
-                      className="text-left text-sm text-ink-2 hover:text-ink leading-snug py-1 hover:underline underline-offset-4 decoration-rule-strong"
+                      className="text-left text-base text-ink-2 hover:text-ink leading-snug py-1 hover:underline underline-offset-4 decoration-rule-strong"
                     >
                       {q}
                     </button>
@@ -227,7 +227,7 @@ export const DemoPage: React.FC = () => {
 
       {/* Loading */}
       {loading && (
-        <div className="mt-12" aria-live="polite">
+        <div className="mt-12 max-w-4xl" aria-live="polite">
           <p className="text-sm text-muted">Routing the question, querying the database and searching filings…</p>
           <div className="mt-5 space-y-3">
             {[100, 92, 96, 60].map((w, i) => (
@@ -246,28 +246,29 @@ export const DemoPage: React.FC = () => {
 
       {/* Answer */}
       {response && !loading && route && (
-        <article className="mt-12">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted">
-            <span className="inline-flex items-center gap-1.5 text-ink-2 font-medium">
-              <span className={`w-1.5 h-1.5 rounded-full ${route.color}`} />
-              {route.label}
-            </span>
-            {response.tickers?.length > 0 && <span className="font-mono">{response.tickers.join(', ')}</span>}
-            {response.fiscal_years?.length > 0 && (
-              <span className="font-mono">FY {response.fiscal_years.join(', ')}</span>
-            )}
-            <span className="font-mono tabular">{(response.latency_ms / 1000).toFixed(1)} s</span>
-            {response.model && <span className="font-mono hidden sm:inline">{response.model}</span>}
+        <article className="mt-12 grid grid-cols-1 xl:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-x-16">
+          <div className="xl:sticky xl:top-28 xl:self-start">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted">
+              <span className="inline-flex items-center gap-1.5 text-ink-2 font-medium">
+                <span className={`w-1.5 h-1.5 rounded-full ${route.color}`} />
+                {route.label}
+              </span>
+              {response.tickers?.length > 0 && <span className="font-mono">{response.tickers.join(', ')}</span>}
+              {response.fiscal_years?.length > 0 && (
+                <span className="font-mono">FY {response.fiscal_years.join(', ')}</span>
+              )}
+              <span className="font-mono tabular">{(response.latency_ms / 1000).toFixed(1)} s</span>
+              {response.model && <span className="font-mono hidden sm:inline">{response.model}</span>}
           </div>
 
           <div className="mt-4 pt-5 border-t border-rule">
             {response.answered ? (
-              <div className="font-serif text-[1.2rem] leading-[1.7] text-ink whitespace-pre-wrap">
+              <div className="font-serif text-[1.375rem] leading-[1.7] text-ink whitespace-pre-wrap">
                 {renderCitations(response.answer)}
               </div>
             ) : (
               <div>
-                <p className="font-serif text-[1.2rem] leading-[1.7] text-ink">
+                <p className="font-serif text-[1.375rem] leading-[1.7] text-ink">
                   {response.answer || 'Not found in the indexed filings.'}
                 </p>
                 {response.reason && <p className="mt-2 text-sm text-muted">Reason: {response.reason}</p>}
@@ -310,88 +311,6 @@ export const DemoPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Database evidence */}
-          {response.table && (
-            <section id="evidence-table" className="mt-14 scroll-mt-24">
-              <div className="flex items-baseline justify-between gap-4 pb-3 border-b border-rule-strong">
-                <h2 className="text-sm font-semibold">
-                  Database result <span className="font-mono font-normal text-muted">[T]</span>
-                </h2>
-                <button
-                  onClick={() => handleCopy(response.table?.sql || '', 'sql')}
-                  className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-ink"
-                >
-                  {copied === 'sql' ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
-                  {copied === 'sql' ? 'Copied' : 'Copy SQL'}
-                </button>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-left text-xs text-muted border-b border-rule">
-                      {response.table.columns.map((col, i) => (
-                        <th key={i} className="font-medium font-mono py-2.5 pr-6 whitespace-nowrap">
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {response.table.rows.map((row, r) => (
-                      <tr key={r} className="border-b border-rule">
-                        {row.map((cell, c) => (
-                          <td
-                            key={c}
-                            className={`py-2.5 pr-6 whitespace-nowrap font-mono text-[13px] tabular ${
-                              typeof cell === 'number' ? 'text-ink' : 'text-ink-2'
-                            }`}
-                          >
-                            {cell === null ? <span className="text-faint">—</span> : String(cell)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <details className="mt-4 group">
-                <summary className="text-xs text-muted hover:text-ink cursor-pointer select-none list-none">
-                  <span className="group-open:hidden">Show SQL</span>
-                  <span className="hidden group-open:inline">Hide SQL</span>
-                </summary>
-                <pre className="mt-3 p-4 rounded-lg bg-sunken text-[12.5px] font-mono leading-relaxed text-ink-2 whitespace-pre-wrap overflow-x-auto">
-                  {response.table.sql}
-                </pre>
-              </details>
-
-              {response.table.source_filings?.length > 0 && (
-                <p className="mt-3 text-xs text-muted">
-                  Source filings:{' '}
-                  <span className="font-mono text-ink-2">{response.table.source_filings.join(', ')}</span>
-                </p>
-              )}
-            </section>
-          )}
-
-          {/* Passage evidence */}
-          {response.passages?.length > 0 && (
-            <section className="mt-14">
-              <div className="flex items-baseline justify-between gap-4 pb-1 border-b border-rule-strong">
-                <h2 className="text-sm font-semibold pb-2">Filing passages</h2>
-                <span className="text-xs text-muted">
-                  {response.passages.filter((p) => p.cited).length} of {response.passages.length} cited
-                </span>
-              </div>
-              <ol>
-                {response.passages.map((p) => (
-                  <PassageItem key={p.n} p={p} active={activePassage === p.n} />
-                ))}
-              </ol>
-            </section>
-          )}
-
           <button
             onClick={() => {
               setResponse(null);
@@ -402,6 +321,91 @@ export const DemoPage: React.FC = () => {
           >
             ← Ask another question
           </button>
+          </div>
+
+          <div className="mt-14 xl:mt-0">
+            {/* Database evidence */}
+            {response.table && (
+              <section id="evidence-table" className="mt-14 first:mt-0 scroll-mt-24">
+                <div className="flex items-baseline justify-between gap-4 pb-3 border-b border-rule-strong">
+                  <h2 className="text-sm font-semibold">
+                    Database result <span className="font-mono font-normal text-muted">[T]</span>
+                  </h2>
+                  <button
+                    onClick={() => handleCopy(response.table?.sql || '', 'sql')}
+                    className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-ink"
+                  >
+                    {copied === 'sql' ? <CheckIcon className="w-3.5 h-3.5" /> : <CopyIcon className="w-3.5 h-3.5" />}
+                    {copied === 'sql' ? 'Copied' : 'Copy SQL'}
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs text-muted border-b border-rule">
+                        {response.table.columns.map((col, i) => (
+                          <th key={i} className="font-medium font-mono py-2.5 pr-6 whitespace-nowrap">
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {response.table.rows.map((row, r) => (
+                        <tr key={r} className="border-b border-rule">
+                          {row.map((cell, c) => (
+                            <td
+                              key={c}
+                              className={`py-2.5 pr-6 whitespace-nowrap font-mono text-sm tabular ${
+                                typeof cell === 'number' ? 'text-ink' : 'text-ink-2'
+                              }`}
+                            >
+                              {cell === null ? <span className="text-faint">—</span> : String(cell)}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <details className="mt-4 group">
+                  <summary className="text-xs text-muted hover:text-ink cursor-pointer select-none list-none">
+                    <span className="group-open:hidden">Show SQL</span>
+                    <span className="hidden group-open:inline">Hide SQL</span>
+                  </summary>
+                  <pre className="mt-3 p-4 rounded-lg bg-sunken text-sm font-mono leading-relaxed text-ink-2 whitespace-pre-wrap overflow-x-auto">
+                    {response.table.sql}
+                  </pre>
+                </details>
+
+                {response.table.source_filings?.length > 0 && (
+                  <p className="mt-3 text-xs text-muted">
+                    Source filings:{' '}
+                    <span className="font-mono text-ink-2">{response.table.source_filings.join(', ')}</span>
+                  </p>
+                )}
+              </section>
+            )}
+
+            {/* Passage evidence */}
+            {response.passages?.length > 0 && (
+              <section className="mt-14 first:mt-0">
+                <div className="flex items-baseline justify-between gap-4 pb-1 border-b border-rule-strong">
+                  <h2 className="text-sm font-semibold pb-2">Filing passages</h2>
+                  <span className="text-xs text-muted">
+                    {response.passages.filter((p) => p.cited).length} of {response.passages.length} cited
+                  </span>
+                </div>
+                <ol>
+                  {response.passages.map((p) => (
+                    <PassageItem key={p.n} p={p} active={activePassage === p.n} />
+                  ))}
+                </ol>
+              </section>
+            )}
+          </div>
         </article>
       )}
     </div>

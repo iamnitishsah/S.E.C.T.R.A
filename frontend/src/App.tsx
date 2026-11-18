@@ -53,7 +53,7 @@ export const App: React.FC = () => {
         onRefreshHealth={refreshHealth}
       />
 
-      <main className="flex-1 w-full max-w-6xl mx-auto px-5 sm:px-8 pt-12 pb-24">
+      <main className="flex-1 w-full max-w-[1680px] mx-auto px-6 sm:px-10 lg:px-16 pt-14 pb-24">
         {activeTab === 'overview' && <OverviewPage onNavigate={goTo} />}
         {activeTab === 'demo' && <DemoPage />}
         {activeTab === 'architecture' && <ArchitecturePage />}
@@ -67,7 +67,7 @@ export const App: React.FC = () => {
       />
 
       <footer className="border-t border-rule">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row gap-2 sm:items-center justify-between text-xs text-muted">
+        <div className="max-w-[1680px] mx-auto px-6 sm:px-10 lg:px-16 py-6 flex flex-col sm:flex-row gap-2 sm:items-center justify-between text-xs text-muted">
           <span>
             <span className="font-medium text-ink-2">S.E.C.T.R.A</span> — Securities &amp; Exchange Commission
             Tracking, Retrieval &amp; Analysis

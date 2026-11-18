@@ -89,10 +89,10 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
       {/* Hero */}
       <section className="pb-14">
         <p className="text-xs font-medium text-muted uppercase tracking-[0.12em]">SEC 10-K research system</p>
-        <h1 className="mt-4 font-serif text-[2.75rem] sm:text-[3.75rem] leading-[1.04] tracking-[-0.015em] max-w-4xl">
+        <h1 className="mt-4 font-serif text-[3rem] sm:text-[4.5rem] leading-[1.02] tracking-[-0.015em] max-w-6xl">
           Answers from annual reports, with every source attached.
         </h1>
-        <p className="mt-6 text-[17px] leading-relaxed text-ink-2 max-w-2xl">
+        <p className="mt-6 text-xl leading-relaxed text-ink-2 max-w-3xl">
           Language models invent numbers, do arithmetic badly and can’t say where a claim came from. S.E.C.T.R.A
           never lets the model answer from memory: figures come from database rows, explanations from cited filing
           passages, and when the evidence isn’t there it says so.
@@ -124,7 +124,7 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
       </div>
 
       <Section title="Each question goes to the source that can answer it">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-16 gap-y-8">
           {PILLARS.map((p) => (
             <div key={p.n}>
               <div className="font-mono text-xs text-faint">{p.n}</div>
@@ -151,7 +151,7 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search"
-                className="w-44 bg-surface border border-rule rounded-lg pl-8 pr-3 py-1.5 text-sm placeholder:text-faint focus:outline-none focus:border-rule-strong"
+                className="w-56 bg-surface border border-rule rounded-lg pl-8 pr-3 py-1.5 text-sm placeholder:text-faint focus:outline-none focus:border-rule-strong"
               />
             </div>
             {sectors.length > 1 && (
@@ -197,15 +197,15 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
         )}
 
         {!loading && !error && companies.length > 0 && (
-          <div className="overflow-x-auto -mx-5 sm:mx-0">
+          <div className="overflow-x-auto -mx-6 sm:mx-0">
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="text-left text-xs text-muted border-b border-rule-strong">
-                  <th className="font-medium py-2.5 pl-5 sm:pl-0 pr-4">Ticker</th>
+                  <th className="font-medium py-2.5 pl-6 sm:pl-0 pr-4">Ticker</th>
                   <th className="font-medium py-2.5 pr-4">Company</th>
                   <th className="font-medium py-2.5 pr-4">Sector</th>
                   <th className="font-medium py-2.5 pr-4">Metrics</th>
-                  <th className="font-medium py-2.5 pr-5 sm:pr-0">Filing text</th>
+                  <th className="font-medium py-2.5 pr-6 sm:pr-0">Filing text</th>
                 </tr>
               </thead>
               <tbody>
@@ -218,7 +218,7 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
                 ) : (
                   filtered.map((c) => (
                     <tr key={c.ticker} className="border-b border-rule hover:bg-surface/70 transition-colors">
-                      <td className="py-3 pl-5 sm:pl-0 pr-4 font-mono font-medium">{c.ticker}</td>
+                      <td className="py-3 pl-6 sm:pl-0 pr-4 font-mono font-medium">{c.ticker}</td>
                       <td className="py-3 pr-4 text-ink-2">{c.name}</td>
                       <td className="py-3 pr-4 text-muted capitalize">{c.sector}</td>
                       <td className="py-3 pr-4 font-mono text-xs text-muted tabular">
@@ -226,7 +226,7 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
                           ? `${c.metric_years[0]}–${c.metric_years[1]}`
                           : c.metric_years?.join(', ') || '—'}
                       </td>
-                      <td className="py-3 pr-5 sm:pr-0 font-mono text-xs tabular">
+                      <td className="py-3 pr-6 sm:pr-0 font-mono text-xs tabular">
                         {c.text_years?.length ? (
                           <span className="text-muted">{c.text_years.map((y) => `FY${String(y).slice(2)}`).join('  ')}</span>
                         ) : (
@@ -238,7 +238,7 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
                 )}
               </tbody>
             </table>
-            <p className="mt-3 px-5 sm:px-0 text-xs text-faint">
+            <p className="mt-3 px-6 sm:px-0 text-xs text-faint">
               {filtered.length} of {companies.length} companies
             </p>
           </div>
@@ -246,7 +246,7 @@ export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ 
       </Section>
 
       <Section title="Notes on the data" description="Problems found in SEC data, and how the database handles them.">
-        <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-7">
+        <dl className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-12 gap-y-8">
           {DATA_NOTES.map((n) => (
             <div key={n.title}>
               <dt className="font-medium text-ink">{n.title}</dt>
