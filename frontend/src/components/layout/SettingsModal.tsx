@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getStoredApiKey, saveStoredApiKey, resetStoredApiKey, checkHealth, API_BASE_URL } from '../../services/api';
-import { XIcon, CheckIcon, AlertTriangleIcon, RefreshCwIcon, ShieldCheckIcon } from '../common/Icons';
+import { XIcon } from '../common/Icons';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -14,17 +14,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
   const [testMessage, setTestMessage] = useState<string>('');
   const [testPing, setTestPing] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleTest = async () => {
     setTestStatus('testing');
     setTestMessage('');
+    setTestPing(null);
     try {
       saveStoredApiKey(apiKey);
       const { data, pingMs } = await checkHealth();
       setTestStatus('success');
       setTestPing(pingMs);
-      setTestMessage(`Server Online: ${data.companies} companies loaded, Model: ${data.llm || 'configured'}`);
+      setTestMessage(`${data.companies} companies loaded · ${data.llm || 'model configured'}`);
       onConfigChanged();
     } catch (err: unknown) {
       setTestStatus('error');
@@ -39,50 +47,42 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
   };
 
   const handleReset = () => {
-    const def = resetStoredApiKey();
-    setApiKey(def);
+    setApiKey(resetStoredApiKey());
     setTestStatus('idle');
     setTestMessage('');
     onConfigChanged();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md bg-[#13161c] border border-neutral-800 rounded-xl shadow-xl overflow-hidden text-neutral-200">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-800 bg-[#0f1116]">
-          <div className="flex items-center gap-2">
-            <ShieldCheckIcon className="w-4 h-4 text-neutral-300" />
-            <h3 className="text-sm font-semibold text-neutral-100">API Access Authentication</h3>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md bg-surface border border-rule rounded-xl shadow-[0_24px_64px_-16px_rgba(0,0,0,0.25)]"
+      >
+        <div className="flex items-start justify-between px-6 pt-5">
+          <div>
+            <h3 id="settings-title" className="text-base font-semibold">API access</h3>
+            <p className="mt-1 text-sm text-muted">The key is sent as the X-API-Key header with every question.</p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-neutral-400 hover:text-neutral-200 p-1 rounded hover:bg-neutral-800/60 transition-colors"
-          >
+          <button onClick={onClose} className="p-1 -mr-1 rounded text-muted hover:text-ink" aria-label="Close">
             <XIcon className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Body */}
-        <div className="p-5 space-y-4 text-xs">
-          {/* Read-only Server Endpoint */}
+        <div className="px-6 py-5 space-y-5">
           <div>
-            <label className="block text-[11px] font-medium text-neutral-400 mb-1">
-              Backend Endpoint
-            </label>
-            <div className="px-3 py-2 rounded-lg bg-neutral-900 border border-neutral-800 text-neutral-300 font-mono text-[11px] truncate select-all">
-              {API_BASE_URL}
-            </div>
-            <p className="text-[10px] text-neutral-500 mt-1">
-              Configured via deployment environment variables.
-            </p>
+            <div className="text-xs font-medium text-muted mb-1.5">Endpoint</div>
+            <div className="font-mono text-xs text-ink-2 truncate select-all">{API_BASE_URL}</div>
           </div>
 
-          {/* Editable API Key */}
-          <div>
-            <label className="block text-[11px] font-medium text-neutral-300 mb-1">
-              X-API-Key Header
-            </label>
+          <label className="block">
+            <span className="text-xs font-medium text-muted">API key</span>
             <input
               type="text"
               value={apiKey}
@@ -90,62 +90,50 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
                 setApiKey(e.target.value);
                 setTestStatus('idle');
               }}
-              placeholder="e.g. SECTRA@Nitish"
-              className="w-full bg-[#0a0c10] border border-neutral-700/80 rounded-lg px-3 py-2 text-neutral-100 font-mono text-xs focus:outline-hidden focus:border-neutral-500 transition-colors"
+              spellCheck={false}
+              autoComplete="off"
+              className="mt-1.5 w-full bg-bg border border-rule-strong rounded-lg px-3 py-2 font-mono text-sm text-ink focus:outline-none focus:border-accent transition-colors"
             />
-            <p className="text-[10px] text-neutral-500 mt-1">
-              Passed on every research query to authorize access against the backend.
-            </p>
-          </div>
+          </label>
 
-          {/* Status Message */}
           {testStatus !== 'idle' && (
             <div
-              className={`p-3 rounded-lg border text-[11px] flex items-start gap-2 ${
+              className={`rounded-lg px-3 py-2.5 text-sm ${
                 testStatus === 'success'
-                  ? 'bg-emerald-950/30 border-emerald-800/60 text-emerald-300'
+                  ? 'bg-accent-soft text-accent'
                   : testStatus === 'error'
-                  ? 'bg-rose-950/30 border-rose-800/60 text-rose-300'
-                  : 'bg-neutral-900 border-neutral-800 text-neutral-300'
+                  ? 'bg-danger-soft text-danger'
+                  : 'bg-sunken text-muted'
               }`}
             >
-              {testStatus === 'success' && <CheckIcon className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />}
-              {testStatus === 'error' && <AlertTriangleIcon className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />}
-              {testStatus === 'testing' && <RefreshCwIcon className="w-3.5 h-3.5 text-neutral-400 shrink-0 mt-0.5 animate-spin" />}
-              <div className="flex-1">
-                <div className="font-medium flex items-center justify-between">
-                  <span>{testStatus === 'success' ? 'Connected' : testStatus === 'error' ? 'Connection Failed' : 'Pinging Endpoint...'}</span>
-                  {testPing !== null && <span className="font-mono text-[10px]">{testPing} ms</span>}
-                </div>
-                {testMessage && <p className="mt-0.5 text-neutral-400 font-mono text-[10px]">{testMessage}</p>}
+              <div className="flex items-center justify-between font-medium">
+                <span>
+                  {testStatus === 'success' ? 'Connected' : testStatus === 'error' ? 'Could not connect' : 'Testing…'}
+                </span>
+                {testPing !== null && <span className="font-mono text-xs tabular">{testPing} ms</span>}
               </div>
+              {testMessage && <p className="mt-0.5 text-xs opacity-80 break-words">{testMessage}</p>}
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-t border-neutral-800 bg-[#0f1116]">
-          <button
-            type="button"
-            onClick={handleReset}
-            className="text-[11px] text-neutral-400 hover:text-neutral-200 transition-colors"
-          >
-            Reset Default
+        <div className="flex items-center justify-between px-6 py-4 border-t border-rule">
+          <button type="button" onClick={handleReset} className="text-sm text-muted hover:text-ink">
+            Reset to default
           </button>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleTest}
               disabled={testStatus === 'testing'}
-              className="px-3 py-1.5 rounded-md border border-neutral-700 bg-neutral-800/60 hover:bg-neutral-700/60 text-neutral-200 text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-1.5 rounded-md border border-rule-strong text-sm text-ink-2 hover:bg-bg disabled:opacity-50"
             >
-              <RefreshCwIcon className={`w-3 h-3 ${testStatus === 'testing' ? 'animate-spin' : ''}`} />
-              <span>Test Ping</span>
+              Test
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="px-3.5 py-1.5 rounded-md bg-neutral-100 hover:bg-white text-neutral-900 font-medium text-xs transition-colors"
+              className="px-3.5 py-1.5 rounded-md bg-ink text-bg text-sm font-medium hover:opacity-90"
             >
               Save
             </button>

@@ -36,15 +36,16 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const goTo = (tab: NavTab) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-[#0c0e12] text-neutral-100 flex flex-col font-sans selection:bg-neutral-700 selection:text-white">
-      {/* Navigation Header */}
+    <div className="min-h-screen bg-bg text-ink flex flex-col">
       <Header
         activeTab={activeTab}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onTabChange={goTo}
         health={health}
         healthPing={healthPing}
         healthLoading={healthLoading}
@@ -52,37 +53,26 @@ export const App: React.FC = () => {
         onRefreshHealth={refreshHealth}
       />
 
-      {/* Main Page Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        {activeTab === 'overview' && <OverviewPage />}
+      <main className="flex-1 w-full max-w-6xl mx-auto px-5 sm:px-8 pt-12 pb-24">
+        {activeTab === 'overview' && <OverviewPage onNavigate={goTo} />}
         {activeTab === 'demo' && <DemoPage />}
         {activeTab === 'architecture' && <ArchitecturePage />}
         {activeTab === 'benchmarks' && <BenchmarksPage />}
       </main>
 
-      {/* API Key Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         onConfigChanged={refreshHealth}
       />
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-neutral-800 bg-[#0c0e12] py-8 text-xs font-mono text-neutral-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <img
-              src="/logo.png"
-              alt="S.E.C.T.R.A"
-              className="w-4 h-4 rounded object-contain border border-neutral-800"
-            />
-            <span className="font-semibold text-neutral-300">S.E.C.T.R.A</span>
-            <span>•</span>
-            <span>Securities & Exchange Commission Tracking, Retrieval & Analysis</span>
-          </div>
-          <div className="text-[11px] text-neutral-500">
-            SEC EDGAR Financial Research System
-          </div>
+      <footer className="border-t border-rule">
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row gap-2 sm:items-center justify-between text-xs text-muted">
+          <span>
+            <span className="font-medium text-ink-2">S.E.C.T.R.A</span> — Securities &amp; Exchange Commission
+            Tracking, Retrieval &amp; Analysis
+          </span>
+          <span>Data from SEC EDGAR. Not investment advice.</span>
         </div>
       </footer>
     </div>

@@ -1,17 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import type { Company } from '../types/api';
+import type { NavTab } from '../components/layout/Header';
 import { fetchCompanies } from '../services/api';
-import {
-  DatabaseIcon,
-  FileTextIcon,
-  LayersIcon,
-  SearchIcon,
-  AlertTriangleIcon,
-  RefreshCwIcon,
-  CheckIcon
-} from '../components/common/Icons';
+import { SearchIcon, ArrowRightIcon } from '../components/common/Icons';
+import { Section, Stat, StatRow, Code } from '../components/common/ui';
 
-export const OverviewPage: React.FC = () => {
+const PILLARS = [
+  {
+    n: '01',
+    title: 'Figures come from a database',
+    body: 'XBRL facts from every filing are loaded into MySQL and normalized into 15 canonical metrics. A text-to-SQL agent queries them through a parser-validated, read-only connection.',
+  },
+  {
+    n: '02',
+    title: 'Explanations come from the filings',
+    body: '10-K text is split by Item and indexed in Qdrant. Dense search returns 60 candidates, a reranker keeps the best 5, and every sentence in the answer cites one.',
+  },
+  {
+    n: '03',
+    title: 'A router decides which to use',
+    body: 'A LangGraph router sends each question to the database, the filing text or both, and declines questions about companies or years that are not indexed.',
+  },
+];
+
+const DATA_NOTES = [
+  {
+    title: 'Restatements replace older numbers',
+    body: 'Each 10-K repeats the two prior years. The latest filing wins, so a restated figure overrides the original.',
+  },
+  {
+    title: 'Fiscal years are derived, not trusted',
+    body: (
+      <>
+        Computed as <Code>YEAR(period_end − 7d) + offset</Code>. SEC’s own <Code>fy</Code> field mislabels some
+        NVIDIA filings, and 52/53-week years need the adjustment.
+      </>
+    ),
+  },
+  {
+    title: 'The same tag can mean different things',
+    body: (
+      <>
+        Chevron’s <Code>Revenues</Code> includes other income; ConocoPhillips’ does not. Company-specific overrides
+        resolve it.
+      </>
+    ),
+  },
+  {
+    title: 'CIK is the identity, not the ticker',
+    body: 'Tickers move during reorganizations (Exxon Mobil, 2026). Every table and vector payload is keyed by CIK.',
+  },
+];
+
+export const OverviewPage: React.FC<{ onNavigate: (tab: NavTab) => void }> = ({ onNavigate }) => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +66,7 @@ export const OverviewPage: React.FC = () => {
       const data = await fetchCompanies();
       setCompanies(Array.isArray(data) ? data : []);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to load company catalog from backend');
+      setError(err instanceof Error ? err.message : 'Failed to load the company list');
     } finally {
       setLoading(false);
     }
@@ -35,273 +76,185 @@ export const OverviewPage: React.FC = () => {
     loadCompanies();
   }, []);
 
-  // Dynamically extract unique sectors from the live API response
-  const availableSectors = ['all', ...Array.from(new Set(companies.map((c) => c.sector.toLowerCase()))).sort()];
-
-  const filteredCompanies = companies.filter((c) => {
-    const matchesSector = sectorFilter === 'all' || c.sector.toLowerCase() === sectorFilter.toLowerCase();
-    const matchesSearch =
-      c.ticker.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSector && matchesSearch;
-  });
+  const sectors = ['all', ...Array.from(new Set(companies.map((c) => c.sector.toLowerCase()))).sort()];
+  const q = searchQuery.toLowerCase();
+  const filtered = companies.filter(
+    (c) =>
+      (sectorFilter === 'all' || c.sector.toLowerCase() === sectorFilter) &&
+      (c.ticker.toLowerCase().includes(q) || c.name.toLowerCase().includes(q))
+  );
 
   return (
-    <div className="space-y-10 pb-16">
-      {/* Executive Intro */}
-      <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 sm:p-8 space-y-4">
-        <div className="max-w-4xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-neutral-800/80 text-neutral-300 text-xs font-mono">
-            SEC EDGAR Intelligence System
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
-            Securities & Exchange Commission Tracking, Retrieval & Analysis
-          </h1>
-          <p className="text-sm text-neutral-300 leading-relaxed">
-            S.E.C.T.R.A is a research system designed for SEC EDGAR 10-K filings. 
-            Standard LLMs handle financial analysis poorly: they invent numbers, perform arithmetic unreliably, and cannot point to exact filing sections.
-            S.E.C.T.R.A enforces a strict foundational principle: <strong>the LLM never supplies facts from memory</strong>.
-          </p>
+    <div>
+      {/* Hero */}
+      <section className="pb-14">
+        <p className="text-xs font-medium text-muted uppercase tracking-[0.12em]">SEC 10-K research system</p>
+        <h1 className="mt-4 font-serif text-[2.75rem] sm:text-[3.75rem] leading-[1.04] tracking-[-0.015em] max-w-4xl">
+          Answers from annual reports, with every source attached.
+        </h1>
+        <p className="mt-6 text-[17px] leading-relaxed text-ink-2 max-w-2xl">
+          Language models invent numbers, do arithmetic badly and can’t say where a claim came from. S.E.C.T.R.A
+          never lets the model answer from memory: figures come from database rows, explanations from cited filing
+          passages, and when the evidence isn’t there it says so.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => onNavigate('demo')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-ink text-bg text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            Ask a question
+            <ArrowRightIcon className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => onNavigate('benchmarks')}
+            className="px-4 py-2.5 rounded-lg text-sm text-ink-2 hover:text-ink hover:bg-surface border border-transparent hover:border-rule transition-colors"
+          >
+            See the evaluation
+          </button>
         </div>
+      </section>
 
-        {/* The 3-Pillar Architecture Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-neutral-800/80">
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-emerald-400">
-              <DatabaseIcon className="w-4 h-4" />
-              <span>1. Exact Figures & Arithmetic</span>
-            </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              Reported XBRL facts loaded into MySQL, normalized into 15 canonical metrics. Handled by an AST-validated text-to-SQL agent with a read-only database user.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-sky-400">
-              <FileTextIcon className="w-4 h-4" />
-              <span>2. Explanations & Risks</span>
-            </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              10-K filing text extracted by Item and indexed in Qdrant (1,024-d vectors). High-precision retrieval through dense search followed by cross-encoder reranking.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-mono font-semibold text-amber-400">
-              <LayersIcon className="w-4 h-4" />
-              <span>3. Hybrid Synthesis</span>
-            </div>
-            <p className="text-xs text-neutral-400 leading-relaxed">
-              LangGraph state graph: router classifies incoming queries, verifies corpus availability, executes SQL, scopes narrative retrieval, and synthesizes answers with citations.
-            </p>
-          </div>
-        </div>
+      <div className="border-t border-rule">
+        <StatRow>
+          <Stat value="20" label="Companies" note="Four sectors" />
+          <Stat value="80" label="Annual reports" note="Form 10-K" />
+          <Stat value="534K" label="XBRL facts" note="534,026 loaded" />
+          <Stat value="11,540" label="Text chunks" note="Indexed for retrieval" />
+        </StatRow>
       </div>
 
-      {/* Dynamic Company Catalog (strictly from live backend API) */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-semibold text-white tracking-tight">
-              Indexed Company Universe
-            </h2>
-            <p className="text-xs text-neutral-400 mt-0.5">
-              Live catalog fetched directly from the backend API (<code className="font-mono text-neutral-300">GET /companies</code>).
-            </p>
-          </div>
+      <Section title="Each question goes to the source that can answer it">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+          {PILLARS.map((p) => (
+            <div key={p.n}>
+              <div className="font-mono text-xs text-faint">{p.n}</div>
+              <h3 className="mt-2 font-medium text-ink">{p.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
 
-          {/* Search & Sector Filters */}
-          <div className="flex flex-wrap items-center gap-2">
+      <Section
+        title="Companies"
+        description={
+          <>
+            Loaded live from <Code>GET /companies</Code>.
+          </>
+        }
+        aside={
+          <div className="flex flex-wrap items-center gap-3">
             <div className="relative">
-              <SearchIcon className="w-3.5 h-3.5 text-neutral-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              <SearchIcon className="w-3.5 h-3.5 text-faint absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search ticker or name..."
-                className="bg-[#101318] border border-neutral-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-neutral-200 placeholder-neutral-500 focus:outline-hidden focus:border-neutral-600 font-mono w-48 transition-colors"
+                placeholder="Search"
+                className="w-44 bg-surface border border-rule rounded-lg pl-8 pr-3 py-1.5 text-sm placeholder:text-faint focus:outline-none focus:border-rule-strong"
               />
             </div>
-
-            {availableSectors.length > 1 && (
-              <div className="flex items-center gap-1 bg-[#101318] p-1 rounded-lg border border-neutral-800 text-xs">
-                {availableSectors.map((sec) => (
+            {sectors.length > 1 && (
+              <div className="flex items-center gap-1 text-sm">
+                {sectors.map((s) => (
                   <button
-                    key={sec}
-                    onClick={() => setSectorFilter(sec)}
-                    className={`px-2.5 py-1 rounded text-[11px] font-mono capitalize transition-colors ${
-                      sectorFilter === sec
-                        ? 'bg-neutral-800 text-white font-medium'
-                        : 'text-neutral-400 hover:text-neutral-200'
+                    key={s}
+                    onClick={() => setSectorFilter(s)}
+                    className={`px-2.5 py-1 rounded-md capitalize transition-colors ${
+                      sectorFilter === s ? 'bg-ink text-bg' : 'text-muted hover:text-ink'
                     }`}
                   >
-                    {sec}
+                    {s}
                   </button>
                 ))}
               </div>
             )}
           </div>
-        </div>
-
-        {/* Live Loading State */}
+        }
+      >
         {loading && (
-          <div className="p-12 border border-neutral-800 rounded-xl bg-[#101318] flex flex-col items-center justify-center gap-3 text-neutral-400 text-xs">
-            <RefreshCwIcon className="w-5 h-5 animate-spin text-neutral-300" />
-            <span>Loading company catalog from backend...</span>
+          <div className="space-y-px">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-11 bg-surface/60 animate-pulse" />
+            ))}
           </div>
         )}
 
-        {/* Error State */}
         {!loading && error && (
-          <div className="p-6 border border-neutral-800 rounded-xl bg-[#101318] space-y-3">
-            <div className="flex items-start gap-3">
-              <AlertTriangleIcon className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="text-xs font-semibold text-neutral-200">Unable to load company catalog from backend</p>
-                <p className="text-xs text-neutral-400 font-mono">{error}</p>
-                <p className="text-xs text-neutral-500">
-                  Verify that your backend endpoint is reachable and check your X-API-Key setting.
-                </p>
-              </div>
+          <div className="rounded-lg bg-danger-soft text-danger px-4 py-3 text-sm flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-medium">Couldn’t load companies</p>
+              <p className="text-xs opacity-80 mt-0.5">{error}. Check the API key in the header.</p>
             </div>
-            <button
-              onClick={loadCompanies}
-              className="px-3 py-1.5 rounded bg-neutral-800 hover:bg-neutral-700 text-xs font-medium text-neutral-200 flex items-center gap-1.5 transition-colors"
-            >
-              <RefreshCwIcon className="w-3.5 h-3.5" />
-              <span>Retry Request</span>
+            <button onClick={loadCompanies} className="underline underline-offset-2">
+              Retry
             </button>
           </div>
         )}
 
-        {/* Live Data Table */}
+        {!loading && !error && companies.length === 0 && (
+          <p className="text-sm text-muted">No companies were returned.</p>
+        )}
+
         {!loading && !error && companies.length > 0 && (
-          <div className="border border-neutral-800 rounded-xl overflow-hidden bg-[#101318]">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#0c0e12] border-b border-neutral-800 text-neutral-400 font-mono uppercase text-[10px]">
+          <div className="overflow-x-auto -mx-5 sm:mx-0">
+            <table className="w-full min-w-[640px] text-sm">
+              <thead>
+                <tr className="text-left text-xs text-muted border-b border-rule-strong">
+                  <th className="font-medium py-2.5 pl-5 sm:pl-0 pr-4">Ticker</th>
+                  <th className="font-medium py-2.5 pr-4">Company</th>
+                  <th className="font-medium py-2.5 pr-4">Sector</th>
+                  <th className="font-medium py-2.5 pr-4">Metrics</th>
+                  <th className="font-medium py-2.5 pr-5 sm:pr-0">Filing text</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.length === 0 ? (
                   <tr>
-                    <th className="px-4 py-3 font-medium">Ticker</th>
-                    <th className="px-4 py-3 font-medium">Company Name</th>
-                    <th className="px-4 py-3 font-medium">Sector</th>
-                    <th className="px-4 py-3 font-medium">Financial Metrics History</th>
-                    <th className="px-4 py-3 font-medium">10-K Filing Text Indexed</th>
+                    <td colSpan={5} className="py-10 text-center text-muted">
+                      Nothing matches.
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-neutral-800/60 font-sans">
-                  {filteredCompanies.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-neutral-500 text-xs">
-                        No companies match your search or filter.
+                ) : (
+                  filtered.map((c) => (
+                    <tr key={c.ticker} className="border-b border-rule hover:bg-surface/70 transition-colors">
+                      <td className="py-3 pl-5 sm:pl-0 pr-4 font-mono font-medium">{c.ticker}</td>
+                      <td className="py-3 pr-4 text-ink-2">{c.name}</td>
+                      <td className="py-3 pr-4 text-muted capitalize">{c.sector}</td>
+                      <td className="py-3 pr-4 font-mono text-xs text-muted tabular">
+                        {c.metric_years?.length === 2
+                          ? `${c.metric_years[0]}–${c.metric_years[1]}`
+                          : c.metric_years?.join(', ') || '—'}
+                      </td>
+                      <td className="py-3 pr-5 sm:pr-0 font-mono text-xs tabular">
+                        {c.text_years?.length ? (
+                          <span className="text-muted">{c.text_years.map((y) => `FY${String(y).slice(2)}`).join('  ')}</span>
+                        ) : (
+                          <span className="text-warn">Metrics only</span>
+                        )}
                       </td>
                     </tr>
-                  ) : (
-                    filteredCompanies.map((c) => {
-                      const hasText = c.text_years && c.text_years.length > 0;
-                      return (
-                        <tr key={c.ticker} className="hover:bg-neutral-800/30 transition-colors">
-                          <td className="px-4 py-3 font-mono font-bold text-white">
-                            {c.ticker}
-                          </td>
-                          <td className="px-4 py-3 text-neutral-200 font-medium">
-                            {c.name}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="inline-block px-2 py-0.5 rounded text-[10px] font-mono capitalize bg-neutral-800 text-neutral-300">
-                              {c.sector}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 font-mono text-neutral-300 text-xs">
-                            {c.metric_years && c.metric_years.length === 2
-                              ? `${c.metric_years[0]} – ${c.metric_years[1]}`
-                              : c.metric_years?.length ? c.metric_years.join(', ') : 'N/A'}
-                          </td>
-                          <td className="px-4 py-3 font-mono text-xs">
-                            {hasText ? (
-                              <div className="flex flex-wrap gap-1">
-                                {c.text_years.map((yr) => (
-                                  <span key={yr} className="px-1.5 py-0.5 rounded text-[10px] bg-neutral-800/80 text-neutral-300">
-                                    FY{yr}
-                                  </span>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="text-amber-400/90 text-[11px] font-sans">
-                                Metrics Only (Cross-ref index)
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="px-4 py-3 bg-[#0c0e12] border-t border-neutral-800 flex items-center justify-between text-[11px] text-neutral-500 font-mono">
-              <span>Showing {filteredCompanies.length} of {companies.length} companies</span>
-              <span>Loaded from live catalog</span>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
+            <p className="mt-3 px-5 sm:px-0 text-xs text-faint">
+              {filtered.length} of {companies.length} companies
+            </p>
           </div>
         )}
+      </Section>
 
-        {/* Empty Catalog Response */}
-        {!loading && !error && companies.length === 0 && (
-          <div className="p-8 border border-neutral-800 rounded-xl bg-[#101318] text-center text-xs text-neutral-400">
-            No companies were returned by the backend catalog.
-          </div>
-        )}
-      </div>
-
-      {/* Core Engineering Decisions & Rules */}
-      <div className="border border-neutral-800 rounded-xl p-6 bg-[#101318] space-y-4">
-        <h3 className="text-sm font-semibold text-white tracking-tight">
-          SEC Data Normalization Principles
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800/80 space-y-1.5">
-            <div className="font-semibold text-neutral-200 flex items-center gap-1.5">
-              <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Restatements Automatically Overwrite Past Filings</span>
+      <Section title="Notes on the data" description="Problems found in SEC data, and how the database handles them.">
+        <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-7">
+          {DATA_NOTES.map((n) => (
+            <div key={n.title}>
+              <dt className="font-medium text-ink">{n.title}</dt>
+              <dd className="mt-1.5 text-sm leading-relaxed text-muted">{n.body}</dd>
             </div>
-            <p className="text-neutral-400 leading-relaxed">
-              Every 10-K repeats the prior two years as comparatives. Under the database views, the latest filing accession wins, ensuring retroactive restatements replace older numbers automatically.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800/80 space-y-1.5">
-            <div className="font-semibold text-neutral-200 flex items-center gap-1.5">
-              <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Fiscal Year Derivation</span>
-            </div>
-            <p className="text-neutral-400 leading-relaxed">
-              Derived via <code className="font-mono text-neutral-300">YEAR(year_end − 7d) + company_offset</code>. This corrects cases where the SEC's own <code className="font-mono text-neutral-300">fy</code> field is mislabeled and handles 52/53-week fiscal schedules.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800/80 space-y-1.5">
-            <div className="font-semibold text-neutral-200 flex items-center gap-1.5">
-              <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Semantic Tag Disambiguation</span>
-            </div>
-            <p className="text-neutral-400 leading-relaxed">
-              Chevron's raw <code className="font-mono text-neutral-300">Revenues</code> concept includes other income, whereas ConocoPhillips' does not. S.E.C.T.R.A resolves this through prioritized tag mapping with company-specific overrides.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800/80 space-y-1.5">
-            <div className="font-semibold text-neutral-200 flex items-center gap-1.5">
-              <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-              <span>CIK Enforced as Primary Key</span>
-            </div>
-            <p className="text-neutral-400 leading-relaxed">
-              Tickers fluctuate or transfer during corporate reorganizations (such as Exxon Mobil in 2026). The zero-padded CIK is enforced across all tables, schemas, and vector payloads.
-            </p>
-          </div>
-        </div>
-      </div>
+          ))}
+        </dl>
+      </Section>
     </div>
   );
 };

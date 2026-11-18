@@ -1,31 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap");
 @import "tailwindcss";
 
-@layer base {
+/* Design tokens. Light is the default; dark follows the OS setting. */
+:root {
+  --bg: #f7f6f2;
+  --surface: #ffffff;
+  --sunken: #efede7;
+  --ink: #18181b;
+  --ink-2: #3f3f46;
+  --muted: #71717a;
+  --faint: #a1a1aa;
+  --rule: #e4e2db;
+  --rule-strong: #d4d1c8;
+  --accent: #1d6b52;
+  --accent-soft: #e3efe9;
+  --sql: #1d6b52;
+  --text: #2f5d9e;
+  --both: #a2621a;
+  --danger: #b4372d;
+  --danger-soft: #f8e6e3;
+  --warn: #8a5a12;
+  --warn-soft: #f6ecd9;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
+    --bg: #111112;
+    --surface: #18181a;
+    --sunken: #0c0c0d;
+    --ink: #ededeb;
+    --ink-2: #c8c8c4;
+    --muted: #8e8e93;
+    --faint: #5c5c61;
+    --rule: #26262a;
+    --rule-strong: #36363b;
+    --accent: #5cc49b;
+    --accent-soft: #15302a;
+    --sql: #5cc49b;
+    --text: #7aa7e8;
+    --both: #e0a35a;
+    --danger: #ef7d73;
+    --danger-soft: #2e1715;
+    --warn: #e0b45f;
+    --warn-soft: #2b2212;
     color-scheme: dark;
   }
-  
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-sql: var(--sql);
+  --color-text: var(--text);
+  --color-both: var(--both);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+}
+
+@layer base {
   body {
-    background-color: #0c0e12;
-    color: #e2e8f0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Clean subtle scrollbar */
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: #0c0e12;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #232730;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #333842;
+    background: var(--rule-strong);
+    border-radius: 4px;
+    border: 2px solid var(--bg);
   }
 }

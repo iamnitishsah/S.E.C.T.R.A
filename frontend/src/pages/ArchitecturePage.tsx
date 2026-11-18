@@ -1,203 +1,165 @@
 import React from 'react';
-import {
-  LayersIcon,
-  DatabaseIcon,
-  ShieldCheckIcon,
-  ServerIcon,
-  CheckIcon
-} from '../components/common/Icons';
+import { PageHeader, Section, Code } from '../components/common/ui';
 
-export const ArchitecturePage: React.FC = () => {
-  return (
-    <div className="space-y-10 pb-20">
-      {/* Page Title */}
-      <div className="space-y-1">
-        <h2 className="text-xl font-semibold text-white tracking-tight flex items-center gap-2">
-          <LayersIcon className="w-5 h-5 text-neutral-300" />
-          <span>System Architecture & Safety Guardrails</span>
-        </h2>
-        <p className="text-xs text-neutral-400">
-          Technical specifications of the offline pipeline, query runtime graph, AST SQL validator, and refusal boundaries.
+const STEPS = [
+  {
+    name: 'Router',
+    tech: 'LLM + catalog',
+    color: 'bg-ink',
+    body: (
+      <>
+        Picks a route (<Code>sql</Code>, <Code>text</Code>, <Code>both</Code> or <Code>none</Code>) and extracts the
+        companies and fiscal years. A deterministic check against the catalog then declines anything not indexed.
+      </>
+    ),
+  },
+  {
+    name: 'SQL',
+    tech: 'MySQL 8.4',
+    color: 'bg-sql',
+    body: 'Writes one SELECT, which is parsed, validated and run as a read-only user with a 5-second timeout and a 200-row cap.',
+  },
+  {
+    name: 'Text',
+    tech: 'Qdrant + reranker',
+    color: 'bg-text',
+    body: 'Dense search over 1,024-d vectors returns 60 candidates; a hosted reranker keeps the top 5. A score gate (0.042) stops weak matches before any LLM call.',
+  },
+  {
+    name: 'Writer',
+    tech: 'LLM + checks',
+    color: 'bg-both',
+    body: (
+      <>
+        Writes the answer citing <Code>[T]</Code> for table rows and <Code>[n]</Code> for passages, then checks that
+        every citation exists and every number appears in the evidence.
+      </>
+    ),
+  },
+];
+
+const SQL_LAYERS = [
+  {
+    title: 'A read-only database user',
+    body: (
+      <>
+        <Code>sectra_reader</Code> can only SELECT from <Code>financial_metrics</Code>, <Code>companies</Code> and{' '}
+        <Code>filings</Code>. This holds even if a validator rule is wrong.
+      </>
+    ),
+  },
+  {
+    title: 'A parser, not a regex',
+    body: (
+      <>
+        Queries are parsed with sqlglot and regenerated from the tree, which strips comments (including MySQL’s{' '}
+        <Code>/*! … */</Code>). Unknown functions such as <Code>SLEEP()</Code> and <Code>BENCHMARK()</Code> are
+        rejected.
+      </>
+    ),
+  },
+];
+
+const REFUSAL = [
+  {
+    n: 8,
+    title: 'Router and catalog',
+    body: 'Unindexed companies, missing years, forecasts and advice are declined before any search runs.',
+  },
+  {
+    n: 4,
+    title: 'Evidence check',
+    body: 'When the best passage scores below the threshold, as with odd questions about indexed companies, no LLM is called.',
+  },
+  {
+    n: 3,
+    title: 'Writer',
+    body: 'When passages look related but don’t support the premise, the writer answers NOT_FOUND instead of guessing.',
+  },
+];
+
+const DEPLOYMENT = [
+  ['Hosting', 'One AWS EC2 instance (t3.small, Ubuntu) runs FastAPI, MySQL and Qdrant with Docker Compose.'],
+  ['Network', 'MySQL and Qdrant bind to 127.0.0.1; only the API on port 8000 is exposed.'],
+  ['Frontend', 'Served by Vercel, which proxies /api requests to the EC2 instance.'],
+  ['CI/CD', 'GitHub Actions runs 154 unit tests on every push to main, then deploys over SSH and waits for /health.'],
+];
+
+export const ArchitecturePage: React.FC = () => (
+  <div>
+    <PageHeader eyebrow="How it works" title="Four steps from question to cited answer">
+      A LangGraph graph routes each question, gathers evidence from the database and the filings, and writes an answer
+      that can only use that evidence.
+    </PageHeader>
+
+    <Section title="The query graph">
+      <ol className="relative">
+        {STEPS.map((s, i) => (
+          <li key={s.name} className="relative grid grid-cols-[2rem_1fr] sm:grid-cols-[2rem_10rem_1fr] gap-x-4 pb-8 last:pb-0">
+            {i < STEPS.length - 1 && <span className="absolute left-[0.6875rem] top-6 bottom-0 w-px bg-rule-strong" />}
+            <span className="relative mt-1 w-6 h-6 rounded-full bg-bg border border-rule-strong grid place-items-center">
+              <span className={`w-2 h-2 rounded-full ${s.color}`} />
+            </span>
+            <div className="mb-1 sm:mb-0">
+              <div className="font-medium">{s.name}</div>
+              <div className="text-xs text-muted">{s.tech}</div>
+            </div>
+            <p className="col-start-2 sm:col-start-3 text-sm leading-relaxed text-ink-2 max-w-2xl">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mt-10 pl-5 border-l-2 border-both max-w-2xl">
+        <p className="text-sm font-medium">When a question names no company</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-muted">
+          For <em>“Which healthcare company grew revenue fastest in 2025, and what drove that growth?”</em> the SQL
+          step runs first and finds Eli Lilly. The text search is then filtered to LLY’s FY2025 filing, so passages from
+          other companies can’t crowd it out.
         </p>
       </div>
+    </Section>
 
-      {/* Query Runtime Flow */}
-      <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-6">
-        <div>
-          <h3 className="text-sm font-semibold text-white tracking-tight">
-            Query Execution Graph (LangGraph)
-          </h3>
-          <p className="text-xs text-neutral-400 mt-0.5">
-            Incoming questions are routed conditionally through specialized nodes based on evidence requirements.
-          </p>
-        </div>
-
-        {/* 4 Pipeline Step Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-mono font-semibold text-white">1. Router Node</span>
-              <span className="text-[10px] font-mono text-neutral-500">LLM + Catalog</span>
-            </div>
-            <p className="text-neutral-400 text-xs leading-relaxed">
-              Deconstructs the question, assigns the route (<code className="font-mono text-neutral-300">sql | text | both | none</code>), and extracts companies and fiscal years.
-            </p>
-            <div className="text-[10px] text-neutral-500 font-mono pt-1 border-t border-neutral-800">
-              Deterministic catalog check stops unindexed firms.
-            </div>
+    <Section title="Generated SQL is checked twice">
+      <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-7">
+        {SQL_LAYERS.map((l, i) => (
+          <div key={l.title}>
+            <dt className="flex items-baseline gap-3">
+              <span className="font-mono text-xs text-faint">0{i + 1}</span>
+              <span className="font-medium">{l.title}</span>
+            </dt>
+            <dd className="mt-1.5 pl-8 text-sm leading-relaxed text-muted">{l.body}</dd>
           </div>
+        ))}
+      </dl>
+    </Section>
 
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-mono font-semibold text-emerald-400">2. SQL Node</span>
-              <span className="text-[10px] font-mono text-neutral-500">MySQL 8.4</span>
+    <Section
+      title="Three layers decline what can’t be answered"
+      description="Of 15 unanswerable test questions, each layer caught the number shown. None got through."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+        {REFUSAL.map((r) => (
+          <div key={r.title}>
+            <div className="flex items-baseline gap-2">
+              <span className="font-serif text-4xl leading-none tabular">{r.n}</span>
+              <span className="text-xs text-muted">of 15</span>
             </div>
-            <p className="text-neutral-400 text-xs leading-relaxed">
-              Generates a single SELECT statement. Validated against AST rules and executed with a read-only database user.
-            </p>
-            <div className="text-[10px] text-neutral-500 font-mono pt-1 border-t border-neutral-800">
-              5-second query timeout & 200 row ceiling.
-            </div>
+            <p className="mt-3 font-medium">{r.title}</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">{r.body}</p>
           </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-mono font-semibold text-sky-400">3. Text Node</span>
-              <span className="text-[10px] font-mono text-neutral-500">Qdrant + Rerank</span>
-            </div>
-            <p className="text-neutral-400 text-xs leading-relaxed">
-              Dense vector search retrieves 60 candidates; an 8B cross-encoder API reranks them down to the top 5 passages.
-            </p>
-            <div className="text-[10px] text-neutral-500 font-mono pt-1 border-t border-neutral-800">
-              Refusal score gate: min_score 0.042.
-            </div>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-mono font-semibold text-amber-400">4. Writer Node</span>
-              <span className="text-[10px] font-mono text-neutral-500">Synthesis & Audit</span>
-            </div>
-            <p className="text-neutral-400 text-xs leading-relaxed">
-              Synthesizes answers citing <code className="font-mono text-neutral-300">[T]</code> for table rows and <code className="font-mono text-neutral-300">[n]</code> for passages.
-            </p>
-            <div className="text-[10px] text-neutral-500 font-mono pt-1 border-t border-neutral-800">
-              Verifies numbers and citations before reply.
-            </div>
-          </div>
-        </div>
-
-        {/* Dynamic Scoping Notice */}
-        <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 text-xs space-y-1">
-          <span className="font-semibold text-neutral-200">
-            Dynamic Scoping in Hybrid Execution:
-          </span>
-          <p className="text-neutral-400 leading-relaxed">
-            When a query does not specify a company (e.g. <em>"Which healthcare company grew revenue fastest in 2025, and what drove that growth?"</em>), the SQL node executes first to identify the winning firm (<code className="font-mono text-neutral-300">LLY</code>). The graph then automatically scopes the text search to Eli Lilly and FY2025, eliminating cross-company noise.
-          </p>
-        </div>
+        ))}
       </div>
+    </Section>
 
-      {/* Two-Layer SQL Safety & Three-Tier Refusal */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* SQL Safety */}
-        <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <DatabaseIcon className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-sm font-semibold text-white">Two-Layer SQL Safety</h3>
+    <Section title="Deployment">
+      <dl className="divide-y divide-rule border-y border-rule">
+        {DEPLOYMENT.map(([k, v]) => (
+          <div key={k} className="grid grid-cols-1 sm:grid-cols-[10rem_1fr] gap-1 sm:gap-4 py-3.5">
+            <dt className="text-sm font-medium">{k}</dt>
+            <dd className="text-sm text-muted">{v}</dd>
           </div>
-
-          <div className="space-y-3 text-xs">
-            <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-              <div className="font-semibold text-neutral-200 flex items-center gap-1.5">
-                <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Layer 1: Dedicated Read-Only DB User</span>
-              </div>
-              <p className="text-neutral-400 leading-relaxed">
-                The MySQL reader role (<code className="font-mono text-neutral-300">sectra_reader</code>) possesses strict SELECT privileges on only 3 tables: <code className="font-mono text-neutral-300">financial_metrics</code>, <code className="font-mono text-neutral-300">companies</code>, and <code className="font-mono text-neutral-300">filings</code>. Writes or reads of system tables are blocked at the engine level.
-              </p>
-            </div>
-
-            <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-              <div className="font-semibold text-neutral-200 flex items-center gap-1.5">
-                <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Layer 2: AST Parser & Re-generation</span>
-              </div>
-              <p className="text-neutral-400 leading-relaxed">
-                SQL queries are parsed with <code className="font-mono text-neutral-300">sqlglot</code>. Comments are completely stripped (defeating MySQL executable comments <code className="font-mono text-neutral-300">/*! ... */</code>), functions like <code className="font-mono text-neutral-300">SLEEP()</code> and <code className="font-mono text-neutral-300">BENCHMARK()</code> are rejected, and only re-generated AST queries are allowed to run.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Three-Tier Refusal */}
-        <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <ShieldCheckIcon className="w-4 h-4 text-neutral-300" />
-            <h3 className="text-sm font-semibold text-white">Three-Tier Refusal Architecture</h3>
-          </div>
-
-          <div className="space-y-3 text-xs">
-            <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-              <div className="font-semibold text-neutral-200">
-                Tier 1: Router & Catalog Gate
-              </div>
-              <p className="text-neutral-400 leading-relaxed">
-                Rejects unindexed tickers, missing fiscal years, or advice requests before any embedding or database queries run. (Refused 8 of 15 unanswerable benchmark questions).
-              </p>
-            </div>
-
-            <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-              <div className="font-semibold text-neutral-200">
-                Tier 2: Retrieval Score Gate
-              </div>
-              <p className="text-neutral-400 leading-relaxed">
-                A calibrated threshold (<code className="font-mono text-neutral-300">0.042</code> for reranker) drops weak semantic matches without invoking the LLM generation backend. (Refused 4 of 15 benchmark questions).
-              </p>
-            </div>
-
-            <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-              <div className="font-semibold text-neutral-200">
-                Tier 3: Writer NOT_FOUND Rule
-              </div>
-              <p className="text-neutral-400 leading-relaxed">
-                When passages appear superficially related but fail to substantiate the premise (such as fictitious mergers), the writer refuses to guess. (Refused 3 of 15 benchmark questions).
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Production Infrastructure */}
-      <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-        <div className="flex items-center gap-2">
-          <ServerIcon className="w-4 h-4 text-neutral-300" />
-          <h3 className="text-sm font-semibold text-white">Production Deployment Topology</h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-          <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-            <span className="font-mono font-semibold text-neutral-200 block">AWS EC2 Hosting</span>
-            <p className="text-neutral-400 leading-relaxed">
-              FastAPI, MySQL 8.4, and Qdrant 1.18.2 run inside Docker Compose on Ubuntu Linux (t3.small).
-            </p>
-          </div>
-
-          <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-            <span className="font-mono font-semibold text-neutral-200 block">Port Isolation</span>
-            <p className="text-neutral-400 leading-relaxed">
-              MySQL and Qdrant are bound strictly to <code className="font-mono text-neutral-300">127.0.0.1</code>. Only the FastAPI service (port 8000) is exposed.
-            </p>
-          </div>
-
-          <div className="p-3.5 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-1">
-            <span className="font-mono font-semibold text-neutral-200 block">Automated CI/CD</span>
-            <p className="text-neutral-400 leading-relaxed">
-              GitHub Actions runs 154 unit tests via pytest on every push to <code className="font-mono text-neutral-300">main</code>, followed by automated SSH zero-downtime deployment.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+        ))}
+      </dl>
+    </Section>
+  </div>
+);

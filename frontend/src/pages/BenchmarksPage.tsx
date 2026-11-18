@@ -1,193 +1,122 @@
 import React from 'react';
-import {
-  BarChart3Icon,
-  DatabaseIcon,
-  FileTextIcon,
-  LayersIcon
-} from '../components/common/Icons';
+import { PageHeader, Section, Stat, StatRow } from '../components/common/ui';
 
-export const BenchmarksPage: React.FC = () => {
-  return (
-    <div className="space-y-10 pb-20">
-      {/* Header */}
-      <div className="space-y-1">
-        <h2 className="text-xl font-semibold text-white tracking-tight flex items-center gap-2">
-          <BarChart3Icon className="w-5 h-5 text-neutral-300" />
-          <span>Evaluation & Empirical Verification</span>
-        </h2>
-        <p className="text-xs text-neutral-400">
-          Rigorous quantitative verification of retrieval recall, text-to-SQL execution accuracy, and unanswerable question refusal.
+const RETRIEVAL = [
+  { name: 'Dense search', setting: 'Open', r1: '57.3', r5: '84.1', r10: '90.2', mrr: '0.682' },
+  { name: 'Dense + rerank', setting: 'Open', r1: '84.1', r5: '95.1', r10: '96.3', mrr: '0.890', prod: true },
+  { name: 'Dense search', setting: 'Company + year', r1: '61.0', r5: '90.2', r10: '96.3', mrr: '0.727' },
+  { name: 'Dense + rerank', setting: 'Company + year', r1: '86.6', r5: '98.8', r10: '100.0', mrr: '0.920', prod: true },
+];
+
+const BM25 = [
+  { label: 'LLM-written questions', overlap: '0.67', value: 82.9 },
+  { label: 'Paraphrased questions', overlap: '0.16', value: 22.0 },
+];
+
+const Row: React.FC<{ label: string; value: string; note?: string }> = ({ label, value, note }) => (
+  <div className="flex items-baseline justify-between gap-4 py-3 border-b border-rule">
+    <span className="text-sm text-ink-2">
+      {label}
+      {note && <span className="text-muted"> · {note}</span>}
+    </span>
+    <span className="font-mono text-sm tabular whitespace-nowrap">{value}</span>
+  </div>
+);
+
+export const BenchmarksPage: React.FC = () => (
+  <div>
+    <PageHeader eyebrow="Evaluation" title="Measured, including what didn’t work">
+      Retrieval, text-to-SQL and routing are each scored on questions with known answers. Variants that made
+      results worse were removed.
+    </PageHeader>
+
+    <StatRow>
+      <Stat value="95.1%" label="Recall@5, reranked" note="82 paraphrased questions, no filters" />
+      <Stat value="98.8%" label="Recall@5, routed" note="With the router’s company and year" />
+      <Stat value="93.5%" label="Text-to-SQL accuracy" note="43 of 46, first run" />
+      <Stat value="15/15" label="Unanswerable declined" note="End to end" />
+    </StatRow>
+
+    <Section
+      title="Retrieval"
+      description="82 questions worded differently from the passage that answers them, searched across all 11,540 chunks."
+      aside={<span className="text-xs text-muted">Rerank vs dense: exact sign test, p = 0.004</span>}
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[560px] text-sm">
+          <thead>
+            <tr className="text-left text-xs text-muted border-b border-rule-strong">
+              <th className="font-medium py-2.5 pr-4">Retriever</th>
+              <th className="font-medium py-2.5 pr-4">Filter</th>
+              <th className="font-medium py-2.5 pr-4 text-right">R@1</th>
+              <th className="font-medium py-2.5 pr-4 text-right">R@5</th>
+              <th className="font-medium py-2.5 pr-4 text-right">R@10</th>
+              <th className="font-medium py-2.5 text-right">MRR@10</th>
+            </tr>
+          </thead>
+          <tbody className="font-mono text-[13px] tabular">
+            {RETRIEVAL.map((r, i) => (
+              <tr key={i} className={`border-b border-rule ${r.prod ? 'text-ink' : 'text-muted'}`}>
+                <td className="py-3 pr-4 font-sans text-sm">
+                  {r.name}
+                  {r.prod && <span className="ml-2 text-[11px] text-accent">in production</span>}
+                </td>
+                <td className="py-3 pr-4 font-sans text-sm">{r.setting}</td>
+                <td className="py-3 pr-4 text-right">{r.r1}%</td>
+                <td className={`py-3 pr-4 text-right ${r.prod ? 'font-medium' : ''}`}>{r.r5}%</td>
+                <td className="py-3 pr-4 text-right">{r.r10}%</td>
+                <td className="py-3 text-right">{r.mrr}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Section>
+
+    <Section
+      title="Why keyword search was removed"
+      description="When an LLM writes questions while reading a passage, it reuses the passage’s words. That flatters BM25."
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-x-12 gap-y-8">
+        <div className="space-y-5">
+          {BM25.map((b) => (
+            <div key={b.label}>
+              <div className="flex items-baseline justify-between text-sm">
+                <span className="text-ink-2">
+                  {b.label} <span className="text-muted">· word overlap {b.overlap}</span>
+                </span>
+                <span className="font-mono tabular">{b.value.toFixed(1)}%</span>
+              </div>
+              <div className="mt-2 h-2 rounded-full bg-sunken overflow-hidden">
+                <div className="h-full rounded-full bg-ink" style={{ width: `${b.value}%` }} />
+              </div>
+            </div>
+          ))}
+          <p className="text-xs text-muted">BM25 Recall@5 on the same 82 questions, before and after paraphrasing.</p>
+        </div>
+        <p className="text-sm leading-relaxed text-ink-2">
+          Paraphrasing the questions cut word overlap from 0.67 to 0.16, and BM25 fell from 82.9% to 22.0%. Fusing it
+          with dense search (reciprocal rank fusion) then lowered Recall@5 from 84.1% to 61.0%, so BM25 was removed.
+          The paraphrased set became the headline benchmark.
         </p>
       </div>
+    </Section>
 
-      {/* Summary KPI Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-[#101318] border border-neutral-800 space-y-1">
-          <span className="text-xs font-mono text-neutral-500">Reranked Recall@5</span>
-          <div className="text-2xl font-bold font-mono text-white">95.1%</div>
-          <p className="text-[11px] text-neutral-400">82 paraphrased questions (Open search)</p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-[#101318] border border-neutral-800 space-y-1">
-          <span className="text-xs font-mono text-neutral-500">Scoped Recall@5</span>
-          <div className="text-2xl font-bold font-mono text-white">98.8%</div>
-          <p className="text-[11px] text-neutral-400">With router company/year filter</p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-[#101318] border border-neutral-800 space-y-1">
-          <span className="text-xs font-mono text-neutral-500">Text-to-SQL Accuracy</span>
-          <div className="text-2xl font-bold font-mono text-white">93.5%</div>
-          <p className="text-[11px] text-neutral-400">43 / 46 on first run (46/46 tuned)</p>
-        </div>
-
-        <div className="p-4 rounded-xl bg-[#101318] border border-neutral-800 space-y-1">
-          <span className="text-xs font-mono text-neutral-500">Refusal of Unanswerable</span>
-          <div className="text-2xl font-bold font-mono text-white">15 / 15</div>
-          <p className="text-[11px] text-neutral-400">100% end-to-end refusal</p>
-        </div>
+    <section className="py-10 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+      <div>
+        <h2 className="text-lg font-semibold tracking-tight">Text-to-SQL</h2>
+        <p className="mt-1 mb-4 text-sm text-muted">Execution accuracy: results compared with gold queries.</p>
+        <Row label="First run" value="43 / 46 · 93.5%" />
+        <Row label="Out-of-scope questions declined" value="10 / 10" />
+        <Row label="After fixes" note="tuned on the same set" value="46 / 46" />
       </div>
-
-      {/* Retrieval Evaluation Table */}
-      <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FileTextIcon className="w-4 h-4 text-neutral-300" />
-            <h3 className="text-sm font-semibold text-white">
-              Retrieval Quality on Paraphrased Questions (82 Questions across 11,540 Chunks)
-            </h3>
-          </div>
-          <span className="text-xs font-mono text-neutral-500">Sign Test: p = 0.004</span>
-        </div>
-
-        <div className="overflow-x-auto rounded-lg border border-neutral-800">
-          <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-[#0c0e12] text-neutral-400 border-b border-neutral-800 uppercase text-[10px]">
-              <tr>
-                <th className="px-4 py-3 font-medium">Retriever Configuration</th>
-                <th className="px-4 py-3 font-medium">Setting</th>
-                <th className="px-4 py-3 font-medium">Recall@1</th>
-                <th className="px-4 py-3 font-medium">Recall@5</th>
-                <th className="px-4 py-3 font-medium">Recall@10</th>
-                <th className="px-4 py-3 font-medium">MRR@10</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-800/60 bg-[#101318]">
-              <tr className="hover:bg-neutral-800/30">
-                <td className="px-4 py-2.5 text-neutral-300 font-sans">Dense Vector Search (8B Embeddings)</td>
-                <td className="px-4 py-2.5 text-neutral-400">Open (No Filter)</td>
-                <td className="px-4 py-2.5 text-neutral-300">57.3%</td>
-                <td className="px-4 py-2.5 text-neutral-300">84.1%</td>
-                <td className="px-4 py-2.5 text-neutral-300">90.2%</td>
-                <td className="px-4 py-2.5 text-neutral-300">0.682</td>
-              </tr>
-              <tr className="hover:bg-neutral-800/30 bg-neutral-900/60 font-semibold">
-                <td className="px-4 py-2.5 text-white font-sans">
-                  Dense + Cross-Encoder Rerank (Production `ask`)
-                </td>
-                <td className="px-4 py-2.5 text-neutral-300">Open (No Filter)</td>
-                <td className="px-4 py-2.5 text-white">84.1%</td>
-                <td className="px-4 py-2.5 text-white font-bold">95.1%</td>
-                <td className="px-4 py-2.5 text-white">96.3%</td>
-                <td className="px-4 py-2.5 text-white">0.890</td>
-              </tr>
-              <tr className="hover:bg-neutral-800/30">
-                <td className="px-4 py-2.5 text-neutral-300 font-sans">Dense Vector Search (8B Embeddings)</td>
-                <td className="px-4 py-2.5 text-neutral-400">Scoped (Ticker + FY)</td>
-                <td className="px-4 py-2.5 text-neutral-300">61.0%</td>
-                <td className="px-4 py-2.5 text-neutral-300">90.2%</td>
-                <td className="px-4 py-2.5 text-neutral-300">96.3%</td>
-                <td className="px-4 py-2.5 text-neutral-300">0.727</td>
-              </tr>
-              <tr className="hover:bg-neutral-800/30 bg-neutral-900/60 font-semibold">
-                <td className="px-4 py-2.5 text-white font-sans">
-                  Dense + Cross-Encoder Rerank (Production `ask`)
-                </td>
-                <td className="px-4 py-2.5 text-neutral-300">Scoped (Ticker + FY)</td>
-                <td className="px-4 py-2.5 text-white">86.6%</td>
-                <td className="px-4 py-2.5 text-white font-bold">98.8%</td>
-                <td className="px-4 py-2.5 text-white">100.0%</td>
-                <td className="px-4 py-2.5 text-white">0.920</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div>
+        <h2 className="text-lg font-semibold tracking-tight">Routing</h2>
+        <p className="mt-1 mb-4 text-sm text-muted">151 questions with a known correct route.</p>
+        <Row label="Routed correctly" value="142 / 151 · 94.0%" />
+        <Row label="Hybrid questions" value="15 / 15" />
+        <Row label="Answerable but declined" note="MPLX subsidiary" value="1 / 138" />
       </div>
-
-      {/* The Wording Bias Insight */}
-      <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-        <h3 className="text-sm font-semibold text-white">
-          Key Discovery: LLM Wording Bias and BM25 Elimination
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <span className="font-semibold text-neutral-200 block">
-              1. Raw LLM-Written Questions (Word Overlap: 0.67)
-            </span>
-            <p className="text-neutral-400 leading-relaxed font-sans">
-              When an LLM writes questions while viewing a passage, it reuses the passage's vocabulary. Keyword matching (BM25) scored <strong>82.9% Recall@5</strong>, creating a misleading impression of effectiveness.
-            </p>
-          </div>
-
-          <div className="p-4 rounded-lg bg-[#0c0e12] border border-neutral-800 space-y-2">
-            <span className="font-semibold text-neutral-200 block">
-              2. Paraphrased Questions (Word Overlap: 0.16)
-            </span>
-            <p className="text-neutral-400 leading-relaxed font-sans">
-              Rewriting questions with realistic financial terminology caused BM25 to collapse to <strong>22.0% Recall@5</strong>. Fusing BM25 with dense vectors via RRF lowered accuracy from 84.1% to 61.0%, so BM25 was removed.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* SQL Analyst & Router Accuracy Tables */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* SQL Analyst */}
-        <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <DatabaseIcon className="w-4 h-4 text-emerald-400" />
-            <h3 className="text-sm font-semibold text-white">Text-to-SQL Execution Accuracy</h3>
-          </div>
-
-          <div className="space-y-2 text-xs">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#0c0e12] border border-neutral-800">
-              <span className="text-neutral-300">First-Run Execution Accuracy</span>
-              <span className="font-mono font-semibold text-white">93.5% (43 / 46)</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#0c0e12] border border-neutral-800">
-              <span className="text-neutral-300">Out-of-Scope Questions Refused</span>
-              <span className="font-mono font-semibold text-white">100% (10 / 10)</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#0c0e12] border border-neutral-800">
-              <span className="text-neutral-300">Tuned Accuracy After Fixes</span>
-              <span className="font-mono font-semibold text-white">100% (46 / 46)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Router Evaluation */}
-        <div className="border border-neutral-800 bg-[#101318] rounded-xl p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <LayersIcon className="w-4 h-4 text-amber-400" />
-            <h3 className="text-sm font-semibold text-white">LangGraph Router Precision</h3>
-          </div>
-
-          <div className="space-y-2 text-xs">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#0c0e12] border border-neutral-800">
-              <span className="text-neutral-300">Overall Routing Accuracy</span>
-              <span className="font-mono font-semibold text-white">94.0% (142 / 151)</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#0c0e12] border border-neutral-800">
-              <span className="text-neutral-300">Hybrid Route Classification</span>
-              <span className="font-mono font-semibold text-white">100% (15 / 15)</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#0c0e12] border border-neutral-800">
-              <span className="text-neutral-300">Answerable Questions Wrongly Refused</span>
-              <span className="font-mono font-semibold text-white">1 / 138 (MPLX subsidiary)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+    </section>
+  </div>
+);
